@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ActivityCard, type Activity } from '@/components/ia/ActivityCard';
 import { activities as allActivities } from '@/data/ia-activities';
-import { Phone, FileText, Calendar as CalendarIcon, Bot } from 'lucide-react';
+import { Phone, FileText, Calendar as CalendarIcon, Bot, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from '@/components/ui/input';
 
 type FilterType = 'all' | Activity['type'];
 type StatusFilterType = 'all' | Activity['status'];
@@ -21,10 +22,15 @@ const IaActivities = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FilterType>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilterType>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const filteredActivities = allActivities
     .filter(activity => filter === 'all' || activity.type === filter)
-    .filter(activity => statusFilter === 'all' || activity.status === statusFilter);
+    .filter(activity => statusFilter === 'all' || activity.status === statusFilter)
+    .filter(activity => 
+      activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      activity.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   
   const filterButtons: { label: string; filter: FilterType }[] = [
     { label: t('iaActivities.filters.all', 'Todos'), filter: 'all' },
@@ -42,14 +48,24 @@ const IaActivities = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex items-center gap-3">
-            <div className="bg-brand-light p-3 rounded-lg">
-                <Bot className="w-6 h-6 text-brand-blue" />
-            </div>
-            <h1 className="text-2xl font-bold text-brand-dark">{t('sidebar.iaActivities', 'Actividades de la IA')}</h1>
+      <div className="flex items-center gap-3">
+          <div className="bg-brand-light p-3 rounded-lg">
+              <Bot className="w-6 h-6 text-brand-blue" />
+          </div>
+          <h1 className="text-2xl font-bold text-brand-dark">{t('sidebar.iaActivities', 'Actividades de la IA')}</h1>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-2">
+        <div className="relative flex-grow">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={t('iaActivities.filters.searchPlaceholder', 'Buscar por título o descripción...')}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 w-full bg-card rounded-lg border-0 shadow-soft"
+          />
         </div>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex items-center gap-2 p-1 bg-brand-light rounded-lg">
             {filterButtons.map(item => (
               <Button
