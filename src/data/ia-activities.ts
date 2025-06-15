@@ -9,7 +9,11 @@ export const activities: Activity[] = [
     description: 'Resumen de la llamada sobre los resultados de su último análisis de sangre.',
     timestamp: 'Hoy a las 10:30 AM',
     status: 'completed',
-    details: { duration: '15 min', transcript: '...' }
+    details: { 
+      duration: '15 min', 
+      transcript_preview: 'La transcripción de la llamada está disponible...',
+      sentiment: 'Positivo'
+    }
   },
   {
     id: '2',
@@ -18,6 +22,10 @@ export const activities: Activity[] = [
     description: 'IA generó un resumen de la última consulta de María sobre su tratamiento.',
     timestamp: 'Hoy a las 09:45 AM',
     status: 'completed',
+    details: {
+      source_document: 'Consulta del 14/06/2025',
+      link_to_record: '/expedientes/maria-garcia/resumen-1'
+    }
   },
   {
     id: '3',
@@ -26,6 +34,11 @@ export const activities: Activity[] = [
     description: 'Se agendó una cita de seguimiento para el próximo martes.',
     timestamp: 'Ayer a las 4:00 PM',
     status: 'completed',
+    details: {
+      doctor: 'Dr. Alan Morales',
+      specialty: 'Cardiología',
+      date: 'Martes, 17 de Junio - 11:00 AM'
+    }
   },
   {
     id: '4',
@@ -34,6 +47,10 @@ export const activities: Activity[] = [
     description: 'Llamada de seguimiento sobre su recuperación postoperatoria.',
     timestamp: 'hace 2 días',
     status: 'completed',
+    details: { 
+      duration: '8 min',
+      sentiment: 'Neutral'
+    }
   },
     {
     id: '5',
@@ -42,6 +59,10 @@ export const activities: Activity[] = [
     description: 'No se pudo contactar al paciente para confirmar la cita.',
     timestamp: 'hace 3 días',
     status: 'failed',
+    details: {
+      failure_reason: 'Paciente no responde la llamada',
+      attempts: '3'
+    }
   },
   {
     id: '6',

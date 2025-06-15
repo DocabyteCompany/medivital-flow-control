@@ -1,9 +1,11 @@
-
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "../ui/button";
+import { ChevronsUpDown } from "lucide-react";
 
 export type Activity = {
   id: string;
@@ -42,6 +44,11 @@ export const ActivityCard = ({ activity, icon: Icon }: ActivityCardProps) => {
     failed: t('iaActivities.status.failed', 'Fallido'),
   };
 
+  const formatDetailKey = (key: string) => {
+    const translatedKey = t(`iaActivities.details.${key}`, key.replace(/_/g, ' '));
+    return translatedKey.charAt(0).toUpperCase() + translatedKey.slice(1);
+  }
+
   return (
     <Card className="shadow-soft border-0 rounded-2xl flex flex-col">
       <CardHeader>
@@ -63,6 +70,28 @@ export const ActivityCard = ({ activity, icon: Icon }: ActivityCardProps) => {
       <CardContent className="flex-grow">
         <p className="text-sm text-gray-600">{activity.description}</p>
       </CardContent>
+      {activity.details && Object.keys(activity.details).length > 0 && (
+        <CardFooter className="pt-0 px-6 pb-4">
+          <Collapsible className="w-full">
+            <CollapsibleTrigger asChild>
+              <Button variant="link" className="p-0 h-auto font-semibold text-brand-blue flex items-center gap-1.5 group">
+                {t('iaActivities.viewDetails', 'Ver detalles')}
+                <ChevronsUpDown className="h-4 w-4 text-brand-blue transition-transform duration-200 group-data-[state=open]:rotate-180" />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4 text-sm">
+              <div className="space-y-3 rounded-lg bg-gray-50 p-4 border border-gray-200">
+                {Object.entries(activity.details).map(([key, value]) => (
+                  <div key={key} className="flex justify-between items-start gap-4">
+                    <span className="font-medium text-gray-500 text-xs flex-shrink-0">{formatDetailKey(key)}</span>
+                    <span className="text-gray-800 text-right font-medium text-xs">{String(value)}</span>
+                  </div>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </CardFooter>
+      )}
     </Card>
   );
 };
