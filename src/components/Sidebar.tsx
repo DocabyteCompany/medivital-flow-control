@@ -1,3 +1,4 @@
+
 import {
   Users,
   Calendar,
@@ -10,19 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
-
-const menuItems = [
-  { icon: HeartPulse, label: 'Logo' },
-  { icon: Users, label: 'Pacientes' },
-  { icon: MessageSquare, label: 'Mensajes' },
-  { icon: Calendar, label: 'Agenda' },
-  { icon: ClipboardList, label: 'Expedientes' },
-];
-
-const bottomItems = [
-    { icon: LifeBuoy, label: 'Soporte' },
-    { icon: UserCircle, label: 'Perfil' },
-];
+import { Link, useLocation } from 'react-router-dom';
 
 const SidebarIcon = ({ icon: Icon, label, isActive = false, isLogo = false }: {
   icon: ComponentType<{ className?: string }>;
@@ -30,25 +19,26 @@ const SidebarIcon = ({ icon: Icon, label, isActive = false, isLogo = false }: {
   isActive?: boolean;
   isLogo?: boolean;
 }) => (
-  <button className={cn(
+  <div className={cn(
     "flex items-center justify-center w-12 h-12 rounded-lg transition-colors duration-200",
     isActive ? "bg-brand-blue text-white" : "text-gray-400 hover:bg-brand-light hover:text-brand-blue",
     isLogo ? "text-brand-blue" : ""
   )}>
     <Icon className="w-6 h-6" />
     <span className="sr-only">{label}</span>
-  </button>
+  </div>
 );
 
 export const Sidebar = () => {
   const { t } = useTranslation();
+  const location = useLocation();
 
   const menuItems = [
-    { icon: HeartPulse, label: t('sidebar.logo') },
-    { icon: Users, label: t('sidebar.patients') },
-    { icon: MessageSquare, label: t('sidebar.messages') },
-    { icon: Calendar, label: t('sidebar.agenda') },
-    { icon: ClipboardList, label: t('sidebar.records') },
+    { icon: HeartPulse, label: t('sidebar.logo'), path: '/pacientes' },
+    { icon: Users, label: t('sidebar.patients'), path: '/pacientes' },
+    { icon: MessageSquare, label: t('sidebar.messages'), path: '/mensajes' },
+    { icon: Calendar, label: t('sidebar.agenda'), path: '/agenda' },
+    { icon: ClipboardList, label: t('sidebar.records'), path: '/expedientes' },
   ];
   
   const bottomItems = [
@@ -59,15 +49,21 @@ export const Sidebar = () => {
   return (
     <aside className="bg-card w-20 flex flex-col items-center py-6 shadow-soft">
       <nav className="flex flex-col items-center space-y-4 flex-1">
-        <SidebarIcon icon={menuItems[0].icon} label={menuItems[0].label} isLogo />
+        <Link to={menuItems[0].path}>
+          <SidebarIcon icon={menuItems[0].icon} label={menuItems[0].label} isLogo />
+        </Link>
         <div className="h-8"></div>
         {menuItems.slice(1).map((item) => (
-          <SidebarIcon key={item.label} icon={item.icon} label={item.label} isActive={item.label === t('sidebar.patients')} />
+          <Link key={item.label} to={item.path}>
+            <SidebarIcon icon={item.icon} label={item.label} isActive={location.pathname === item.path} />
+          </Link>
         ))}
       </nav>
       <div className="flex flex-col items-center space-y-4">
         {bottomItems.map((item) => (
-            <SidebarIcon key={item.label} icon={item.icon} label={item.label} />
+          <button key={item.label} className="focus:outline-none">
+            <SidebarIcon icon={item.icon} label={item.label} />
+          </button>
         ))}
       </div>
     </aside>
