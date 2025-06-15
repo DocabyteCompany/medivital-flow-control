@@ -11,7 +11,7 @@ const Messages = () => {
   const selectedDoctor = doctors.find((d) => d.id === selectedDoctorId);
 
   return (
-    <Card className="flex h-[calc(100vh-10rem)] overflow-hidden">
+    <Card className="flex h-[calc(100vh-8.5rem)] overflow-hidden">
       <DoctorList selectedDoctorId={selectedDoctorId} onSelectDoctor={setSelectedDoctorId} />
       <ChatView doctor={selectedDoctor} />
     </Card>

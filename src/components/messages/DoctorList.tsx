@@ -12,7 +12,7 @@ interface DoctorListProps {
 
 const DoctorList = ({ selectedDoctorId, onSelectDoctor }: DoctorListProps) => {
   return (
-    <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col p-4 border-r">
+    <div className="w-2/5 flex flex-col p-4 border-r">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Chats</h2>
       </div>

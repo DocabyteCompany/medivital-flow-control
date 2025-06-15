@@ -8,7 +8,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 export const Header = () => {
   const { t } = useTranslation();
   return (
-    <header className="flex items-center justify-between py-4">
+    <header className="flex items-center justify-between mb-6">
       <div className="relative w-full max-w-xs">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
         <Input placeholder={t('header.searchPlaceholder')} className="pl-10 bg-card rounded-lg border-0 shadow-soft" />
