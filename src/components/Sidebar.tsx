@@ -1,4 +1,3 @@
-
 import {
   Users,
   Calendar,
@@ -35,8 +34,8 @@ export const Sidebar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { icon: HeartPulse, label: t('sidebar.logo'), path: '/pacientes' },
-    { icon: Users, label: t('sidebar.patients'), path: '/pacientes' },
+    { icon: HeartPulse, label: t('sidebar.logo'), path: '/dashboard' },
+    { icon: Users, label: t('sidebar.patients'), path: '/dashboard' },
     { icon: MessageSquare, label: t('sidebar.messages'), path: '/mensajes' },
     { icon: Calendar, label: t('sidebar.agenda'), path: '/agenda' },
     { icon: ClipboardList, label: t('sidebar.records'), path: '/expedientes' },
