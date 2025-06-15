@@ -80,7 +80,8 @@ export const activities: Activity[] = [
     status: 'failed',
     details: {
       failure_reason: 'Número no disponible',
-      attempts: '1'
+      attempts: '1',
+      sentiment: 'Negativo'
     }
   }
 ];
