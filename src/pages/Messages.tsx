@@ -3,6 +3,7 @@ import ChatView from "@/components/messages/ChatView";
 import DoctorList from "@/components/messages/DoctorList";
 import { doctors } from "@/data/messages";
 import { useState } from "react";
+import { Card } from "@/components/ui/card";
 
 const Messages = () => {
   const [selectedDoctorId, setSelectedDoctorId] = useState<string | null>(doctors[0]?.id || null);
@@ -10,10 +11,10 @@ const Messages = () => {
   const selectedDoctor = doctors.find((d) => d.id === selectedDoctorId);
 
   return (
-    <div className="flex h-full -m-8">
+    <Card className="flex h-[calc(100vh-10rem)] overflow-hidden">
       <DoctorList selectedDoctorId={selectedDoctorId} onSelectDoctor={setSelectedDoctorId} />
       <ChatView doctor={selectedDoctor} />
-    </div>
+    </Card>
   );
 };
 

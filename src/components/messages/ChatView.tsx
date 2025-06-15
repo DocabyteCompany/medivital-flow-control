@@ -46,14 +46,14 @@ const ChatView = ({ doctor }: ChatViewProps) => {
 
   if (!doctor) {
     return (
-      <div className="flex-1 flex items-center justify-center h-full text-muted-foreground bg-card rounded-l-none">
+      <div className="flex-1 flex items-center justify-center h-full text-muted-foreground">
         <p>Selecciona un chat para empezar a conversar.</p>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-[calc(100vh-8rem)] bg-card rounded-l-none">
+    <div className="flex-1 flex flex-col">
       <header className="flex items-center p-4 border-b">
         <Avatar className="h-10 w-10">
           <AvatarImage src={doctor.avatar} alt={doctor.name} />

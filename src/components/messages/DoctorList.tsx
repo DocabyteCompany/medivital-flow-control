@@ -1,6 +1,5 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { doctors } from "@/data/messages";
 import { cn } from "@/lib/utils";
@@ -13,7 +12,7 @@ interface DoctorListProps {
 
 const DoctorList = ({ selectedDoctorId, onSelectDoctor }: DoctorListProps) => {
   return (
-    <Card className="w-full md:w-1/3 lg:w-1/4 h-[calc(100vh-8rem)] flex flex-col p-4 border-r rounded-r-none">
+    <div className="w-full md:w-1/3 lg:w-1/4 flex flex-col p-4 border-r">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Chats</h2>
       </div>
@@ -50,7 +49,7 @@ const DoctorList = ({ selectedDoctorId, onSelectDoctor }: DoctorListProps) => {
           </div>
         ))}
       </div>
-    </Card>
+    </div>
   );
 };
 
