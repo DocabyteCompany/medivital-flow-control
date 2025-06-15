@@ -1,4 +1,3 @@
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,8 @@ import { Doctor, Message, messages as initialMessages } from "@/data/messages";
 import { cn } from "@/lib/utils";
 import { Phone, Send, Video } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
+import { useActivities } from "@/contexts/ActivityContext";
+import type { Activity } from "@/components/ia/ActivityCard";
 
 interface ChatViewProps {
   doctor: Doctor | undefined;
@@ -15,6 +16,7 @@ const ChatView = ({ doctor }: ChatViewProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const { addActivity } = useActivities();
 
   useEffect(() => {
     if (doctor) {
@@ -32,6 +34,66 @@ const ChatView = ({ doctor }: ChatViewProps) => {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim() === "" || !doctor) return;
+
+    if (newMessage.startsWith('/')) {
+        const [command, ...args] = newMessage.trim().substring(1).split(' ');
+        const content = args.join(' ');
+
+        let activityType: Activity['type'] | null = null;
+        let title = '';
+        let description = '';
+
+        switch (command.toLowerCase()) {
+            case 'resumir':
+                activityType = 'summary';
+                title = `Resumen para ${doctor.name}`;
+                description = `IA solicitada para resumir conversación. ${content ? `Contexto: ${content}`: ''}`;
+                break;
+            case 'llamar':
+                activityType = 'call';
+                title = `Llamada programada con ${doctor.name}`;
+                description = `IA solicitada para iniciar llamada. ${content ? `Motivo: ${content}`: ''}`;
+                break;
+            case 'agendar':
+                activityType = 'schedule';
+                title = `Cita para ${doctor.name}`;
+                description = `IA solicitada para agendar cita. ${content ? `Detalles: ${content}`: ''}`;
+                break;
+            default:
+                const errorMessage: Message = {
+                    id: messages.length + 1,
+                    text: `Comando "/${command}" no reconocido. Intenta con /resumir, /llamar, o /agendar.`,
+                    sender: doctor.id,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    avatar: doctor.avatar,
+                };
+                setMessages([...messages, errorMessage]);
+                setNewMessage("");
+                return;
+        }
+
+        addActivity({
+            type: activityType,
+            title,
+            description,
+            details: {
+                solicitado_desde: "Chat",
+                paciente: doctor.name,
+            }
+        });
+
+        const confirmationMessage: Message = {
+            id: messages.length + 1,
+            text: `✅ Actividad "${command}" iniciada. Puedes seguir su progreso en el panel de Actividades de IA.`,
+            sender: doctor.id,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            avatar: doctor.avatar,
+        };
+        setMessages([...messages, confirmationMessage]);
+        
+        setNewMessage("");
+        return;
+    }
 
     const message: Message = {
       id: messages.length + 1,

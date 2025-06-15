@@ -1,7 +1,8 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ActivityCard, type Activity } from '@/components/ia/ActivityCard';
-import { activities as initialActivities } from '@/data/ia-activities';
+import { useActivities } from '@/contexts/ActivityContext';
 import { Phone, FileText, Calendar as CalendarIcon, Bot, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +24,7 @@ const ICONS = {
 const IaActivities = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const [activities, setActivities] = useState<Activity[]>(initialActivities);
+  const { activities, setActivities } = useActivities();
   const [filter, setFilter] = useState<FilterType>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilterType>('all');
   const [sentimentFilter, setSentimentFilter] = useState<SentimentFilterType>('all');

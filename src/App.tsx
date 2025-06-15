@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,28 +10,31 @@ import Messages from "./pages/Messages";
 import Agenda from "./pages/Agenda";
 import Records from "./pages/Records";
 import IaActivities from "./pages/IaActivities";
+import { ActivityProvider } from "./contexts/ActivityContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Navigate to="/pacientes" replace />} />
-            <Route path="/pacientes" element={<Patients />} />
-            <Route path="/mensajes" element={<Messages />} />
-            <Route path="/agenda" element={<Agenda />} />
-            <Route path="/expedientes" element={<Records />} />
-            <Route path="/ia-activities" element={<IaActivities />} />
-          </Route>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <ActivityProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Navigate to="/pacientes" replace />} />
+              <Route path="/pacientes" element={<Patients />} />
+              <Route path="/mensajes" element={<Messages />} />
+              <Route path="/agenda" element={<Agenda />} />
+              <Route path="/expedientes" element={<Records />} />
+              <Route path="/ia-activities" element={<IaActivities />} />
+            </Route>
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </ActivityProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
