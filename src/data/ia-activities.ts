@@ -1,6 +1,49 @@
+
 import { Activity } from '@/components/ia/ActivityCard';
 
 export const activities: Activity[] = [
+  {
+    id: '8',
+    type: 'summary',
+    title: 'Resumen médico para Jorge Villareal',
+    description: 'Resumen del historial del paciente, referido por Dr. Carlos Sánchez por un cuadro de arritmia.',
+    timestamp: 'Hoy a las 11:05 AM',
+    status: 'completed',
+    details: { 
+      referido_por: 'Dr. Carlos Sánchez',
+      motivo_de_referencia: 'Arritmia ventricular recurrente',
+      puntos_clave_cardiologia: 'Paciente masculino, 58 años, con historial de hipertensión. ECG muestra QRS ancho y extrasístoles ventriculares frecuentes. Se recomienda ecocardiograma y posible ablación.',
+      paciente: 'Jorge Villareal'
+    }
+  },
+  {
+    id: '2',
+    type: 'summary',
+    title: 'Resumen de consulta para Sofía Ramirez',
+    description: 'Resumen de la última consulta pediátrica, solicitado por la Dra. María García.',
+    timestamp: 'Ayer a las 3:20 PM',
+    status: 'completed',
+    details: {
+      solicitado_por: 'Dra. María García',
+      paciente: 'Sofía Ramirez',
+      fuente: 'Consulta del 14/06/2025'
+    }
+  },
+  {
+    id: '4',
+    type: 'call',
+    title: 'Llamada con paciente Laura Martínez',
+    description: 'Llamada de seguimiento post-tratamiento dermatológico, solicitada por Dra. Ana López.',
+    timestamp: 'Hace 2 días',
+    status: 'completed',
+    details: { 
+      solicitado_por: 'Dra. Ana López',
+      paciente: 'Laura Martínez',
+      duracion: '8 min',
+      sentiment: 'Positivo',
+      resumen_llamada: 'Paciente reporta mejoría significativa y sin efectos adversos.'
+    }
+  },
   {
     id: '1',
     type: 'call',
@@ -10,20 +53,7 @@ export const activities: Activity[] = [
     status: 'completed',
     details: { 
       duration: '15 min', 
-      transcript_preview: 'La transcripción de la llamada está disponible...',
       sentiment: 'Positivo'
-    }
-  },
-  {
-    id: '2',
-    type: 'summary',
-    title: 'Resumen generado para María García',
-    description: 'IA generó un resumen de la última consulta de María sobre su tratamiento.',
-    timestamp: 'Hoy a las 09:45 AM',
-    status: 'completed',
-    details: {
-      source_document: 'Consulta del 14/06/2025',
-      link_to_record: '/expedientes/maria-garcia/resumen-1'
     }
   },
   {
@@ -37,18 +67,6 @@ export const activities: Activity[] = [
       doctor: 'Dr. Alan Morales',
       specialty: 'Cardiología',
       date: 'Martes, 17 de Junio - 11:00 AM'
-    }
-  },
-  {
-    id: '4',
-    type: 'call',
-    title: 'Llamada con Ana Fernández',
-    description: 'Llamada de seguimiento sobre su recuperación postoperatoria.',
-    timestamp: 'hace 2 días',
-    status: 'completed',
-    details: { 
-      duration: '8 min',
-      sentiment: 'Neutral'
     }
   },
     {
