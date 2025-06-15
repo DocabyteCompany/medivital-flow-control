@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "../ui/button";
 import { ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
 
 export type Activity = {
   id: string;
@@ -22,10 +23,12 @@ type ActivityCardProps = {
   activity: Activity;
   icon: LucideIcon;
   onUpdateStatus: (id: string, status: Activity['status']) => void;
+  isTarget?: boolean;
 };
 
-export const ActivityCard = ({ activity, icon: Icon, onUpdateStatus }: ActivityCardProps) => {
+export const ActivityCard = ({ activity, icon: Icon, onUpdateStatus, isTarget = false }: ActivityCardProps) => {
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(isTarget);
 
   const getStatusClasses = (status: Activity['status']) => {
     switch (status) {
@@ -55,7 +58,7 @@ export const ActivityCard = ({ activity, icon: Icon, onUpdateStatus }: ActivityC
   const hasActions = activity.status === 'failed' || activity.status === 'in-progress';
 
   return (
-    <Card className="shadow-soft border-0 rounded-2xl flex flex-col">
+    <Card className={cn("shadow-soft border-0 rounded-2xl flex flex-col transition-all", isTarget && "ring-2 ring-brand-blue ring-offset-2")}>
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
@@ -78,7 +81,7 @@ export const ActivityCard = ({ activity, icon: Icon, onUpdateStatus }: ActivityC
       {(hasDetails || hasActions) && (
         <CardFooter className="pt-0 px-6 pb-4 flex flex-col items-start">
           {hasDetails && (
-            <Collapsible className="w-full">
+            <Collapsible className="w-full" open={isOpen} onOpenChange={setIsOpen}>
               <CollapsibleTrigger asChild>
                 <Button variant="link" className="p-0 h-auto font-semibold text-brand-blue flex items-center gap-1.5 group">
                   {t('iaActivities.viewDetails', 'Ver detalles')}

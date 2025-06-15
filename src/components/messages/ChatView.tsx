@@ -1,4 +1,3 @@
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,10 +7,35 @@ import { Phone, Send, Video } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import { useActivities } from "@/contexts/ActivityContext";
 import type { Activity } from "@/components/ia/ActivityCard";
+import { Link } from "react-router-dom";
 
 interface ChatViewProps {
   doctor: Doctor | undefined;
 }
+
+const renderMessageText = (text: string) => {
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/;
+  const match = text.match(linkRegex);
+
+  if (!match) {
+    return <p className="text-sm">{text}</p>;
+  }
+
+  const pretext = text.substring(0, match.index);
+  const linkText = match[1];
+  const url = match[2];
+  const posttext = text.substring(match.index! + match[0].length);
+
+  return (
+    <p className="text-sm">
+      {pretext}
+      <Link to={url} className="inline-block bg-brand-blue-light text-brand-blue font-semibold px-3 py-1.5 rounded-lg hover:bg-brand-blue-light/80 transition-colors text-xs mx-1">
+        {linkText} &rarr;
+      </Link>
+      {posttext}
+    </p>
+  );
+};
 
 const ChatView = ({ doctor }: ChatViewProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -25,10 +49,10 @@ const ChatView = ({ doctor }: ChatViewProps) => {
   });
   const prevActivities = prevActivitiesRef.current;
 
-
   useEffect(() => {
     if (doctor) {
-      setMessages(initialMessages[doctor.id] || []);
+      const msgs = initialMessages[doctor.id]?.map(m => ({ ...m, sender: m.sender === 'me' ? 'me' : doctor.id })) || [];
+      setMessages(msgs);
     } else {
       setMessages([]);
     }
@@ -210,7 +234,7 @@ const ChatView = ({ doctor }: ChatViewProps) => {
                   : "bg-muted rounded-bl-none"
               )}
             >
-              <p className="text-sm">{msg.text}</p>
+              {renderMessageText(msg.text)}
             </div>
           </div>
         ))}

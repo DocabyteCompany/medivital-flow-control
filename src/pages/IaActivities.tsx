@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ActivityCard, type Activity } from '@/components/ia/ActivityCard';
 import { useActivities } from '@/contexts/ActivityContext';
@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { ActivityStats } from '@/components/ia/ActivityStats';
+import { useSearchParams } from 'react-router-dom';
 
 type FilterType = 'all' | Activity['type'];
 type StatusFilterType = 'all' | Activity['status'];
@@ -29,6 +30,22 @@ const IaActivities = () => {
   const [statusFilter, setStatusFilter] = useState<StatusFilterType>('all');
   const [sentimentFilter, setSentimentFilter] = useState<SentimentFilterType>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchParams] = useSearchParams();
+  const activityRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const targetActivityTitle = searchParams.get('title');
+  const targetActivityType = searchParams.get('type');
+
+  useEffect(() => {
+    if (targetActivityTitle && targetActivityType) {
+      const targetActivity = activities.find(a => a.title === targetActivityTitle && a.type === targetActivityType);
+      if (targetActivity && activityRefs.current[targetActivity.id]) {
+        setTimeout(() => {
+          activityRefs.current[targetActivity.id]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    }
+  }, [activities, targetActivityTitle, targetActivityType]);
 
   const handleUpdateActivityStatus = (id: string, status: Activity['status']) => {
     setActivities(prev => prev.map(act => (act.id === id ? { ...act, status } : act)));
@@ -135,14 +152,19 @@ const IaActivities = () => {
       
       {filteredActivities.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredActivities.map(activity => (
-            <ActivityCard 
-              key={activity.id} 
-              activity={activity} 
-              icon={ICONS[activity.type]}
-              onUpdateStatus={handleUpdateActivityStatus}
-            />
-          ))}
+          {filteredActivities.map(activity => {
+            const isTarget = activity.title === targetActivityTitle && activity.type === targetActivityType;
+            return (
+              <div key={activity.id} ref={el => activityRefs.current[activity.id] = el}>
+                <ActivityCard 
+                  activity={activity} 
+                  icon={ICONS[activity.type]}
+                  onUpdateStatus={handleUpdateActivityStatus}
+                  isTarget={isTarget}
+                />
+              </div>
+            )
+          })}
         </div>
       ) : (
         <div className="text-center py-16 text-gray-500">
