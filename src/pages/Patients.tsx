@@ -4,6 +4,9 @@ import { PatientInfo } from '@/components/PatientInfo';
 import { Schedule } from '@/components/Schedule';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import { PatientsList } from '@/components/patients/PatientsList';
+import { patients } from '@/data/patients';
 
 const vitalsData = {
   heartbeat: Array.from({ length: 20 }, () => ({ uv: Math.floor(Math.random() * 30 + 70) })),
@@ -14,10 +17,31 @@ const vitalsData = {
 
 const Patients = () => {
   const { t } = useTranslation();
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
+
+  const handleSelectPatient = (patientId: string) => {
+    setSelectedPatientId(patientId);
+  };
+
+  const handleBackToList = () => {
+    setSelectedPatientId(null);
+  };
+
+  if (!selectedPatientId) {
+    return <PatientsList onSelectPatient={handleSelectPatient} />;
+  }
+
+  const selectedPatient = patients.find(p => p.id === selectedPatientId);
+
+  if (!selectedPatient) {
+    console.error(`Patient with id ${selectedPatientId} not found.`);
+    handleBackToList();
+    return null;
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 mt-4">
-      <PatientInfo />
+      <PatientInfo patient={selectedPatient} onBack={handleBackToList} />
       <div className="flex-1">
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="bg-transparent p-0 border-b-2 border-gray-100 w-full justify-start rounded-none">
