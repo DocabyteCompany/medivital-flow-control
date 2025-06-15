@@ -18,7 +18,24 @@ export default {
 			}
 		},
 		extend: {
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'],
+      },
 			colors: {
+        brand: {
+          blue: '#4D8BFF',
+          light: '#F0F6FF',
+          dark: '#0D1E42'
+        },
+        vital: {
+          pink: '#FF7A9F',
+          blue: '#7AC0FF',
+          purple: '#A87AFF',
+          orange: '#FFB87A',
+        },
+        status: {
+          green: '#28A745',
+        },
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -68,6 +85,9 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
+      boxShadow: {
+        'soft': '0 10px 30px -15px rgba(0, 0, 0, 0.05)',
+      },
 			keyframes: {
 				'accordion-down': {
 					from: {

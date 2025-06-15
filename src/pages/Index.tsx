@@ -1,12 +1,51 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { Sidebar } from '@/components/Sidebar';
+import { Header } from '@/components/Header';
+import { VitalsCard } from '@/components/VitalsCard';
+import { PatientInfo } from '@/components/PatientInfo';
+import { Schedule } from '@/components/Schedule';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+
+const vitalsData = {
+  heartbeat: Array.from({ length: 20 }, () => ({ uv: Math.floor(Math.random() * 30 + 70) })),
+  pressure: Array.from({ length: 20 }, () => ({ uv: Math.floor(Math.random() * 40 + 80) })),
+  haemoglobin: Array.from({ length: 20 }, () => ({ uv: Math.random() * 5 + 12 })),
+  sugar: Array.from({ length: 20 }, () => ({ uv: Math.floor(Math.random() * 40 + 80) })),
+};
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="flex min-h-screen bg-[#F9FAFF]">
+      <Sidebar />
+      <main className="flex-1 p-8">
+        <Header />
+        <div className="flex flex-col lg:flex-row gap-8 mt-4">
+          <PatientInfo />
+          <div className="flex-1">
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="bg-transparent p-0 border-b-2 border-gray-100 w-full justify-start rounded-none">
+                <TabsTrigger value="all" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">All</TabsTrigger>
+                <TabsTrigger value="statistic" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">Statistic</TabsTrigger>
+                <TabsTrigger value="activity" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">Activity</TabsTrigger>
+                <TabsTrigger value="schedule" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">Schedule</TabsTrigger>
+                <TabsTrigger value="invoice" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">Invoice</TabsTrigger>
+              </TabsList>
+              <TabsContent value="all" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                  <VitalsCard title="Heartbeat" value="85" unit="bpm" data={vitalsData.heartbeat} strokeColor="#FF7A9F" fillColor="#FF7A9F" />
+                  <VitalsCard title="Blood Pressure" value="100" unit="/80 mmHg" data={vitalsData.pressure} strokeColor="#7AC0FF" fillColor="#7AC0FF" />
+                  <VitalsCard title="Haemoglobin" value="17.5" unit="g/dL" data={vitalsData.haemoglobin} strokeColor="#A87AFF" fillColor="#A87AFF" />
+                  <VitalsCard title="Sugar Levels" value="100" unit="mg/dL" data={vitalsData.sugar} strokeColor="#FFB87A" fillColor="#FFB87A" />
+                </div>
+                <div className="mt-8">
+                  <Schedule />
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
