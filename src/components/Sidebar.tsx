@@ -1,4 +1,3 @@
-
 import {
   Users,
   Calendar,
@@ -9,6 +8,7 @@ import {
   UserCircle
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import type { ComponentType } from 'react';
 
 const menuItems = [
   { icon: HeartPulse, label: 'Logo' },
@@ -23,7 +23,12 @@ const bottomItems = [
     { icon: UserCircle, label: 'Perfil' },
 ];
 
-const SidebarIcon = ({ icon: Icon, label, isActive, isLogo }) => (
+const SidebarIcon = ({ icon: Icon, label, isActive = false, isLogo = false }: {
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  isActive?: boolean;
+  isLogo?: boolean;
+}) => (
   <button className={cn(
     "flex items-center justify-center w-12 h-12 rounded-lg transition-colors duration-200",
     isActive ? "bg-brand-blue text-white" : "text-gray-400 hover:bg-brand-light hover:text-brand-blue",
