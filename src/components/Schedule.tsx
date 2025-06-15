@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslation } from 'react-i18next';
 
@@ -51,7 +51,7 @@ export const Schedule = () => {
   const { t } = useTranslation();
 
   return (
-  <Card className="shadow-soft border-0 rounded-2xl col-span-1 lg:col-span-3">
+  <Card className="shadow-soft border-0 rounded-2xl h-full flex flex-col">
     <CardHeader>
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
@@ -61,7 +61,7 @@ export const Schedule = () => {
         </div>
       </div>
     </CardHeader>
-    <CardContent className="pr-10">
+    <CardContent className="pr-10 flex-grow">
       <div className="grid grid-cols-6 gap-4 border-b pb-4">
         {days.map(({day, date, isToday}) => (
           <div key={day} className="text-center">
@@ -75,7 +75,7 @@ export const Schedule = () => {
             {days.map(({day, isToday}) => <div key={day} className={`h-full ${isToday ? 'border-l-2 border-brand-blue' : ''} ml-6`}></div>)}
         </div>
         {appointments.map(app => (
-          <div key={app.id} className={`p-3 rounded-lg flex items-center justify-between text-white ${app.color} ${app.day === t('schedule.days.wed') ? 'col-start-3 col-span-2' : 'col-start-5 col-span-2'}`}>
+          <div key={app.id} className={`p-3 rounded-lg flex items-center justify-between text-white ${app.color} ${app.day === 'Wed' ? 'col-start-3 col-span-2' : 'col-start-5 col-span-2'}`}>
             <div>
               <p className="font-semibold text-sm">{app.title}</p>
               <p className="text-xs opacity-80">{t('schedule.participants', { count: app.participants })}</p>
