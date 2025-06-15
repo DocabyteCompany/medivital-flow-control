@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import type { ComponentType } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const menuItems = [
   { icon: HeartPulse, label: 'Logo' },
@@ -40,13 +41,28 @@ const SidebarIcon = ({ icon: Icon, label, isActive = false, isLogo = false }: {
 );
 
 export const Sidebar = () => {
+  const { t } = useTranslation();
+
+  const menuItems = [
+    { icon: HeartPulse, label: t('sidebar.logo') },
+    { icon: Users, label: t('sidebar.patients') },
+    { icon: MessageSquare, label: t('sidebar.messages') },
+    { icon: Calendar, label: t('sidebar.agenda') },
+    { icon: ClipboardList, label: t('sidebar.records') },
+  ];
+  
+  const bottomItems = [
+      { icon: LifeBuoy, label: t('sidebar.support') },
+      { icon: UserCircle, label: t('sidebar.profile') },
+  ];
+
   return (
     <aside className="bg-card w-20 flex flex-col items-center py-6 shadow-soft">
       <nav className="flex flex-col items-center space-y-4 flex-1">
         <SidebarIcon icon={menuItems[0].icon} label={menuItems[0].label} isLogo />
         <div className="h-8"></div>
         {menuItems.slice(1).map((item) => (
-          <SidebarIcon key={item.label} icon={item.icon} label={item.label} isActive={item.label === 'Pacientes'} />
+          <SidebarIcon key={item.label} icon={item.icon} label={item.label} isActive={item.label === t('sidebar.patients')} />
         ))}
       </nav>
       <div className="flex flex-col items-center space-y-4">

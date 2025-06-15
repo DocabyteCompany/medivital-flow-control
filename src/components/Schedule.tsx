@@ -1,7 +1,7 @@
-
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useTranslation } from 'react-i18next';
 
 const appointments = [
   { 
@@ -47,13 +47,16 @@ const days = [
     { day: "Sat", date: 8 },
 ];
 
-export const Schedule = () => (
+export const Schedule = () => {
+  const { t } = useTranslation();
+
+  return (
   <Card className="shadow-soft border-0 rounded-2xl col-span-1 lg:col-span-3">
     <CardHeader>
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
             <button className="text-gray-400 hover:text-brand-dark"><ChevronLeft/></button>
-            <span className="font-semibold text-brand-dark">September 2030</span>
+            <span className="font-semibold text-brand-dark">{t('schedule.monthYear', { month: t('schedule.months.september'), year: 2030 })}</span>
             <button className="text-gray-400 hover:text-brand-dark"><ChevronRight/></button>
         </div>
       </div>
@@ -72,10 +75,10 @@ export const Schedule = () => (
             {days.map(({day, isToday}) => <div key={day} className={`h-full ${isToday ? 'border-l-2 border-brand-blue' : ''} ml-6`}></div>)}
         </div>
         {appointments.map(app => (
-          <div key={app.id} className={`p-3 rounded-lg flex items-center justify-between text-white ${app.color} ${app.day === 'Wed' ? 'col-start-3 col-span-2' : 'col-start-5 col-span-2'}`}>
+          <div key={app.id} className={`p-3 rounded-lg flex items-center justify-between text-white ${app.color} ${app.day === t('schedule.days.wed') ? 'col-start-3 col-span-2' : 'col-start-5 col-span-2'}`}>
             <div>
               <p className="font-semibold text-sm">{app.title}</p>
-              <p className="text-xs opacity-80">{app.participants} participants</p>
+              <p className="text-xs opacity-80">{t('schedule.participants', { count: app.participants })}</p>
             </div>
             <div className="flex -space-x-2">
               {app.avatars.map((src, i) => (
@@ -90,4 +93,5 @@ export const Schedule = () => (
       </div>
     </CardContent>
   </Card>
-);
+  );
+};
