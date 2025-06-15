@@ -10,6 +10,7 @@ import Patients from "./pages/Patients";
 import Messages from "./pages/Messages";
 import Agenda from "./pages/Agenda";
 import Records from "./pages/Records";
+import IaActivities from "./pages/IaActivities";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/mensajes" element={<Messages />} />
             <Route path="/agenda" element={<Agenda />} />
             <Route path="/expedientes" element={<Records />} />
+            <Route path="/ia-activities" element={<IaActivities />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

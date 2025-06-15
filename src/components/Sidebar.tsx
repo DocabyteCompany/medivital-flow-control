@@ -6,7 +6,8 @@ import {
   ClipboardList,
   MessageSquare,
   LifeBuoy,
-  UserCircle
+  UserCircle,
+  Bot,
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import type { ComponentType } from 'react';
@@ -39,6 +40,7 @@ export const Sidebar = () => {
     { icon: MessageSquare, label: t('sidebar.messages'), path: '/mensajes' },
     { icon: Calendar, label: t('sidebar.agenda'), path: '/agenda' },
     { icon: ClipboardList, label: t('sidebar.records'), path: '/expedientes' },
+    { icon: Bot, label: 'Actividades IA', path: '/ia-activities' },
   ];
   
   const bottomItems = [
