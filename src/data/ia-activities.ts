@@ -1,4 +1,3 @@
-
 import { Activity } from '@/components/ia/ActivityCard';
 
 export const activities: Activity[] = [
@@ -71,5 +70,17 @@ export const activities: Activity[] = [
     description: 'La IA está procesando la transcripción de la última llamada.',
     timestamp: 'En curso...',
     status: 'in-progress',
+  },
+  {
+    id: '7',
+    type: 'call',
+    title: 'Llamada fallida con Jorge Ramos',
+    description: 'No se pudo establecer conexión con el paciente.',
+    timestamp: 'Hace 1 hora',
+    status: 'failed',
+    details: {
+      failure_reason: 'Número no disponible',
+      attempts: '1'
+    }
   }
 ];

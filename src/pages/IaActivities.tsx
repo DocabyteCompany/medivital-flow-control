@@ -6,8 +6,10 @@ import { activities as allActivities } from '@/data/ia-activities';
 import { Phone, FileText, Calendar as CalendarIcon, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type FilterType = 'all' | Activity['type'];
+type StatusFilterType = 'all' | Activity['status'];
 
 const ICONS = {
   call: Phone,
@@ -18,16 +20,24 @@ const ICONS = {
 const IaActivities = () => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FilterType>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilterType>('all');
 
-  const filteredActivities = filter === 'all'
-    ? allActivities
-    : allActivities.filter(activity => activity.type === filter);
+  const filteredActivities = allActivities
+    .filter(activity => filter === 'all' || activity.type === filter)
+    .filter(activity => statusFilter === 'all' || activity.status === statusFilter);
   
   const filterButtons: { label: string; filter: FilterType }[] = [
     { label: t('iaActivities.filters.all', 'Todos'), filter: 'all' },
     { label: t('iaActivities.filters.calls', 'Llamadas'), filter: 'call' },
     { label: t('iaActivities.filters.summaries', 'Resúmenes'), filter: 'summary' },
     { label: t('iaActivities.filters.scheduling', 'Agendamientos'), filter: 'schedule' },
+  ];
+
+  const statusOptions = [
+    { value: 'all', label: t('iaActivities.statusFilters.all', 'Todos los estados') },
+    { value: 'completed', label: t('iaActivities.status.completed', 'Completado') },
+    { value: 'in-progress', label: t('iaActivities.status.inProgress', 'En Progreso') },
+    { value: 'failed', label: t('iaActivities.status.failed', 'Fallido') },
   ];
 
   return (
@@ -39,22 +49,34 @@ const IaActivities = () => {
             </div>
             <h1 className="text-2xl font-bold text-brand-dark">{t('sidebar.iaActivities', 'Actividades de la IA')}</h1>
         </div>
-        <div className="flex items-center gap-2 p-1 bg-brand-light rounded-lg">
-          {filterButtons.map(item => (
-            <Button
-              key={item.filter}
-              size="sm"
-              onClick={() => setFilter(item.filter)}
-              className={cn(
-                "transition-colors rounded-md font-semibold",
-                filter === item.filter
-                  ? 'bg-white text-brand-blue shadow-sm'
-                  : 'bg-transparent text-gray-500 hover:bg-white/80'
-              )}
-            >
-              {item.label}
-            </Button>
-          ))}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2 p-1 bg-brand-light rounded-lg">
+            {filterButtons.map(item => (
+              <Button
+                key={item.filter}
+                size="sm"
+                onClick={() => setFilter(item.filter)}
+                className={cn(
+                  "transition-colors rounded-md font-semibold flex-1 sm:flex-none",
+                  filter === item.filter
+                    ? 'bg-white text-brand-blue shadow-sm'
+                    : 'bg-transparent text-gray-500 hover:bg-white/80'
+                )}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </div>
+          <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusFilterType)}>
+            <SelectTrigger className="w-full sm:w-[180px] bg-card rounded-lg border-0 shadow-soft">
+              <SelectValue placeholder={t('iaActivities.statusFilters.placeholder', 'Filtrar por estado')} />
+            </SelectTrigger>
+            <SelectContent>
+              {statusOptions.map(option => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       
