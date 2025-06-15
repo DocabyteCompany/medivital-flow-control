@@ -1,12 +1,13 @@
 import {
   Users,
   Calendar,
-  HeartPulse,
   ClipboardList,
   MessageSquare,
   LifeBuoy,
   UserCircle,
   Bot,
+  Home,
+  Stethoscope,
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import type { ComponentType } from 'react';
@@ -34,8 +35,9 @@ export const Sidebar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { icon: HeartPulse, label: t('sidebar.logo'), path: '/dashboard' },
-    { icon: Users, label: t('sidebar.patients'), path: '/dashboard' },
+    { icon: Home, label: t('sidebar.logo'), path: '/dashboard' },
+    { icon: Users, label: t('sidebar.patients'), path: '/pacientes' },
+    { icon: Stethoscope, label: t('sidebar.personnel', 'Personal'), path: '/personal' },
     { icon: MessageSquare, label: t('sidebar.messages'), path: '/mensajes' },
     { icon: Calendar, label: t('sidebar.agenda'), path: '/agenda' },
     { icon: ClipboardList, label: t('sidebar.records'), path: '/expedientes' },

@@ -12,6 +12,7 @@ import Messages from "./pages/Messages";
 import Agenda from "./pages/Agenda";
 import Records from "./pages/Records";
 import IaActivities from "./pages/IaActivities";
+import Personnel from "./pages/Personnel";
 import { ActivityProvider } from "./contexts/ActivityContext";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/pacientes" element={<Patients />} />
+              <Route path="/personal" element={<Personnel />} />
               <Route path="/mensajes" element={<Messages />} />
               <Route path="/agenda" element={<Agenda />} />
               <Route path="/expedientes" element={<Records />} />
