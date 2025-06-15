@@ -53,13 +53,13 @@ const Patients = () => {
           </TabsList>
           <TabsContent value="all" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-              <VitalsCard title={t('vitals.heartbeat')} value="85" unit={t('vitals.bpm')} data={vitalsData.heartbeat} strokeColor="#FF7A9F" fillColor="#FF7A9F" />
-              <VitalsCard title={t('vitals.bloodPressure')} value="100" unit="/80 mmHg" data={vitalsData.pressure} strokeColor="#7AC0FF" fillColor="#7AC0FF" />
-              <VitalsCard title={t('vitals.haemoglobin')} value="17.5" unit="g/dL" data={vitalsData.haemoglobin} strokeColor="#A87AFF" fillColor="#A87AFF" />
-              <VitalsCard title={t('vitals.sugarLevels')} value="100" unit="mg/dL" data={vitalsData.sugar} strokeColor="#FFB87A" fillColor="#FFB87A" />
+              <VitalsCard title={t('vitals.heartbeat')} value="85" unit={t('vitals.bpm')} data={vitalsData.heartbeat} strokeColor="#FF7A9F" fillColor="#FF7A9F" lastVisitDate={selectedPatient.lastVisit} />
+              <VitalsCard title={t('vitals.bloodPressure')} value="100" unit="/80 mmHg" data={vitalsData.pressure} strokeColor="#7AC0FF" fillColor="#7AC0FF" lastVisitDate={selectedPatient.lastVisit} />
+              <VitalsCard title={t('vitals.haemoglobin')} value="17.5" unit="g/dL" data={vitalsData.haemoglobin} strokeColor="#A87AFF" fillColor="#A87AFF" lastVisitDate={selectedPatient.lastVisit} />
+              <VitalsCard title={t('vitals.sugarLevels')} value="100" unit="mg/dL" data={vitalsData.sugar} strokeColor="#FFB87A" fillColor="#FFB87A" lastVisitDate={selectedPatient.lastVisit} />
             </div>
             <div className="mt-8">
-              <Schedule />
+              <Schedule patient={selectedPatient} />
             </div>
           </TabsContent>
         </Tabs>

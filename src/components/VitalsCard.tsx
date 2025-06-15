@@ -1,6 +1,7 @@
 
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useTranslation } from 'react-i18next';
 
 interface VitalsCardProps {
   title: string;
@@ -9,9 +10,11 @@ interface VitalsCardProps {
   data: any[];
   strokeColor: string;
   fillColor: string;
+  lastVisitDate?: string;
 }
 
-export const VitalsCard = ({ title, value, unit, data, strokeColor, fillColor }: VitalsCardProps) => {
+export const VitalsCard = ({ title, value, unit, data, strokeColor, fillColor, lastVisitDate }: VitalsCardProps) => {
+  const { t } = useTranslation();
   // Create a URL-friendly ID from the title to avoid issues with spaces and special characters
   const gradientId = `gradient-${title.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
@@ -22,6 +25,11 @@ export const VitalsCard = ({ title, value, unit, data, strokeColor, fillColor }:
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold text-brand-dark">{value} <span className="text-xs text-gray-400 font-normal">{unit}</span></div>
+        {lastVisitDate && (
+          <p className="text-xs text-gray-400 mt-1">
+            {t('vitals.lastCheckup', 'Última consulta')}: {new Date(lastVisitDate).toLocaleDateString()}
+          </p>
+        )}
         <div className="h-20 mt-2">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
