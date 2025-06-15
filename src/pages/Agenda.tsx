@@ -13,7 +13,7 @@ const Agenda = () => {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 h-[calc(100vh-8.5rem)]">
       <div className="xl:col-span-3 h-full">
-        <Schedule />
+        <Schedule selectedDate={date} />
       </div>
       <Card className="xl:col-span-1 shadow-soft border-0 rounded-2xl flex flex-col p-0">
         <CardHeader>

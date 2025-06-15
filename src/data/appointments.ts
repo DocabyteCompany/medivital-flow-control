@@ -1,5 +1,6 @@
 
 import { personnel } from './personnel';
+import { patients } from './patients';
 
 export interface Appointment {
   id: string;
@@ -42,4 +43,8 @@ export const appointments: Appointment[] = [
 
 export const getDoctorForAppointment = (personnelId: string) => {
     return personnel.find(p => p.id === personnelId);
+}
+
+export const getPatientForAppointment = (patientId: string) => {
+    return patients.find(p => p.id === patientId);
 }
