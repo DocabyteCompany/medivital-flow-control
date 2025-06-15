@@ -26,10 +26,20 @@ const renderMessageText = (text: string) => {
   const url = match[2];
   const posttext = text.substring(match.index! + match[0].length);
 
+  const isLinkOnly = pretext.trim() === '' && posttext.trim() === '';
+
   return (
     <p className="text-sm">
       {pretext}
-      <Link to={url} className="inline-block bg-brand-blue-light text-brand-blue font-semibold px-3 py-1.5 rounded-lg hover:bg-brand-blue-light/80 transition-colors text-xs mx-1">
+      <Link 
+        to={url} 
+        className={cn(
+          "inline-block font-semibold px-3 py-1.5 rounded-lg transition-colors text-xs mx-1",
+          isLinkOnly 
+            ? "bg-white text-brand-blue hover:bg-white/90" 
+            : "bg-brand-blue-light text-brand-blue hover:bg-brand-blue-light/80"
+        )}
+      >
         {linkText} &rarr;
       </Link>
       {posttext}
@@ -212,32 +222,37 @@ const ChatView = ({ doctor }: ChatViewProps) => {
         </div>
       </header>
       <main className="flex-1 overflow-y-auto p-6 space-y-4">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={cn(
-              "flex items-end gap-2",
-              msg.sender === "me" ? "justify-end" : "justify-start"
-            )}
-          >
-            {msg.sender !== 'me' && (
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={msg.avatar} />
-                <AvatarFallback>{doctor.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-            )}
-            <div
-              className={cn(
-                "max-w-xs lg:max-w-md rounded-lg px-4 py-2",
-                msg.sender === "me"
-                  ? "bg-brand-blue text-white rounded-br-none"
-                  : "bg-muted rounded-bl-none"
-              )}
-            >
-              {renderMessageText(msg.text)}
-            </div>
-          </div>
-        ))}
+        {messages.map((msg) => {
+            const isLinkOnly = msg.sender === 'me' && /^\s*\[([^\]]+)\]\(([^)]+)\)\s*$/.test(msg.text);
+            return (
+              <div
+                key={msg.id}
+                className={cn(
+                  "flex items-end gap-2",
+                  msg.sender === "me" ? "justify-end" : "justify-start"
+                )}
+              >
+                {msg.sender !== 'me' && (
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={msg.avatar} />
+                    <AvatarFallback>{doctor.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                )}
+                <div
+                  className={cn(
+                    "max-w-xs lg:max-w-md rounded-lg",
+                    !isLinkOnly ? "px-4 py-2" : "p-0",
+                    msg.sender === "me"
+                      ? "bg-brand-blue text-white rounded-br-none"
+                      : "bg-muted rounded-bl-none",
+                    isLinkOnly && "bg-transparent text-current"
+                  )}
+                >
+                  {renderMessageText(msg.text)}
+                </div>
+              </div>
+            )
+        })}
         <div ref={messagesEndRef} />
       </main>
       <footer className="p-4 border-t">
