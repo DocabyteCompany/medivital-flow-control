@@ -1,3 +1,4 @@
+
 import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,8 @@ import { patients } from '@/data/patients';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Users, Edit } from 'lucide-react';
 import { NewPatientDialog } from './NewPatientDialog';
+import { EditBasicContactDialog } from './EditBasicContactDialog';
+import { EditVitalsDialog } from './EditVitalsDialog';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { usePatientPermissions } from '@/hooks/usePatientPermissions';
@@ -37,7 +40,13 @@ interface PatientsListProps {
 
 export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
     const { t } = useTranslation();
-    const { canEditPatientDemographics, isAdmin } = usePatientPermissions();
+    const { 
+        canEditPatientDemographics, 
+        canEditBasicContact, 
+        canEditVitals, 
+        isAdmin, 
+        isDoctor 
+    } = usePatientPermissions();
 
     return (
         <div className="space-y-6 mt-4">
@@ -89,10 +98,24 @@ export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
                                         <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onSelectPatient(patient.id); }}>
                                             {t('patients.list.viewDetails', 'Ver Detalles')}
                                         </Button>
+                                        
+                                        {/* Opciones para Administradores - Edición completa */}
                                         {isAdmin && (
-                                            <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); }}>
+                                            <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); console.log('Editar paciente completo:', patient.id); }}>
                                                 <Edit className="w-4 h-4" />
                                             </Button>
+                                        )}
+                                        
+                                        {/* Opciones para Doctores - Solo contacto básico y signos vitales */}
+                                        {isDoctor && !isAdmin && (
+                                            <>
+                                                <div onClick={(e) => e.stopPropagation()}>
+                                                    <EditBasicContactDialog patient={patient} />
+                                                </div>
+                                                <div onClick={(e) => e.stopPropagation()}>
+                                                    <EditVitalsDialog patient={patient} />
+                                                </div>
+                                            </>
                                         )}
                                     </div>
                                 </TableCell>

@@ -5,6 +5,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useTranslation } from 'react-i18next';
 import { Patient } from '@/data/patients';
 import { cn } from '@/lib/utils';
+import { EditBasicContactDialog } from './patients/EditBasicContactDialog';
+import { EditVitalsDialog } from './patients/EditVitalsDialog';
+import { usePatientPermissions } from '@/hooks/usePatientPermissions';
 
 const responsibleDoctors = [
   "https://i.pravatar.cc/150?img=1",
@@ -33,6 +36,13 @@ interface PatientInfoProps {
 export const PatientInfo = ({ patient, onBack }: PatientInfoProps) => {
   const { t } = useTranslation();
   const age = getAge(patient.dob);
+  const { 
+    canEditBasicContact, 
+    canEditVitals, 
+    canEditPatientDemographics, 
+    isAdmin, 
+    isDoctor 
+  } = usePatientPermissions();
 
   const getStatusInfo = (status: Patient['status']) => {
     switch (status) {
@@ -69,6 +79,18 @@ export const PatientInfo = ({ patient, onBack }: PatientInfoProps) => {
             {statusInfo.text}
           </div>
         </div>
+
+        {/* Opciones de edición según el rol */}
+        {(canEditBasicContact() || canEditVitals()) && (
+          <div className="flex flex-col gap-2 my-4">
+            {canEditBasicContact() && (
+              <EditBasicContactDialog patient={patient} />
+            )}
+            {canEditVitals() && (
+              <EditVitalsDialog patient={patient} />
+            )}
+          </div>
+        )}
   
         <div className="grid grid-cols-3 gap-4 text-center my-6">
           <div>
