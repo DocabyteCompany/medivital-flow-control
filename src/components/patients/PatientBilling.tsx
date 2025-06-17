@@ -5,49 +5,68 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { usePatientPermissions } from '@/hooks/usePatientPermissions';
 import { DollarSign, CreditCard, AlertCircle, CheckCircle, Download } from 'lucide-react';
+import { Patient } from '@/data/patients';
 
-const billingData = [
-  {
-    id: 1,
-    patient: 'Jorge Villareal',
-    service: 'Consulta Cardiología',
-    amount: 120,
-    date: '2025-06-15',
-    status: 'paid',
-    insurance: 'Sanitas',
-    invoice: 'INV-2025-001'
-  },
-  {
-    id: 2,
-    patient: 'Sofía Ramirez',
-    service: 'Consulta Pediatría',
-    amount: 85,
-    date: '2025-06-14',
-    status: 'pending',
-    insurance: 'Adeslas',
-    invoice: 'INV-2025-002'
-  },
-  {
-    id: 3,
-    patient: 'Carlos López',
-    service: 'Análisis Completo',
-    amount: 95,
-    date: '2025-06-12',
-    status: 'paid',
-    insurance: 'DKV',
-    invoice: 'INV-2025-003'
-  },
-  {
-    id: 4,
-    patient: 'Laura Martínez',
-    service: 'Consulta General',
-    amount: 75,
-    date: '2025-06-10',
-    status: 'overdue',
-    insurance: 'Particular',
-    invoice: 'INV-2025-004'
-  }
-];
+interface PatientBillingProps {
+  patient: Patient;
+}
+
+// Mock data específico por paciente
+const getPatientBilling = (patientId: string) => {
+  const billingData = {
+    '1': [ // Jorge Villareal
+      {
+        id: 1,
+        service: 'Consulta Cardiología',
+        amount: 120,
+        date: '2025-06-15',
+        status: 'paid',
+        insurance: 'Sanitas',
+        invoice: 'INV-2025-001'
+      },
+      {
+        id: 2,
+        service: 'Análisis Completo',
+        amount: 95,
+        date: '2025-05-20',
+        status: 'paid',
+        insurance: 'Sanitas',
+        invoice: 'INV-2025-005'
+      },
+      {
+        id: 3,
+        service: 'Electrocardiograma',
+        amount: 65,
+        date: '2025-04-15',
+        status: 'paid',
+        insurance: 'Sanitas',
+        invoice: 'INV-2025-012'
+      }
+    ],
+    '2': [ // Sofía Ramirez
+      {
+        id: 1,
+        service: 'Consulta Pediatría',
+        amount: 85,
+        date: '2025-06-14',
+        status: 'pending',
+        insurance: 'Adeslas',
+        invoice: 'INV-2025-002'
+      },
+      {
+        id: 2,
+        service: 'Vacunación',
+        amount: 45,
+        date: '2025-05-28',
+        status: 'paid',
+        insurance: 'Adeslas',
+        invoice: 'INV-2025-008'
+      }
+    ]
+  };
+
+  return billingData[patientId as keyof typeof billingData] || billingData['1'];
+};
 
 const getStatusInfo = (status: string) => {
   switch (status) {
@@ -78,7 +97,7 @@ const getStatusInfo = (status: string) => {
   }
 };
 
-export const PatientBilling = () => {
+export const PatientBilling = ({ patient }: PatientBillingProps) => {
   const { t } = useTranslation();
   const { isAdmin } = usePatientPermissions();
 
@@ -95,52 +114,55 @@ export const PatientBilling = () => {
     );
   }
 
+  const billingData = getPatientBilling(patient.id);
   const totalPendiente = billingData
     .filter(item => item.status === 'pending' || item.status === 'overdue')
     .reduce((sum, item) => sum + item.amount, 0);
 
-  const totalMes = billingData.reduce((sum, item) => sum + item.amount, 0);
+  const totalPagado = billingData
+    .filter(item => item.status === 'paid')
+    .reduce((sum, item) => sum + item.amount, 0);
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Mes</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Total Pagado</CardTitle>
+            <CheckCircle className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">€{totalMes}</div>
-            <p className="text-xs text-muted-foreground">+15% vs mes anterior</p>
+            <div className="text-2xl font-bold text-green-600">€{totalPagado}</div>
+            <p className="text-xs text-muted-foreground">Historial completo</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pendiente Cobro</CardTitle>
+            <CardTitle className="text-sm font-medium">Pendiente</CardTitle>
             <CreditCard className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-yellow-600">€{totalPendiente}</div>
-            <p className="text-xs text-muted-foreground">2 facturas pendientes</p>
+            <p className="text-xs text-muted-foreground">Por cobrar</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tasa Cobro</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CardTitle className="text-sm font-medium">Total Facturas</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">85%</div>
-            <p className="text-xs text-muted-foreground">Dentro del objetivo</p>
+            <div className="text-2xl font-bold">{billingData.length}</div>
+            <p className="text-xs text-muted-foreground">Registros</p>
           </CardContent>
         </Card>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Gestión de Facturas</CardTitle>
+          <CardTitle>Historial de Facturación - {patient.name}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -152,8 +174,7 @@ export const PatientBilling = () => {
                 <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
                   <div className="flex items-center space-x-4">
                     <div className="flex flex-col">
-                      <p className="text-sm font-medium text-gray-900">{item.patient}</p>
-                      <p className="text-sm text-gray-500">{item.service}</p>
+                      <p className="text-sm font-medium text-gray-900">{item.service}</p>
                       <p className="text-xs text-gray-400">{item.insurance}</p>
                     </div>
                   </div>

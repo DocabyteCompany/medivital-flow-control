@@ -73,20 +73,20 @@ const Patients = () => {
           </TabsContent>
           
           <TabsContent value="statistic" className="mt-6">
-            <PatientStatistics />
+            <PatientStatistics patient={selectedPatient} />
           </TabsContent>
           
           <TabsContent value="activity" className="mt-6">
-            <PatientActivity />
+            <PatientActivity patient={selectedPatient} />
           </TabsContent>
           
           <TabsContent value="schedule" className="mt-6">
-            <PatientSchedule />
+            <PatientSchedule patient={selectedPatient} />
           </TabsContent>
           
           {isAdmin && (
             <TabsContent value="invoice" className="mt-6">
-              <PatientBilling />
+              <PatientBilling patient={selectedPatient} />
             </TabsContent>
           )}
         </Tabs>

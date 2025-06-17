@@ -3,90 +3,125 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { usePatientPermissions } from '@/hooks/usePatientPermissions';
-import { Clock, AlertTriangle, CheckCircle, Phone, CreditCard, Calendar } from 'lucide-react';
+import { Clock, Phone, CreditCard, Calendar, FileText, Pill, Activity } from 'lucide-react';
+import { Patient } from '@/data/patients';
 
-const adminActivities = [
-  {
-    id: 1,
-    type: 'confirmation',
-    title: 'Confirmar cita de Jorge Villareal',
-    description: 'Cita programada para mañana a las 10:00',
-    priority: 'high',
-    icon: Phone,
-    time: '2 min'
-  },
-  {
-    id: 2,
-    type: 'payment',
-    title: 'Pago pendiente - Sofía Ramirez',
-    description: 'Consulta del 14/06 - €85',
-    priority: 'medium',
-    icon: CreditCard,
-    time: '1 hora'
-  },
-  {
-    id: 3,
-    type: 'schedule',
-    title: 'Preparar consulta Carlos López',
-    description: 'Revisar historial antes de cita de hoy',
-    priority: 'medium',
-    icon: Calendar,
-    time: '30 min'
-  },
-  {
-    id: 4,
-    type: 'payment',
-    title: 'Facturación completada - Laura Martínez',
-    description: 'Pago procesado correctamente',
-    priority: 'low',
-    icon: CheckCircle,
-    time: '2 horas'
-  }
-];
+interface PatientActivityProps {
+  patient: Patient;
+}
 
-const doctorActivities = [
-  {
-    id: 1,
-    type: 'critical',
-    title: 'Luis Martinez - Estado crítico',
-    description: 'Requiere seguimiento inmediato de presión arterial',
-    priority: 'critical',
-    icon: AlertTriangle,
-    time: 'Ahora'
-  },
-  {
-    id: 2,
-    type: 'followup',
-    title: 'Revisión Jorge Ramos',
-    description: 'Control post-tratamiento programado',
-    priority: 'high',
-    icon: Clock,
-    time: '1 hora'
-  },
-  {
-    id: 3,
-    type: 'checkup',
-    title: 'Sofía Ramirez - Evolución positiva',
-    description: 'Tratamiento respondiendo bien, continuar',
-    priority: 'medium',
-    icon: CheckCircle,
-    time: '3 horas'
-  },
-  {
-    id: 4,
-    type: 'review',
-    title: 'Carlos López - Resultados laboratorio',
-    description: 'Analíticas recibidas, revisar valores',
-    priority: 'medium',
-    icon: Clock,
-    time: '5 horas'
-  }
-];
+// Mock data específico por paciente
+const getPatientActivity = (patientId: string, isAdmin: boolean) => {
+  const adminActivities = {
+    '1': [ // Jorge Villareal
+      {
+        id: 1,
+        type: 'payment',
+        title: 'Pago procesado',
+        description: 'Consulta cardiología - €120',
+        time: '2 horas',
+        icon: CreditCard,
+        priority: 'low'
+      },
+      {
+        id: 2,
+        type: 'contact',
+        title: 'Teléfono actualizado',
+        description: 'Cambió de +34 612 345 678 a +34 612 345 679',
+        time: '1 día',
+        icon: Phone,
+        priority: 'low'
+      },
+      {
+        id: 3,
+        type: 'appointment',
+        title: 'Cita reprogramada',
+        description: 'Movida del 16/06 al 18/06',
+        time: '3 días',
+        icon: Calendar,
+        priority: 'medium'
+      }
+    ],
+    '2': [ // Sofía Ramirez
+      {
+        id: 1,
+        type: 'payment',
+        title: 'Pago pendiente',
+        description: 'Consulta pediatría - €85',
+        time: '1 día',
+        icon: CreditCard,
+        priority: 'high'
+      },
+      {
+        id: 2,
+        type: 'contact',
+        title: 'Email verificado',
+        description: 'sofia.ramirez@email.com confirmado',
+        time: '2 días',
+        icon: Phone,
+        priority: 'low'
+      }
+    ]
+  };
+
+  const doctorActivities = {
+    '1': [ // Jorge Villareal
+      {
+        id: 1,
+        type: 'prescription',
+        title: 'Medicación ajustada',
+        description: 'Enalapril 10mg - reducir dosis a 5mg',
+        time: '2 horas',
+        icon: Pill,
+        priority: 'high'
+      },
+      {
+        id: 2,
+        type: 'note',
+        title: 'Nota médica agregada',
+        description: 'Presión arterial estable, continuar tratamiento',
+        time: '2 horas',
+        icon: FileText,
+        priority: 'medium'
+      },
+      {
+        id: 3,
+        type: 'vital',
+        title: 'Signos vitales registrados',
+        description: 'PA: 115/80, FC: 72 bpm',
+        time: '2 horas',
+        icon: Activity,
+        priority: 'medium'
+      }
+    ],
+    '2': [ // Sofía Ramirez
+      {
+        id: 1,
+        type: 'prescription',
+        title: 'Inhalador prescrito',
+        description: 'Salbutamol 100mcg - 2 puff cada 6h si necesario',
+        time: '1 día',
+        icon: Pill,
+        priority: 'high'
+      },
+      {
+        id: 2,
+        type: 'note',
+        title: 'Evolución positiva',
+        description: 'Mejora en síntomas respiratorios, continuar tratamiento',
+        time: '1 día',
+        icon: FileText,
+        priority: 'medium'
+      }
+    ]
+  };
+
+  const activities = isAdmin ? adminActivities : doctorActivities;
+  return activities[patientId as keyof typeof activities] || activities['1'];
+};
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case 'critical':
-      return 'bg-red-100 text-red-800';
     case 'high':
       return 'bg-orange-100 text-orange-800';
     case 'medium':
@@ -98,12 +133,12 @@ const getPriorityColor = (priority: string) => {
   }
 };
 
-export const PatientActivity = () => {
+export const PatientActivity = ({ patient }: PatientActivityProps) => {
   const { t } = useTranslation();
   const { isAdmin, isDoctor } = usePatientPermissions();
 
-  const activities = isAdmin ? adminActivities : doctorActivities;
-  const title = isAdmin ? 'Tareas Administrativas' : 'Seguimientos Médicos';
+  const activities = getPatientActivity(patient.id, isAdmin);
+  const title = isAdmin ? `Actividad Administrativa - ${patient.name}` : `Actividad Médica - ${patient.name}`;
 
   return (
     <div className="space-y-4">
@@ -118,14 +153,14 @@ export const PatientActivity = () => {
               return (
                 <div key={activity.id} className="flex items-start space-x-4 p-4 border rounded-lg hover:bg-gray-50">
                   <div className={`p-2 rounded-full ${
-                    activity.priority === 'critical' ? 'bg-red-100' :
                     activity.priority === 'high' ? 'bg-orange-100' :
-                    'bg-blue-100'
+                    activity.priority === 'medium' ? 'bg-yellow-100' :
+                    'bg-green-100'
                   }`}>
                     <IconComponent className={`w-4 h-4 ${
-                      activity.priority === 'critical' ? 'text-red-600' :
                       activity.priority === 'high' ? 'text-orange-600' :
-                      'text-blue-600'
+                      activity.priority === 'medium' ? 'text-yellow-600' :
+                      'text-green-600'
                     }`} />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -135,8 +170,7 @@ export const PatientActivity = () => {
                       </p>
                       <div className="flex items-center space-x-2">
                         <Badge className={getPriorityColor(activity.priority)}>
-                          {activity.priority === 'critical' ? 'Crítico' :
-                           activity.priority === 'high' ? 'Alto' :
+                          {activity.priority === 'high' ? 'Alto' :
                            activity.priority === 'medium' ? 'Medio' : 'Bajo'}
                         </Badge>
                         <span className="text-xs text-gray-500">{activity.time}</span>

@@ -1,92 +1,115 @@
 
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { usePatientPermissions } from '@/hooks/usePatientPermissions';
-import { TrendingUp, Users, Calendar, DollarSign } from 'lucide-react';
+import { TrendingUp, Calendar, DollarSign, Activity } from 'lucide-react';
+import { Patient } from '@/data/patients';
 
-const adminStatsData = [
-  { name: 'Lun', citas: 12, ingresos: 850 },
-  { name: 'Mar', citas: 15, ingresos: 1200 },
-  { name: 'Mié', citas: 8, ingresos: 600 },
-  { name: 'Jue', citas: 18, ingresos: 1350 },
-  { name: 'Vie', citas: 14, ingresos: 980 },
-];
+interface PatientStatisticsProps {
+  patient: Patient;
+}
 
-const doctorStatsData = [
-  { name: 'Consultas', value: 45, color: '#7AC0FF' },
-  { name: 'Seguimientos', value: 25, color: '#FF7A9F' },
-  { name: 'Urgencias', value: 15, color: '#FFB87A' },
-  { name: 'Revisiones', value: 20, color: '#A87AFF' },
-];
+// Mock data específico por paciente - en una app real vendría de la base de datos
+const getPatientStats = (patientId: string) => {
+  const statsData = {
+    '1': { // Jorge Villareal
+      visits: [
+        { month: 'Ene', count: 2 },
+        { month: 'Feb', count: 1 },
+        { month: 'Mar', count: 3 },
+        { month: 'Abr', count: 1 },
+        { month: 'May', count: 2 },
+        { month: 'Jun', count: 1 }
+      ],
+      vitals: [
+        { date: '01/06', presion: 120, peso: 80 },
+        { date: '08/06', presion: 118, peso: 79 },
+        { date: '15/06', presion: 115, peso: 80 },
+      ],
+      totalSpent: 850,
+      totalVisits: 10,
+      lastPayment: '2025-06-15'
+    },
+    '2': { // Sofía Ramirez
+      visits: [
+        { month: 'Ene', count: 1 },
+        { month: 'Feb', count: 2 },
+        { month: 'Mar', count: 2 },
+        { month: 'Abr', count: 3 },
+        { month: 'May', count: 2 },
+        { month: 'Jun', count: 2 }
+      ],
+      vitals: [
+        { date: '01/06', temperatura: 36.5, peso: 15 },
+        { date: '07/06', temperatura: 36.8, peso: 15 },
+        { date: '14/06', temperatura: 36.6, peso: 15 },
+      ],
+      totalSpent: 420,
+      totalVisits: 12,
+      lastPayment: '2025-06-14'
+    }
+  };
+  
+  return statsData[patientId as keyof typeof statsData] || statsData['1'];
+};
 
-export const PatientStatistics = () => {
+export const PatientStatistics = ({ patient }: PatientStatisticsProps) => {
   const { t } = useTranslation();
   const { isAdmin, isDoctor } = usePatientPermissions();
+  const stats = getPatientStats(patient.id);
 
   if (isAdmin) {
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Citas Hoy</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Total Gastado</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">18</div>
-              <p className="text-xs text-muted-foreground">+12% vs ayer</p>
+              <div className="text-2xl font-bold">€{stats.totalSpent}</div>
+              <p className="text-xs text-muted-foreground">Último pago: {stats.lastPayment}</p>
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pacientes Activos</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Total Visitas</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">234</div>
-              <p className="text-xs text-muted-foreground">+5% este mes</p>
+              <div className="text-2xl font-bold">{stats.totalVisits}</div>
+              <p className="text-xs text-muted-foreground">Desde primera consulta</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Ingresos Semana</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">€4,980</div>
-              <p className="text-xs text-muted-foreground">+8% vs sem. anterior</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Ocupación</CardTitle>
+              <CardTitle className="text-sm font-medium">Frecuencia</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">87%</div>
-              <p className="text-xs text-muted-foreground">Capacidad utilizada</p>
+              <div className="text-2xl font-bold">2.1</div>
+              <p className="text-xs text-muted-foreground">Visitas por mes</p>
             </CardContent>
           </Card>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Citas e Ingresos por Día</CardTitle>
+            <CardTitle>Historial de Visitas de {patient.name}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={adminStatsData}>
+                <BarChart data={stats.visits}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
+                  <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="citas" fill="#7AC0FF" name="Citas" />
-                  <Bar dataKey="ingresos" fill="#FF7A9F" name="Ingresos (€)" />
+                  <Bar dataKey="count" fill="#7AC0FF" name="Visitas" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -102,61 +125,58 @@ export const PatientStatistics = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pacientes Críticos</CardTitle>
-              <Users className="h-4 w-4 text-red-500" />
+              <CardTitle className="text-sm font-medium">Estado Actual</CardTitle>
+              <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-600">3</div>
-              <p className="text-xs text-muted-foreground">Requieren atención</p>
+              <div className="text-2xl font-bold">{patient.status}</div>
+              <p className="text-xs text-muted-foreground">Última actualización: {patient.lastVisit}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">En Tratamiento</CardTitle>
-              <Users className="h-4 w-4 text-yellow-500" />
+              <CardTitle className="text-sm font-medium">Peso Actual</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">12</div>
-              <p className="text-xs text-muted-foreground">Seguimiento activo</p>
+              <div className="text-2xl font-bold">{patient.weight}kg</div>
+              <p className="text-xs text-muted-foreground">IMC: {(patient.weight / Math.pow(patient.height/100, 2)).toFixed(1)}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pacientes Hoy</CardTitle>
-              <Calendar className="h-4 w-4 text-brand-blue" />
+              <CardTitle className="text-sm font-medium">Consultas</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-brand-blue">8</div>
-              <p className="text-xs text-muted-foreground">Consultas programadas</p>
+              <div className="text-2xl font-bold">{stats.totalVisits}</div>
+              <p className="text-xs text-muted-foreground">Total registradas</p>
             </CardContent>
           </Card>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Distribución de Consultas</CardTitle>
+            <CardTitle>Evolución de Signos Vitales - {patient.name}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={doctorStatsData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, value }) => `${name}: ${value}`}
-                  >
-                    {doctorStatsData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
+                <LineChart data={stats.vitals}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
                   <Tooltip />
-                </PieChart>
+                  {stats.vitals[0]?.presion && (
+                    <Line type="monotone" dataKey="presion" stroke="#7AC0FF" name="Presión Sistólica" />
+                  )}
+                  {stats.vitals[0]?.temperatura && (
+                    <Line type="monotone" dataKey="temperatura" stroke="#FF7A9F" name="Temperatura" />
+                  )}
+                  <Line type="monotone" dataKey="peso" stroke="#FFB87A" name="Peso (kg)" />
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
