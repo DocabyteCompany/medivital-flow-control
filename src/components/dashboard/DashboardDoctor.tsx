@@ -3,6 +3,7 @@ import { AIActivitiesWidget } from '@/components/dashboard/AIActivitiesWidget';
 import { QuickActions } from '@/components/dashboard/QuickActions';
 import { RecentChats } from '@/components/dashboard/RecentChats';
 import { DoctorPatientsWidget } from '@/components/dashboard/DoctorPatientsWidget';
+import { DoctorNextActivities } from '@/components/dashboard/DoctorNextActivities';
 import { NewPatientDialog } from '@/components/patients/NewPatientDialog';
 import { useTranslation } from 'react-i18next';
 
@@ -16,11 +17,14 @@ export const DashboardDoctor = () => {
         <NewPatientDialog />
       </div>
 
-      {/* Acciones Rápidas */}
+      {/* Acciones Rápidas específicas para Doctor */}
       <QuickActions />
 
-      {/* Widget específico para Doctor - Pacientes del Día */}
-      <DoctorPatientsWidget />
+      {/* Widgets específicos para Doctor */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <DoctorPatientsWidget />
+        <DoctorNextActivities />
+      </div>
 
       {/* Fila inferior - Actividades IA y Chats Recientes */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">

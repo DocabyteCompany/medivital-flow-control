@@ -4,6 +4,7 @@ import { QuickActions } from '@/components/dashboard/QuickActions';
 import { RecentChats } from '@/components/dashboard/RecentChats';
 import { AdminStatsWidget } from '@/components/dashboard/AdminStatsWidget';
 import { AdminRemindersWidget } from '@/components/dashboard/AdminRemindersWidget';
+import { AdminUserManagement } from '@/components/dashboard/AdminUserManagement';
 import { NewPatientDialog } from '@/components/patients/NewPatientDialog';
 import { useTranslation } from 'react-i18next';
 
@@ -17,13 +18,14 @@ export const DashboardAdmin = () => {
         <NewPatientDialog />
       </div>
 
-      {/* Acciones Rápidas */}
+      {/* Acciones Rápidas específicas para Admin */}
       <QuickActions />
 
       {/* Widgets específicos para Admin */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <AdminStatsWidget />
         <AdminRemindersWidget />
+        <AdminUserManagement />
       </div>
 
       {/* Fila inferior - Actividades IA y Chats Recientes */}
