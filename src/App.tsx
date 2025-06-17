@@ -14,32 +14,35 @@ import Records from "./pages/Records";
 import IaActivities from "./pages/IaActivities";
 import Personnel from "./pages/Personnel";
 import { ActivityProvider } from "./contexts/ActivityContext";
+import { RoleProvider } from "./contexts/RoleContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <ActivityProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/pacientes" element={<Patients />} />
-              <Route path="/personal" element={<Personnel />} />
-              <Route path="/mensajes" element={<Messages />} />
-              <Route path="/agenda" element={<Agenda />} />
-              <Route path="/expedientes" element={<Records />} />
-              <Route path="/ia-activities" element={<IaActivities />} />
-            </Route>
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </ActivityProvider>
+      <RoleProvider>
+        <ActivityProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/pacientes" element={<Patients />} />
+                <Route path="/personal" element={<Personnel />} />
+                <Route path="/mensajes" element={<Messages />} />
+                <Route path="/agenda" element={<Agenda />} />
+                <Route path="/expedientes" element={<Records />} />
+                <Route path="/ia-activities" element={<IaActivities />} />
+              </Route>
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </ActivityProvider>
+      </RoleProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
