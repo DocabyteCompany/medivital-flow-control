@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -16,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createPatientWithRecord } from "@/services/patientService";
+import { createPatientWithRecord, type NewPatientData } from "@/services/patientService";
 
 const patientFormSchema = z.object({
   firstName: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }),
@@ -64,12 +63,24 @@ export const NewPatientForm = ({ onSuccess }: NewPatientFormProps) => {
 
   function onSubmit(data: PatientFormValues) {
     try {
-      const newPatient = createPatientWithRecord({
-        ...data,
+      // Create the properly typed NewPatientData object
+      const newPatientData: NewPatientData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        dni: data.dni,
+        email: data.email,
+        phone: data.phone,
+        dob: data.dob,
+        gender: data.gender,
+        bloodType: data.bloodType,
         height: parseInt(data.height),
         weight: parseInt(data.weight),
-        insuranceType: data.insuranceType as any
-      });
+        occupation: data.occupation,
+        address: data.address,
+        insuranceType: data.insuranceType as 'none' | 'public' | 'private' | 'mixed' | 'international' | undefined
+      };
+
+      const newPatient = createPatientWithRecord(newPatientData);
       
       console.log("Nuevo paciente creado:", newPatient);
       toast.success(`Paciente ${newPatient.name} añadido con éxito. Expediente médico generado.`);
