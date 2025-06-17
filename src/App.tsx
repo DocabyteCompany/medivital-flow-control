@@ -45,12 +45,7 @@ const App = () => (
                   path="/estadisticas" 
                   element={
                     <ProtectedRoute allowedRoles={['Admin']}>
-                      <div className="flex items-center justify-center min-h-[60vh]">
-                        <div className="text-center">
-                          <h1 className="text-2xl font-bold text-brand-dark mb-4">Estadísticas</h1>
-                          <p className="text-gray-600">Página de estadísticas en desarrollo...</p>
-                        </div>
-                      </div>
+                      <Estadisticas />
                     </ProtectedRoute>
                   } 
                 />
