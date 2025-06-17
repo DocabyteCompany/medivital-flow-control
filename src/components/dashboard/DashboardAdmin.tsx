@@ -5,6 +5,7 @@ import { RecentChats } from '@/components/dashboard/RecentChats';
 import { AdminStatsWidget } from '@/components/dashboard/AdminStatsWidget';
 import { AdminRemindersWidget } from '@/components/dashboard/AdminRemindersWidget';
 import { AdminUserManagement } from '@/components/dashboard/AdminUserManagement';
+import { DashboardCalendar } from '@/components/dashboard/DashboardCalendar';
 import { NewPatientDialog } from '@/components/patients/NewPatientDialog';
 import { useTranslation } from 'react-i18next';
 
@@ -28,12 +29,15 @@ export const DashboardAdmin = () => {
         <AdminUserManagement />
       </div>
 
-      {/* Fila inferior - Actividades IA y Chats Recientes */}
+      {/* Calendario y Actividades IA */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <DashboardCalendar />
+        <AIActivitiesWidget />
+      </div>
+
+      {/* Chats Recientes */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-2">
-          <AIActivitiesWidget />
-        </div>
-        <div>
+        <div className="xl:col-span-3">
           <RecentChats />
         </div>
       </div>

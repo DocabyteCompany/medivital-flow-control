@@ -1,5 +1,5 @@
 
-import { Search, Bell, Settings } from 'lucide-react';
+import { Search, Bell, Users } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { RoleSelector } from './RoleSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
 
 export const Header = () => {
   const { t } = useTranslation();
@@ -32,8 +33,10 @@ export const Header = () => {
         <Button variant="ghost" size="icon" className="text-gray-400 hover:bg-brand-light hover:text-brand-blue rounded-lg">
           <Bell className="w-6 h-6" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-gray-400 hover:bg-brand-light hover:text-brand-blue rounded-lg">
-          <Settings className="w-6 h-6" />
+        <Button variant="ghost" size="icon" className="text-gray-400 hover:bg-brand-light hover:text-brand-blue rounded-lg" asChild>
+          <Link to="/pacientes">
+            <Users className="w-6 h-6" />
+          </Link>
         </Button>
       </div>
     </header>

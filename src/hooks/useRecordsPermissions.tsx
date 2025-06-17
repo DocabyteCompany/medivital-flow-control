@@ -32,6 +32,14 @@ export const useRecordsPermissions = () => {
     return selectedRole === 'Doctor';
   };
 
+  const canUploadExternalStudies = (): boolean => {
+    return selectedRole === 'Doctor';
+  };
+
+  const canViewExternalStudies = (): boolean => {
+    return selectedRole === 'Doctor';
+  };
+
   const isLimitedView = (): boolean => {
     return selectedRole === 'Admin';
   };
@@ -44,6 +52,8 @@ export const useRecordsPermissions = () => {
     canGenerateSummaries,
     canViewPatientHistory,
     canCancelReferrals,
+    canUploadExternalStudies,
+    canViewExternalStudies,
     isLimitedView,
     currentRole: selectedRole,
   };

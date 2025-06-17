@@ -4,6 +4,7 @@ import { patients, type Patient } from '@/data/patients';
 import { NewSummaryDialog } from '@/components/records/NewSummaryDialog';
 import { ReferralsSection } from '@/components/records/ReferralsSection';
 import { RecordHistorySection } from '@/components/records/RecordHistorySection';
+import { ExternalStudiesSection } from '@/components/records/ExternalStudiesSection';
 import { useRecordsPermissions } from '@/hooks/useRecordsPermissions';
 import {
   Table,
@@ -151,6 +152,7 @@ const Records = () => {
               {canViewClinicalData() ? (
                 <>
                   <ReferralsSection patient={selectedPatient} />
+                  <ExternalStudiesSection patient={selectedPatient} />
                   {canViewPatientHistory() && <RecordHistorySection patient={selectedPatient} />}
                 </>
               ) : (
