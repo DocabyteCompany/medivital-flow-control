@@ -169,10 +169,10 @@ export const PatientStatistics = ({ patient }: PatientStatisticsProps) => {
                   <XAxis dataKey="date" />
                   <YAxis />
                   <Tooltip />
-                  {stats.vitals[0]?.presion && (
+                  {stats.vitals.length > 0 && 'presion' in stats.vitals[0] && (
                     <Line type="monotone" dataKey="presion" stroke="#7AC0FF" name="Presión Sistólica" />
                   )}
-                  {stats.vitals[0]?.temperatura && (
+                  {stats.vitals.length > 0 && 'temperatura' in stats.vitals[0] && (
                     <Line type="monotone" dataKey="temperatura" stroke="#FF7A9F" name="Temperatura" />
                   )}
                   <Line type="monotone" dataKey="peso" stroke="#FFB87A" name="Peso (kg)" />
