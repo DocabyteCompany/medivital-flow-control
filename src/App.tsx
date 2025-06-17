@@ -15,6 +15,7 @@ import IaActivities from "./pages/IaActivities";
 import Personnel from "./pages/Personnel";
 import { ActivityProvider } from "./contexts/ActivityContext";
 import { RoleProvider } from "./contexts/RoleContext";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -31,7 +32,40 @@ const App = () => (
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/pacientes" element={<Patients />} />
-                <Route path="/personal" element={<Personnel />} />
+                <Route 
+                  path="/personal" 
+                  element={
+                    <ProtectedRoute allowedRoles={['Admin']}>
+                      <Personnel />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/estadisticas" 
+                  element={
+                    <ProtectedRoute allowedRoles={['Admin']}>
+                      <div className="flex items-center justify-center min-h-[60vh]">
+                        <div className="text-center">
+                          <h1 className="text-2xl font-bold text-brand-dark mb-4">Estadísticas</h1>
+                          <p className="text-gray-600">Página de estadísticas en desarrollo...</p>
+                        </div>
+                      </div>
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/configuracion" 
+                  element={
+                    <ProtectedRoute allowedRoles={['Admin']}>
+                      <div className="flex items-center justify-center min-h-[60vh]">
+                        <div className="text-center">
+                          <h1 className="text-2xl font-bold text-brand-dark mb-4">Configuración</h1>
+                          <p className="text-gray-600">Página de configuración en desarrollo...</p>
+                        </div>
+                      </div>
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route path="/mensajes" element={<Messages />} />
                 <Route path="/agenda" element={<Agenda />} />
                 <Route path="/expedientes" element={<Records />} />
