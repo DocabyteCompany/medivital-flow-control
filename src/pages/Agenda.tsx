@@ -1,19 +1,26 @@
 
 import { useState } from 'react';
-import { Schedule } from '@/components/Schedule';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { es } from 'date-fns/locale';
+import { usePermissions } from '@/hooks/usePermissions';
+import { AdminAgendaView } from '@/components/agenda/AdminAgendaView';
+import { DoctorAgendaView } from '@/components/agenda/DoctorAgendaView';
 
 const Agenda = () => {
   const { t } = useTranslation();
+  const { isAdmin } = usePermissions();
   const [date, setDate] = useState<Date | undefined>(new Date());
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 h-[calc(100vh-8.5rem)]">
       <div className="xl:col-span-3 h-full">
-        <Schedule selectedDate={date} />
+        {isAdmin() ? (
+          <AdminAgendaView selectedDate={date} />
+        ) : (
+          <DoctorAgendaView selectedDate={date} />
+        )}
       </div>
       <Card className="xl:col-span-1 shadow-soft border-0 rounded-2xl flex flex-col p-0">
         <CardHeader>
@@ -32,4 +39,5 @@ const Agenda = () => {
     </div>
   );
 };
+
 export default Agenda;
