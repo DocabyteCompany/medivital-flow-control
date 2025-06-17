@@ -39,6 +39,17 @@ const Records = () => {
     return referrals.filter(ref => ref.patientId === patientId && ref.status === 'Pending').length;
   };
 
+  const getPatientAge = (dob: string) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   return (
     <div className="space-y-6 mt-4">
       <div className="flex items-center gap-3">
@@ -61,6 +72,7 @@ const Records = () => {
           <TableHeader>
             <TableRow>
               <TableHead>{t('records.table.patient', 'Paciente')}</TableHead>
+              <TableHead>Edad</TableHead>
               <TableHead>{t('records.table.dob', 'Fecha de Nacimiento')}</TableHead>
               <TableHead>{t('records.table.gender', 'Género')}</TableHead>
               <TableHead>{t('records.table.lastVisit', 'Última Visita')}</TableHead>
@@ -75,7 +87,21 @@ const Records = () => {
               
               return (
                 <TableRow key={patient.id}>
-                  <TableCell className="font-medium">{patient.name}</TableCell>
+                  <TableCell className="font-medium">
+                    <div>
+                      <div className="font-semibold">{patient.name}</div>
+                      {patient.insuranceType && (
+                        <div className="text-xs text-gray-500">
+                          {patient.insuranceType === 'none' ? 'Sin seguro' : 
+                           patient.insuranceType === 'public' ? 'Seguro Público' :
+                           patient.insuranceType === 'private' ? 'Seguro Privado' :
+                           patient.insuranceType === 'mixed' ? 'Seguro Mixto' :
+                           patient.insuranceType === 'international' ? 'Seguro Internacional' : ''}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>{getPatientAge(patient.dob)} años</TableCell>
                   <TableCell>{new Date(patient.dob).toLocaleDateString()}</TableCell>
                   <TableCell>{t(`gender.${patient.gender.toLowerCase()}`, patient.gender)}</TableCell>
                   <TableCell>{new Date(patient.lastVisit).toLocaleDateString()}</TableCell>
@@ -130,14 +156,22 @@ const Records = () => {
           </DialogHeader>
           {selectedPatient && (
             <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
                 <div>
                   <p className="text-sm text-gray-600">Fecha de Nacimiento</p>
                   <p className="font-semibold">{new Date(selectedPatient.dob).toLocaleDateString()}</p>
                 </div>
                 <div>
+                  <p className="text-sm text-gray-600">Edad</p>
+                  <p className="font-semibold">{getPatientAge(selectedPatient.dob)} años</p>
+                </div>
+                <div>
                   <p className="text-sm text-gray-600">Género</p>
                   <p className="font-semibold">{selectedPatient.gender}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Tipo de Sangre</p>
+                  <p className="font-semibold">{selectedPatient.bloodType}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Última Visita</p>
@@ -145,7 +179,25 @@ const Records = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Estado</p>
-                  <Badge variant="outline">Activo</Badge>
+                  <Badge variant="outline">{selectedPatient.status}</Badge>
+                </div>
+                {selectedPatient.insuranceType && (
+                  <div>
+                    <p className="text-sm text-gray-600">Seguro Médico</p>
+                    <p className="font-semibold">
+                      {selectedPatient.insuranceType === 'none' ? 'Sin seguro' : 
+                       selectedPatient.insuranceType === 'public' ? 'Seguro Público' :
+                       selectedPatient.insuranceType === 'private' ? 'Seguro Privado' :
+                       selectedPatient.insuranceType === 'mixed' ? 'Seguro Mixto' :
+                       selectedPatient.insuranceType === 'international' ? 'Seguro Internacional' : ''}
+                    </p>
+                  </div>
+                )}
+                <div>
+                  <p className="text-sm text-gray-600">Expediente Creado</p>
+                  <p className="font-semibold">
+                    {selectedPatient.createdAt ? new Date(selectedPatient.createdAt).toLocaleDateString() : 'No disponible'}
+                  </p>
                 </div>
               </div>
 

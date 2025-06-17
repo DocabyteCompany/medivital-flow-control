@@ -2,9 +2,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { UserPlus, UserCheck, UserX, Shield } from 'lucide-react';
+import { UserPlus, UserCheck, UserX, Shield, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const AdminUserManagement = () => {
+  const navigate = useNavigate();
+
   // Mock data - se conectará con datos reales más adelante
   const userStats = {
     totalUsers: 24,
@@ -44,8 +47,13 @@ export const AdminUserManagement = () => {
           <Shield className="w-5 h-5 text-purple-600" />
           Gestión de Usuarios
         </CardTitle>
-        <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
-          Ver Todos
+        <Button 
+          size="sm" 
+          className="bg-purple-600 hover:bg-purple-700"
+          onClick={() => navigate('/pacientes')}
+        >
+          <Users className="w-4 h-4 mr-2" />
+          Pacientes
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">

@@ -5,7 +5,7 @@ export const usePatientPermissions = () => {
   const { isAdmin, isDoctor } = usePermissions();
 
   const canCreatePatient = (): boolean => {
-    return isAdmin();
+    return isAdmin() || isDoctor(); // Now doctors can also create patients
   };
 
   const canEditPatientDemographics = (): boolean => {
