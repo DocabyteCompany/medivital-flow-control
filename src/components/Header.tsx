@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { RoleSelector } from './RoleSelector';
 
 export const Header = () => {
   const { t } = useTranslation();
@@ -14,6 +15,7 @@ export const Header = () => {
         <Input placeholder={t('header.searchPlaceholder')} className="pl-10 bg-card rounded-lg border-0 shadow-soft" />
       </div>
       <div className="flex items-center space-x-4">
+        <RoleSelector />
         <LanguageSwitcher />
         <Button variant="ghost" size="icon" className="text-gray-400 hover:bg-brand-light hover:text-brand-blue rounded-lg">
           <Bell className="w-6 h-6" />
