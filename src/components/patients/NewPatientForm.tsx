@@ -15,13 +15,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const patientFormSchema = z.object({
   firstName: z.string().min(2, { message: "El nombre debe tener al menos 2 caracteres." }),
   lastName: z.string().min(2, { message: "El apellido debe tener al menos 2 caracteres." }),
-  dni: z.string().regex(/^[0-9]{8}[A-Z]$/, { message: "Formato de DNI inválido (ej: 12345678A)." }),
+  dni: z.string().regex(/^[0-9]{8}[A-Z]$/, { message: "Formato de identificación inválido (ej: 12345678A)." }),
   email: z.string().email({ message: "Email inválido." }),
   phone: z.string().min(9, { message: "El teléfono debe tener al menos 9 dígitos." }),
+  insuranceType: z.string().optional(),
 });
 
 type PatientFormValues = z.infer<typeof patientFormSchema>;
@@ -41,6 +43,7 @@ export const NewPatientForm = ({ onSuccess }: NewPatientFormProps) => {
       dni: "",
       email: "",
       phone: "",
+      insuranceType: "",
     },
   });
 
@@ -85,7 +88,7 @@ export const NewPatientForm = ({ onSuccess }: NewPatientFormProps) => {
           name="dni"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('patient.form.dni', 'DNI')}</FormLabel>
+              <FormLabel>{t('patient.form.identification', 'Identificación')}</FormLabel>
               <FormControl>
                 <Input placeholder="12345678A" {...field} />
               </FormControl>
@@ -115,6 +118,30 @@ export const NewPatientForm = ({ onSuccess }: NewPatientFormProps) => {
               <FormControl>
                 <Input placeholder="600112233" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="insuranceType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('patient.form.insurance', 'Tipo de Seguro')}</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar tipo de seguro (opcional)" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="none">Sin seguro</SelectItem>
+                  <SelectItem value="public">Seguro Público</SelectItem>
+                  <SelectItem value="private">Seguro Privado</SelectItem>
+                  <SelectItem value="mixed">Seguro Mixto</SelectItem>
+                  <SelectItem value="international">Seguro Internacional</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
