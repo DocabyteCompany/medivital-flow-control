@@ -11,10 +11,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { NewPatientForm } from './NewPatientForm';
+import { usePatientPermissions } from '@/hooks/usePatientPermissions';
 
 export const NewPatientDialog = () => {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
+    const { canCreatePatient } = usePatientPermissions();
+
+    // Solo los administradores pueden crear pacientes
+    if (!canCreatePatient()) {
+        return null;
+    }
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>

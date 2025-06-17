@@ -1,13 +1,13 @@
-
 import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { patients } from '@/data/patients';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Users } from 'lucide-react';
+import { Users, Edit } from 'lucide-react';
 import { NewPatientDialog } from './NewPatientDialog';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { usePatientPermissions } from '@/hooks/usePatientPermissions';
 
 const getAge = (dob: string) => {
     const birthDate = new Date(dob);
@@ -37,6 +37,7 @@ interface PatientsListProps {
 
 export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
     const { t } = useTranslation();
+    const { canEditPatientDemographics, isAdmin } = usePatientPermissions();
 
     return (
         <div className="space-y-6 mt-4">
@@ -84,9 +85,16 @@ export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onSelectPatient(patient.id); }}>
-                                        {t('patients.list.viewDetails', 'Ver Detalles')}
-                                    </Button>
+                                    <div className="flex gap-2 justify-end">
+                                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); onSelectPatient(patient.id); }}>
+                                            {t('patients.list.viewDetails', 'Ver Detalles')}
+                                        </Button>
+                                        {isAdmin && (
+                                            <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); }}>
+                                                <Edit className="w-4 h-4" />
+                                            </Button>
+                                        )}
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}
