@@ -4,7 +4,7 @@ import { QuickActions } from '@/components/dashboard/QuickActions';
 import { RecentChats } from '@/components/dashboard/RecentChats';
 import { AdminStatsWidget } from '@/components/dashboard/AdminStatsWidget';
 import { AdminRemindersWidget } from '@/components/dashboard/AdminRemindersWidget';
-import { AdminUserManagement } from '@/components/dashboard/AdminUserManagement';
+import { AdminPatientManagement } from '@/components/dashboard/AdminPatientManagement';
 import { DashboardCalendar } from '@/components/dashboard/DashboardCalendar';
 import { NewPatientDialog } from '@/components/patients/NewPatientDialog';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ export const DashboardAdmin = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <AdminStatsWidget />
         <AdminRemindersWidget />
-        <AdminUserManagement />
+        <AdminPatientManagement />
       </div>
 
       {/* Calendario y Actividades IA */}
