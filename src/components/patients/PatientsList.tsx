@@ -4,10 +4,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { patients } from '@/data/patients';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Users, Edit } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { NewPatientDialog } from './NewPatientDialog';
 import { EditBasicContactDialog } from './EditBasicContactDialog';
 import { EditVitalsDialog } from './EditVitalsDialog';
+import { EditPatientDialog } from './EditPatientDialog';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { usePatientPermissions } from '@/hooks/usePatientPermissions';
@@ -101,9 +102,9 @@ export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
                                         
                                         {/* Opciones para Administradores - Edición completa */}
                                         {isAdmin && (
-                                            <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); console.log('Editar paciente completo:', patient.id); }}>
-                                                <Edit className="w-4 h-4" />
-                                            </Button>
+                                            <div onClick={(e) => e.stopPropagation()}>
+                                                <EditPatientDialog patient={patient} />
+                                            </div>
                                         )}
                                         
                                         {/* Opciones para Doctores - Solo contacto básico y signos vitales */}
