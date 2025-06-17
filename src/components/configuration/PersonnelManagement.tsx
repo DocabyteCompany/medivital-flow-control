@@ -1,21 +1,60 @@
 
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Users, UserPlus, Edit, Trash2, Shield } from 'lucide-react';
-import { personnel } from '@/data/personnel';
+import { personnel as initialPersonnel, Personnel } from '@/data/personnel';
+import { AddUserDialog } from './AddUserDialog';
+import { EditUserDialog } from './EditUserDialog';
+import { DeleteUserDialog } from './DeleteUserDialog';
 
 export const PersonnelManagement = () => {
-  const handleAddUser = () => {
-    console.log('Agregar nuevo usuario');
+  const [personnelList, setPersonnelList] = useState(initialPersonnel);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<Personnel | null>(null);
+
+  const handleAddUser = (userData: {
+    name: string;
+    role: any;
+    specialty?: string;
+    phone: string;
+    email: string;
+  }) => {
+    const newUser: Personnel = {
+      id: (personnelList.length + 1).toString(),
+      name: userData.name,
+      role: userData.role,
+      specialty: userData.specialty,
+      avatar: `https://i.pravatar.cc/150?u=${userData.name.toLowerCase().replace(' ', '')}`,
+      online: false,
+      phone: userData.phone,
+      email: userData.email,
+    };
+    
+    setPersonnelList([...personnelList, newUser]);
   };
 
-  const handleEditUser = (id: string) => {
-    console.log('Editar usuario:', id);
+  const handleEditUser = (id: string, userData: Partial<Personnel>) => {
+    setPersonnelList(personnelList.map(person => 
+      person.id === id ? { ...person, ...userData } : person
+    ));
   };
 
   const handleDeleteUser = (id: string) => {
-    console.log('Eliminar usuario:', id);
+    setPersonnelList(personnelList.filter(person => person.id !== id));
+  };
+
+  const handleEditClick = (user: Personnel) => {
+    setSelectedUser(user);
+    setShowEditDialog(true);
+  };
+
+  const handleDeleteClick = (user: Personnel) => {
+    setSelectedUser(user);
+    setShowDeleteDialog(true);
   };
 
   const getRoleBadgeColor = (role: string) => {
@@ -36,7 +75,7 @@ export const PersonnelManagement = () => {
           <h3 className="text-lg font-semibold text-brand-dark mb-2">Gestión de Personal</h3>
           <p className="text-gray-600">Administra usuarios, roles y permisos del personal médico.</p>
         </div>
-        <Button onClick={handleAddUser} className="bg-brand-blue hover:bg-brand-blue/90">
+        <Button onClick={() => setShowAddDialog(true)} className="bg-brand-blue hover:bg-brand-blue/90">
           <UserPlus className="w-4 h-4 mr-2" />
           Agregar Usuario
         </Button>
@@ -47,7 +86,7 @@ export const PersonnelManagement = () => {
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <Users className="w-4 h-4 text-brand-blue" />
-              Personal Activo
+              Personal Activo ({personnelList.length})
             </CardTitle>
             <CardDescription>
               Lista completa del personal con sus roles y estados
@@ -55,7 +94,7 @@ export const PersonnelManagement = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {personnel.map((person) => (
+              {personnelList.map((person) => (
                 <div key={person.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
@@ -84,14 +123,14 @@ export const PersonnelManagement = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleEditUser(person.id)}
+                      onClick={() => handleEditClick(person)}
                     >
                       <Edit className="w-3 h-3" />
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDeleteUser(person.id)}
+                      onClick={() => handleDeleteClick(person)}
                       className="text-red-600 hover:text-red-700"
                     >
                       <Trash2 className="w-3 h-3" />
@@ -143,6 +182,26 @@ export const PersonnelManagement = () => {
           </CardContent>
         </Card>
       </div>
+
+      <AddUserDialog
+        open={showAddDialog}
+        onOpenChange={setShowAddDialog}
+        onAddUser={handleAddUser}
+      />
+
+      <EditUserDialog
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        user={selectedUser}
+        onEditUser={handleEditUser}
+      />
+
+      <DeleteUserDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        user={selectedUser}
+        onDeleteUser={handleDeleteUser}
+      />
     </div>
   );
 };

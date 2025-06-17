@@ -7,6 +7,7 @@ import { ScheduleSettings } from '@/components/configuration/ScheduleSettings';
 import { AIToolsSettings } from '@/components/configuration/AIToolsSettings';
 import { PersonnelManagement } from '@/components/configuration/PersonnelManagement';
 import { SystemSettings } from '@/components/configuration/SystemSettings';
+import { DoctorScheduleManagement } from '@/components/configuration/DoctorScheduleManagement';
 
 const Configuracion = () => {
   const { selectedRole } = useRole();
@@ -35,7 +36,7 @@ const Configuracion = () => {
           </TabsTrigger>
           <TabsTrigger value="agenda" className="flex items-center gap-2">
             <Calendar className="w-4 h-4" />
-            Agenda
+            {selectedRole === 'Admin' ? 'Horarios' : 'Mi Agenda'}
           </TabsTrigger>
           <TabsTrigger value="ia" className="flex items-center gap-2">
             <Bot className="w-4 h-4" />
@@ -60,7 +61,11 @@ const Configuracion = () => {
         </TabsContent>
 
         <TabsContent value="agenda" className="mt-6">
-          <ScheduleSettings />
+          {selectedRole === 'Admin' ? (
+            <DoctorScheduleManagement />
+          ) : (
+            <ScheduleSettings />
+          )}
         </TabsContent>
 
         <TabsContent value="ia" className="mt-6">
@@ -88,8 +93,8 @@ const Configuracion = () => {
         </div>
         <p className="text-sm text-blue-700 mt-1">
           {selectedRole === 'Admin' 
-            ? 'Como administrador, tienes acceso a todas las configuraciones del sistema y gestión de personal.'
-            : 'Como doctor, puedes personalizar tus notificaciones, agenda y herramientas de trabajo.'
+            ? 'Como administrador, puedes gestionar personal y proponer cambios de horarios a los doctores. También tienes acceso a la configuración del sistema.'
+            : 'Como doctor, puedes personalizar tus notificaciones, configurar tu agenda personal y ajustar las herramientas de trabajo.'
           }
         </p>
       </div>
