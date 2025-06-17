@@ -14,6 +14,7 @@ import Records from "./pages/Records";
 import IaActivities from "./pages/IaActivities";
 import Personnel from "./pages/Personnel";
 import Estadisticas from "./pages/Estadisticas";
+import Configuracion from "./pages/Configuracion";
 import { ActivityProvider } from "./contexts/ActivityContext";
 import { RoleProvider } from "./contexts/RoleContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";

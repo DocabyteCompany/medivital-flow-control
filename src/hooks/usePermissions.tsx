@@ -25,6 +25,14 @@ export const usePermissions = () => {
   };
 
   const canAccessConfiguration = (): boolean => {
+    return hasAccess(['Admin', 'Doctor']);
+  };
+
+  const canAccessSystemSettings = (): boolean => {
+    return hasAccess(['Admin']);
+  };
+
+  const canManagePersonnel = (): boolean => {
     return hasAccess(['Admin']);
   };
 
@@ -39,6 +47,8 @@ export const usePermissions = () => {
     canAccessPersonnel,
     canAccessStatistics,
     canAccessConfiguration,
+    canAccessSystemSettings,
+    canManagePersonnel,
     canManageUsers,
     currentRole: selectedRole,
   };

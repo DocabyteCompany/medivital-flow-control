@@ -73,6 +73,7 @@ export const Sidebar = () => {
     { icon: Calendar, label: t('sidebar.agenda'), path: '/agenda' },
     { icon: ClipboardList, label: t('sidebar.records'), path: '/expedientes' },
     { icon: Bot, label: 'Actividades IA', path: '/ia-activities' },
+    { icon: Settings, label: 'Configuración', path: '/configuracion' },
   ];
 
   const adminMenuItems = [
