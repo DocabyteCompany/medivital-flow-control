@@ -71,6 +71,20 @@ export const referrals: MedicalReferral[] = [
       reason: 'No disponible esta semana, derivado a colega',
       date: '2025-06-12T10:15:00'
     }]
+  },
+  {
+    id: 'ref4',
+    patientId: '1', // Jorge Villareal
+    fromDoctorId: '1', // Dr. García
+    toDoctorId: '2', // Dra. López
+    specialty: 'Pediatría',
+    reason: 'Consulta previa cancelada por paciente',
+    urgency: 'Low',
+    status: 'Cancelled',
+    notes: 'Paciente canceló cita y no reagendó.',
+    createdAt: '2025-06-10T10:00:00',
+    updatedAt: '2025-06-11T14:30:00',
+    allowSummaryAccess: false
   }
 ];
 
@@ -92,4 +106,17 @@ export const getDoctorForReferral = (doctorId: string) => {
 
 export const getPatientForReferral = (patientId: string) => {
   return patients.find(p => p.id === patientId);
+};
+
+export const cancelReferral = (referralId: string, reason?: string) => {
+  const referral = referrals.find(ref => ref.id === referralId);
+  if (referral && (referral.status === 'Pending' || referral.status === 'Accepted')) {
+    referral.status = 'Cancelled';
+    referral.updatedAt = new Date().toISOString();
+    if (reason) {
+      referral.notes = (referral.notes || '') + ` | Cancelado: ${reason}`;
+    }
+    return true;
+  }
+  return false;
 };

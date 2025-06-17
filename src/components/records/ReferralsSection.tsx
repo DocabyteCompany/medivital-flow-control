@@ -3,10 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { UserPlus, Clock, CheckCircle, XCircle, ArrowRight, AlertTriangle } from 'lucide-react';
-import { referrals, getDoctorForReferral, type MedicalReferral } from '@/data/referrals';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { UserPlus, Clock, CheckCircle, XCircle, ArrowRight, AlertTriangle, X } from 'lucide-react';
+import { referrals, getDoctorForReferral, cancelReferral, type MedicalReferral } from '@/data/referrals';
+import { addHistoryEntry } from '@/data/recordHistory';
 import { type Patient } from '@/data/patients';
 import { CreateReferralDialog } from './CreateReferralDialog';
+import { useRecordsPermissions } from '@/hooks/useRecordsPermissions';
 import { useToast } from '@/hooks/use-toast';
 
 type ReferralsSectionProps = {
@@ -16,6 +19,7 @@ type ReferralsSectionProps = {
 
 export const ReferralsSection = ({ patient, currentDoctorId = '1' }: ReferralsSectionProps) => {
   const { toast } = useToast();
+  const { canCreateReferrals, canManageReferrals, canCancelReferrals } = useRecordsPermissions();
   const patientReferrals = referrals.filter(ref => ref.patientId === patient.id);
 
   const getStatusColor = (status: MedicalReferral['status']) => {
@@ -48,10 +52,26 @@ export const ReferralsSection = ({ patient, currentDoctorId = '1' }: ReferralsSe
   };
 
   const handleAcceptReferral = (referralId: string) => {
-    toast({
-      title: "Referido Aceptado",
-      description: "Has aceptado este referido médico.",
-    });
+    const referral = referrals.find(ref => ref.id === referralId);
+    if (referral) {
+      referral.status = 'Accepted';
+      referral.updatedAt = new Date().toISOString();
+      
+      addHistoryEntry({
+        patientId: patient.id,
+        action: 'referral_accepted',
+        description: `Referido aceptado para ${referral.specialty}`,
+        performedBy: currentDoctorId,
+        performedByName: getDoctorForReferral(currentDoctorId)?.name || 'Doctor',
+        timestamp: new Date().toISOString(),
+        details: { referralId, specialty: referral.specialty }
+      });
+
+      toast({
+        title: "Referido Aceptado",
+        description: "Has aceptado este referido médico.",
+      });
+    }
   };
 
   const handleTransferReferral = (referralId: string) => {
@@ -59,6 +79,28 @@ export const ReferralsSection = ({ patient, currentDoctorId = '1' }: ReferralsSe
       title: "Referido Transferido",
       description: "El referido ha sido transferido a otro especialista.",
     });
+  };
+
+  const handleCancelReferral = (referralId: string) => {
+    const success = cancelReferral(referralId, 'Cancelado por el doctor');
+    if (success) {
+      const referral = referrals.find(ref => ref.id === referralId);
+      
+      addHistoryEntry({
+        patientId: patient.id,
+        action: 'referral_cancelled',
+        description: `Referido cancelado para ${referral?.specialty}`,
+        performedBy: currentDoctorId,
+        performedByName: getDoctorForReferral(currentDoctorId)?.name || 'Doctor',
+        timestamp: new Date().toISOString(),
+        details: { referralId, specialty: referral?.specialty }
+      });
+
+      toast({
+        title: "Referido Cancelado",
+        description: "El referido ha sido cancelado correctamente.",
+      });
+    }
   };
 
   return (
@@ -72,7 +114,9 @@ export const ReferralsSection = ({ patient, currentDoctorId = '1' }: ReferralsSe
               <Badge variant="outline">{patientReferrals.length}</Badge>
             )}
           </CardTitle>
-          <CreateReferralDialog patient={patient} fromDoctorId={currentDoctorId} />
+          {canCreateReferrals() && (
+            <CreateReferralDialog patient={patient} fromDoctorId={currentDoctorId} />
+          )}
         </div>
       </CardHeader>
       <CardContent>
@@ -81,7 +125,8 @@ export const ReferralsSection = ({ patient, currentDoctorId = '1' }: ReferralsSe
             {patientReferrals.map((referral) => {
               const fromDoctor = getDoctorForReferral(referral.fromDoctorId);
               const toDoctor = getDoctorForReferral(referral.toDoctorId);
-              const canManage = currentDoctorId === referral.toDoctorId && referral.status === 'Pending';
+              const canManage = canManageReferrals() && currentDoctorId === referral.toDoctorId && referral.status === 'Pending';
+              const canCancel = canCancelReferrals() && (referral.status === 'Pending' || referral.status === 'Accepted') && (currentDoctorId === referral.fromDoctorId || currentDoctorId === referral.toDoctorId);
 
               return (
                 <div key={referral.id} className="border rounded-lg p-4 space-y-3">
@@ -101,6 +146,33 @@ export const ReferralsSection = ({ patient, currentDoctorId = '1' }: ReferralsSe
                         <p className="text-sm text-gray-600">{referral.reason}</p>
                       </div>
                     </div>
+                    
+                    {canCancel && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>¿Cancelar Referido?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Esta acción cancelará el referido para {referral.specialty}. El especialista será notificado de la cancelación.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>No cancelar</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleCancelReferral(referral.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Sí, cancelar
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-4 text-sm">
