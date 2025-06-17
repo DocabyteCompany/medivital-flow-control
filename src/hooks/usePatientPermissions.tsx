@@ -5,31 +5,31 @@ export const usePatientPermissions = () => {
   const { isAdmin, isDoctor } = usePermissions();
 
   const canCreatePatient = (): boolean => {
-    return isAdmin;
+    return isAdmin();
   };
 
   const canEditPatientDemographics = (): boolean => {
-    return isAdmin;
+    return isAdmin();
   };
 
   const canEditPatientBilling = (): boolean => {
-    return isAdmin;
+    return isAdmin();
   };
 
   const canEditBasicContact = (): boolean => {
-    return isAdmin || isDoctor;
+    return isAdmin() || isDoctor();
   };
 
   const canEditVitals = (): boolean => {
-    return isAdmin || isDoctor;
+    return isAdmin() || isDoctor();
   };
 
   const canViewPatient = (): boolean => {
-    return isAdmin || isDoctor;
+    return isAdmin() || isDoctor();
   };
 
   const canDeletePatient = (): boolean => {
-    return isAdmin;
+    return isAdmin();
   };
 
   return {
@@ -40,7 +40,7 @@ export const usePatientPermissions = () => {
     canEditVitals,
     canViewPatient,
     canDeletePatient,
-    isAdmin,
-    isDoctor,
+    isAdmin: isAdmin(),
+    isDoctor: isDoctor(),
   };
 };
