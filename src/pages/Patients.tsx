@@ -6,7 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { PatientsList } from '@/components/patients/PatientsList';
+import { PatientStatistics } from '@/components/patients/PatientStatistics';
+import { PatientActivity } from '@/components/patients/PatientActivity';
+import { PatientSchedule } from '@/components/patients/PatientSchedule';
+import { PatientBilling } from '@/components/patients/PatientBilling';
 import { patients } from '@/data/patients';
+import { usePatientPermissions } from '@/hooks/usePatientPermissions';
 
 const vitalsData = {
   heartbeat: Array.from({ length: 20 }, () => ({ uv: Math.floor(Math.random() * 30 + 70) })),
@@ -18,6 +23,7 @@ const vitalsData = {
 const Patients = () => {
   const { t } = useTranslation();
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
+  const { isAdmin } = usePatientPermissions();
 
   const handleSelectPatient = (patientId: string) => {
     setSelectedPatientId(patientId);
@@ -45,12 +51,15 @@ const Patients = () => {
       <div className="flex-1">
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="bg-transparent p-0 border-b-2 border-gray-100 w-full justify-start rounded-none">
-            <TabsTrigger value="all" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.all')}</TabsTrigger>
-            <TabsTrigger value="statistic" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.statistic')}</TabsTrigger>
-            <TabsTrigger value="activity" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.activity')}</TabsTrigger>
-            <TabsTrigger value="schedule" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.schedule')}</TabsTrigger>
-            <TabsTrigger value="invoice" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.invoice')}</TabsTrigger>
+            <TabsTrigger value="all" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.all', 'Todos')}</TabsTrigger>
+            <TabsTrigger value="statistic" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.statistic', 'Estadísticas')}</TabsTrigger>
+            <TabsTrigger value="activity" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.activity', 'Actividad')}</TabsTrigger>
+            <TabsTrigger value="schedule" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.schedule', 'Agenda')}</TabsTrigger>
+            {isAdmin && (
+              <TabsTrigger value="invoice" className="data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-brand-blue rounded-none">{t('tabs.invoice', 'Facturación')}</TabsTrigger>
+            )}
           </TabsList>
+          
           <TabsContent value="all" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
               <VitalsCard title={t('vitals.heartbeat')} value="85" unit={t('vitals.bpm')} data={vitalsData.heartbeat} strokeColor="#FF7A9F" fillColor="#FF7A9F" lastVisitDate={selectedPatient.lastVisit} />
@@ -62,6 +71,24 @@ const Patients = () => {
               <Schedule patient={selectedPatient} />
             </div>
           </TabsContent>
+          
+          <TabsContent value="statistic" className="mt-6">
+            <PatientStatistics />
+          </TabsContent>
+          
+          <TabsContent value="activity" className="mt-6">
+            <PatientActivity />
+          </TabsContent>
+          
+          <TabsContent value="schedule" className="mt-6">
+            <PatientSchedule />
+          </TabsContent>
+          
+          {isAdmin && (
+            <TabsContent value="invoice" className="mt-6">
+              <PatientBilling />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>
