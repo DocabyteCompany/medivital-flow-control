@@ -53,13 +53,8 @@ const App = () => (
                 <Route 
                   path="/configuracion" 
                   element={
-                    <ProtectedRoute allowedRoles={['Admin']}>
-                      <div className="flex items-center justify-center min-h-[60vh]">
-                        <div className="text-center">
-                          <h1 className="text-2xl font-bold text-brand-dark mb-4">Configuración</h1>
-                          <p className="text-gray-600">Página de configuración en desarrollo...</p>
-                        </div>
-                      </div>
+                    <ProtectedRoute allowedRoles={['Admin', 'Doctor']}>
+                      <Configuracion />
                     </ProtectedRoute>
                   } 
                 />
