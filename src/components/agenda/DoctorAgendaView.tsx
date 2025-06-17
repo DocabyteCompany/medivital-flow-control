@@ -4,25 +4,37 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, XCircle, AlertCircle, Filter } from 'lucide-react';
 import { appointments, getPatientForAppointment } from '@/data/appointments';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface DoctorAgendaViewProps {
   selectedDate?: Date;
   doctorId?: string; // En un caso real vendría del contexto de usuario
 }
 
+type StatusFilter = 'Completed' | 'Scheduled' | 'Cancelled' | 'Rescheduled';
+
 export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaViewProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const [statusFilters, setStatusFilters] = useState<StatusFilter[]>(['Completed', 'Scheduled', 'Cancelled', 'Rescheduled']);
 
   const dateString = selectedDate ? selectedDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
   
   // Filtrar citas del doctor para el día seleccionado
   const doctorAppointments = appointments
     .filter(app => app.personnelId === doctorId && app.date === dateString)
+    .filter(app => statusFilters.includes(app.status as StatusFilter))
     .sort((a, b) => new Date(`${a.date}T${a.time}`).getTime() - new Date(`${b.date}T${b.time}`).getTime());
 
   const handleConfirmAttendance = (appointmentId: string) => {
@@ -52,19 +64,40 @@ export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaV
       case 'Completed': return 'bg-green-100 text-green-800';
       case 'Scheduled': return 'bg-blue-100 text-blue-800';
       case 'Cancelled': return 'bg-red-100 text-red-800';
+      case 'Rescheduled': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'Completed': return 'Completada';
+      case 'Scheduled': return 'Programada';
+      case 'Cancelled': return 'Cancelada';
+      case 'Rescheduled': return 'Reprogramada';
+      default: return status;
     }
   };
 
   const getNextAppointment = () => {
     const now = new Date();
-    return doctorAppointments.find(app => {
-      const appDateTime = new Date(`${app.date}T${app.time}`);
-      return appDateTime > now && app.status === 'Scheduled';
-    });
+    return appointments
+      .filter(app => app.personnelId === doctorId && statusFilters.includes(app.status as StatusFilter))
+      .find(app => {
+        const appDateTime = new Date(`${app.date}T${app.time}`);
+        return appDateTime > now && app.status === 'Scheduled';
+      });
   };
 
   const nextAppointment = getNextAppointment();
+
+  const toggleStatusFilter = (status: StatusFilter) => {
+    setStatusFilters(prev => 
+      prev.includes(status) 
+        ? prev.filter(s => s !== status)
+        : [...prev, status]
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -106,6 +139,45 @@ export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaV
         </Card>
       )}
 
+      <div className="flex gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2">
+              <Filter className="w-4 h-4" />
+              Estado ({statusFilters.length})
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 bg-white">
+            <DropdownMenuLabel>Filtrar por Estado</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              checked={statusFilters.includes('Scheduled')}
+              onCheckedChange={() => toggleStatusFilter('Scheduled')}
+            >
+              Programadas
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={statusFilters.includes('Completed')}
+              onCheckedChange={() => toggleStatusFilter('Completed')}
+            >
+              Completadas
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={statusFilters.includes('Cancelled')}
+              onCheckedChange={() => toggleStatusFilter('Cancelled')}
+            >
+              Canceladas
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={statusFilters.includes('Rescheduled')}
+              onCheckedChange={() => toggleStatusFilter('Rescheduled')}
+            >
+              Reprogramadas
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -142,8 +214,7 @@ export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaV
                           <div className="flex items-center gap-2 mb-1">
                             <p className="font-semibold text-brand-dark">{appointment.type}</p>
                             <Badge className={getStatusColor(appointment.status)}>
-                              {appointment.status === 'Completed' ? 'Completada' : 
-                               appointment.status === 'Scheduled' ? 'Programada' : 'Cancelada'}
+                              {getStatusLabel(appointment.status)}
                             </Badge>
                           </div>
                           <p className="text-sm text-gray-600">{patient?.name}</p>
@@ -178,7 +249,7 @@ export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaV
               <div className="text-center py-8 px-4 bg-gray-50 rounded-2xl">
                 <Calendar className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="font-semibold text-brand-dark">No tienes citas programadas</p>
-                <p className="text-sm text-gray-500">Para el día seleccionado</p>
+                <p className="text-sm text-gray-500">Para el día seleccionado con los filtros aplicados</p>
               </div>
             )}
           </div>

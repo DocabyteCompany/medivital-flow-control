@@ -4,19 +4,30 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Users, Plus, Edit, Trash2, Bot } from 'lucide-react';
+import { Calendar, Clock, Users, Plus, Edit, Trash2, Bot, Filter } from 'lucide-react';
 import { appointments, getDoctorForAppointment, getPatientForAppointment } from '@/data/appointments';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface AdminAgendaViewProps {
   selectedDate?: Date;
 }
 
+type StatusFilter = 'Completed' | 'Scheduled' | 'Cancelled' | 'Rescheduled';
+
 export const AdminAgendaView = ({ selectedDate }: AdminAgendaViewProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'today' | 'week'>('today');
+  const [statusFilters, setStatusFilters] = useState<StatusFilter[]>(['Completed', 'Scheduled', 'Cancelled', 'Rescheduled']);
 
   const dateString = selectedDate ? selectedDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
   
@@ -24,22 +35,29 @@ export const AdminAgendaView = ({ selectedDate }: AdminAgendaViewProps) => {
     const today = new Date();
     const selectedDateObj = selectedDate || today;
     
+    let filteredByDate = [];
+    
     switch (filter) {
       case 'today':
-        return appointments.filter(app => app.date === dateString);
+        filteredByDate = appointments.filter(app => app.date === dateString);
+        break;
       case 'week':
         const weekStart = new Date(selectedDateObj);
         weekStart.setDate(selectedDateObj.getDate() - selectedDateObj.getDay());
         const weekEnd = new Date(weekStart);
         weekEnd.setDate(weekStart.getDate() + 6);
         
-        return appointments.filter(app => {
+        filteredByDate = appointments.filter(app => {
           const appDate = new Date(app.date);
           return appDate >= weekStart && appDate <= weekEnd;
         });
+        break;
       default:
-        return appointments;
+        filteredByDate = appointments;
     }
+
+    // Filtrar por estado
+    return filteredByDate.filter(app => statusFilters.includes(app.status as StatusFilter));
   };
 
   const filteredAppointments = getFilteredAppointments()
@@ -79,8 +97,27 @@ export const AdminAgendaView = ({ selectedDate }: AdminAgendaViewProps) => {
       case 'Completed': return 'bg-green-100 text-green-800';
       case 'Scheduled': return 'bg-blue-100 text-blue-800';
       case 'Cancelled': return 'bg-red-100 text-red-800';
+      case 'Rescheduled': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'Completed': return 'Completada';
+      case 'Scheduled': return 'Programada';
+      case 'Cancelled': return 'Cancelada';
+      case 'Rescheduled': return 'Reprogramada';
+      default: return status;
+    }
+  };
+
+  const toggleStatusFilter = (status: StatusFilter) => {
+    setStatusFilters(prev => 
+      prev.includes(status) 
+        ? prev.filter(s => s !== status)
+        : [...prev, status]
+    );
   };
 
   return (
@@ -104,7 +141,7 @@ export const AdminAgendaView = ({ selectedDate }: AdminAgendaViewProps) => {
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <Button 
           variant={filter === 'today' ? 'default' : 'outline'} 
           onClick={() => setFilter('today')}
@@ -126,6 +163,43 @@ export const AdminAgendaView = ({ selectedDate }: AdminAgendaViewProps) => {
         >
           Todas
         </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2">
+              <Filter className="w-4 h-4" />
+              Estado ({statusFilters.length})
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 bg-white">
+            <DropdownMenuLabel>Filtrar por Estado</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              checked={statusFilters.includes('Scheduled')}
+              onCheckedChange={() => toggleStatusFilter('Scheduled')}
+            >
+              Programadas
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={statusFilters.includes('Completed')}
+              onCheckedChange={() => toggleStatusFilter('Completed')}
+            >
+              Completadas
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={statusFilters.includes('Cancelled')}
+              onCheckedChange={() => toggleStatusFilter('Cancelled')}
+            >
+              Canceladas
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={statusFilters.includes('Rescheduled')}
+              onCheckedChange={() => toggleStatusFilter('Rescheduled')}
+            >
+              Reprogramadas
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <Card>
@@ -155,8 +229,7 @@ export const AdminAgendaView = ({ selectedDate }: AdminAgendaViewProps) => {
                         <div className="flex items-center gap-2 mb-1">
                           <p className="font-semibold text-brand-dark">{appointment.type}</p>
                           <Badge className={getStatusColor(appointment.status)}>
-                            {appointment.status === 'Completed' ? 'Completada' : 
-                             appointment.status === 'Scheduled' ? 'Programada' : 'Cancelada'}
+                            {getStatusLabel(appointment.status)}
                           </Badge>
                         </div>
                         <p className="text-sm text-gray-600">Paciente: {patient?.name}</p>
