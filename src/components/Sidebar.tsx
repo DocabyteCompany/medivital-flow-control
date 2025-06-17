@@ -1,3 +1,4 @@
+
 import {
   Users,
   Calendar,
@@ -8,11 +9,14 @@ import {
   Bot,
   Home,
   Stethoscope,
+  BarChart3,
+  Settings,
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import type { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
+import { useRole } from '@/contexts/RoleContext';
 
 const SidebarIcon = ({ icon: Icon, label, isActive = false, isLogo = false }: {
   icon: ComponentType<{ className?: string }>;
@@ -33,16 +37,30 @@ const SidebarIcon = ({ icon: Icon, label, isActive = false, isLogo = false }: {
 export const Sidebar = () => {
   const { t } = useTranslation();
   const location = useLocation();
+  const { selectedRole } = useRole();
 
-  const menuItems = [
+  const doctorMenuItems = [
     { icon: Home, label: t('sidebar.logo'), path: '/dashboard' },
     { icon: Users, label: t('sidebar.patients'), path: '/pacientes' },
-    { icon: Stethoscope, label: t('sidebar.personnel', 'Personal'), path: '/personal' },
     { icon: MessageSquare, label: t('sidebar.messages'), path: '/mensajes' },
     { icon: Calendar, label: t('sidebar.agenda'), path: '/agenda' },
     { icon: ClipboardList, label: t('sidebar.records'), path: '/expedientes' },
     { icon: Bot, label: 'Actividades IA', path: '/ia-activities' },
   ];
+
+  const adminMenuItems = [
+    { icon: Home, label: t('sidebar.logo'), path: '/dashboard' },
+    { icon: Users, label: t('sidebar.patients'), path: '/pacientes' },
+    { icon: Stethoscope, label: t('sidebar.personnel', 'Personal'), path: '/personal' },
+    { icon: BarChart3, label: 'Estadísticas', path: '/estadisticas' },
+    { icon: MessageSquare, label: t('sidebar.messages'), path: '/mensajes' },
+    { icon: Calendar, label: t('sidebar.agenda'), path: '/agenda' },
+    { icon: ClipboardList, label: t('sidebar.records'), path: '/expedientes' },
+    { icon: Bot, label: 'Actividades IA', path: '/ia-activities' },
+    { icon: Settings, label: 'Configuración', path: '/configuracion' },
+  ];
+
+  const menuItems = selectedRole === 'Admin' ? adminMenuItems : doctorMenuItems;
   
   const bottomItems = [
       { icon: LifeBuoy, label: t('sidebar.support') },
