@@ -29,7 +29,7 @@ const SidebarItem = ({ icon: Icon, label, path, isActive = false, isLogo = false
     <div className={cn(
       "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 w-full",
       isActive ? "bg-brand-blue text-white" : "text-gray-600 hover:bg-brand-light hover:text-brand-blue",
-      isLogo ? "text-brand-blue font-semibold" : ""
+      isLogo ? "text-brand-blue font-semibold justify-center" : ""
     )}>
       <Icon className="w-5 h-5 flex-shrink-0" />
       <span className="text-sm font-medium">{label}</span>
@@ -51,13 +51,23 @@ const SidebarItem = ({ icon: Icon, label, path, isActive = false, isLogo = false
   );
 };
 
+const LogoSection = () => {
+  return (
+    <div className="flex items-center justify-center px-4 py-6">
+      <div className="text-brand-blue font-bold text-xl">
+        MediApp
+      </div>
+    </div>
+  );
+};
+
 export const Sidebar = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const { selectedRole } = useRole();
 
   const doctorMenuItems = [
-    { icon: Home, label: t('sidebar.logo'), path: '/dashboard' },
+    { icon: Home, label: 'Dashboard', path: '/dashboard' },
     { icon: Users, label: t('sidebar.patients'), path: '/pacientes' },
     { icon: MessageSquare, label: t('sidebar.messages'), path: '/mensajes' },
     { icon: Calendar, label: t('sidebar.agenda'), path: '/agenda' },
@@ -66,7 +76,7 @@ export const Sidebar = () => {
   ];
 
   const adminMenuItems = [
-    { icon: Home, label: t('sidebar.logo'), path: '/dashboard' },
+    { icon: Home, label: 'Dashboard', path: '/dashboard' },
     { icon: Users, label: t('sidebar.patients'), path: '/pacientes' },
     { icon: Stethoscope, label: t('sidebar.personnel', 'Personal'), path: '/personal' },
     { icon: BarChart3, label: 'Estadísticas', path: '/estadisticas' },
@@ -86,15 +96,14 @@ export const Sidebar = () => {
 
   return (
     <aside className="bg-card w-64 flex flex-col py-6 px-4 shadow-soft">
+      {/* Logo Section */}
+      <LogoSection />
+      
+      <div className="h-6"></div>
+      
+      {/* Main Navigation */}
       <nav className="flex flex-col space-y-2 flex-1">
-        <SidebarItem 
-          icon={menuItems[0].icon} 
-          label={menuItems[0].label} 
-          path={menuItems[0].path}
-          isLogo 
-        />
-        <div className="h-6"></div>
-        {menuItems.slice(1).map((item) => (
+        {menuItems.map((item) => (
           <SidebarItem 
             key={item.label} 
             icon={item.icon} 
@@ -104,6 +113,8 @@ export const Sidebar = () => {
           />
         ))}
       </nav>
+      
+      {/* Bottom Items */}
       <div className="flex flex-col space-y-2 pt-4 border-t border-gray-200">
         {bottomItems.map((item) => (
           <SidebarItem 
