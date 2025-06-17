@@ -65,12 +65,10 @@ export const QuickActions = () => {
     },
   ];
 
-  const actions = isAdmin ? adminActions : doctorActions;
-
   if (isAdmin) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {actions.map((action) => (
+        {adminActions.map((action) => (
           <Button 
             key={action.label} 
             variant="outline" 
@@ -96,14 +94,19 @@ export const QuickActions = () => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      {actions.map(({ label, icon: Icon, action }) => (
-        <Button key={label} variant="outline" className="justify-start h-auto p-4 text-left bg-white shadow-soft border-0 rounded-2xl hover:bg-gray-50" onClick={action}>
+      {doctorActions.map((action) => (
+        <Button 
+          key={action.label} 
+          variant="outline" 
+          className="justify-start h-auto p-4 text-left bg-white shadow-soft border-0 rounded-2xl hover:bg-gray-50" 
+          onClick={action.action}
+        >
           <div className="flex items-center gap-4">
             <div className="bg-brand-light p-3 rounded-lg">
-              <Icon className="w-6 h-6 text-brand-blue" />
+              <action.icon className="w-6 h-6 text-brand-blue" />
             </div>
             <div>
-              <p className="font-semibold text-brand-dark">{label}</p>
+              <p className="font-semibold text-brand-dark">{action.label}</p>
             </div>
           </div>
         </Button>
