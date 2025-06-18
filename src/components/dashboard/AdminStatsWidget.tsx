@@ -1,9 +1,16 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Calendar, DollarSign, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { TrendingUp, Calendar, DollarSign, Users, Settings } from 'lucide-react';
+import { SystemConfigService } from '@/services/systemConfigService';
+import { useNavigate } from 'react-router-dom';
 
 export const AdminStatsWidget = () => {
+  const navigate = useNavigate();
+  const config = SystemConfigService.getConfig();
+  const financialConfig = SystemConfigService.getFinancialSectionConfig();
+
   // Mock data - se conectará con datos reales más adelante
   const clinicStats = {
     totalPatients: 1247,
@@ -18,27 +25,31 @@ export const AdminStatsWidget = () => {
       title: 'Pacientes Totales',
       value: clinicStats.totalPatients.toLocaleString(),
       icon: Users,
-      color: 'blue'
+      color: 'blue',
+      enabled: config.enabledSections.patients
     },
     {
-      title: 'Ingresos del Mes',
-      value: `$${clinicStats.monthlyRevenue.toLocaleString()}`,
+      title: financialConfig.show ? 'Ingresos del Mes' : 'Eficiencia Operativa',
+      value: financialConfig.show ? `$${clinicStats.monthlyRevenue.toLocaleString()}` : '87.5%',
       icon: DollarSign,
-      color: 'green'
+      color: 'green',
+      enabled: financialConfig.show || config.enabledSections.operational
     },
     {
       title: 'Citas Hoy',
       value: clinicStats.appointmentsToday.toString(),
       icon: Calendar,
-      color: 'orange'
+      color: 'orange',
+      enabled: config.enabledSections.appointments
     },
     {
       title: 'Doctores Activos',
       value: clinicStats.doctorsActive.toString(),
       icon: TrendingUp,
-      color: 'purple'
+      color: 'purple',
+      enabled: config.enabledSections.personnel
     }
-  ];
+  ].filter(item => item.enabled);
 
   const getColorClasses = (color: string) => {
     switch (color) {
@@ -55,11 +66,23 @@ export const AdminStatsWidget = () => {
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-brand-blue" />
-          Estadísticas de la Clínica
+          {config.institutionType === 'large_hospital' 
+            ? 'Métricas del Hospital'
+            : 'Estadísticas de la Clínica'
+          }
         </CardTitle>
-        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-          {clinicStats.growthRate}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+            {clinicStats.growthRate}
+          </Badge>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate('/configuracion')}
+          >
+            <Settings className="w-4 h-4" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
@@ -75,6 +98,21 @@ export const AdminStatsWidget = () => {
             </div>
           ))}
         </div>
+        
+        {/* Información adicional según tipo de institución */}
+        {config.institutionType === 'large_hospital' && (
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-xs text-blue-700">
+              🏥 Configuración optimizada para hospital grande - 
+              <button 
+                onClick={() => navigate('/estadisticas')}
+                className="underline ml-1"
+              >
+                Ver métricas operativas completas
+              </button>
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
