@@ -1,4 +1,3 @@
-
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { usePatientPermissions } from '@/hooks/usePatientPermissions';
 import { DollarSign, CreditCard, AlertCircle, CheckCircle, Download, Mail } from 'lucide-react';
 import { Patient } from '@/data/patients';
+import { EmailProviderDialog } from './EmailProviderDialog';
 
 interface PatientBillingProps {
   patient: Patient;
@@ -176,14 +176,15 @@ export const PatientBilling = ({ patient }: PatientBillingProps) => {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Historial de Facturación - {patient.name}</CardTitle>
-          <Button 
-            variant="outline" 
-            onClick={() => handleEmailShare(patient)}
-            className="flex items-center gap-2"
-          >
-            <Mail className="w-4 h-4" />
-            Enviar Historial por Email
-          </Button>
+          <EmailProviderDialog patient={patient}>
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+            >
+              <Mail className="w-4 h-4" />
+              Enviar Historial por Email
+            </Button>
+          </EmailProviderDialog>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -218,14 +219,15 @@ export const PatientBilling = ({ patient }: PatientBillingProps) => {
                         PDF
                       </Button>
                       
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleEmailShare(patient, item.invoice)}
-                      >
-                        <Mail className="w-4 h-4 mr-1" />
-                        Email
-                      </Button>
+                      <EmailProviderDialog patient={patient} invoice={item.invoice}>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                        >
+                          <Mail className="w-4 h-4 mr-1" />
+                          Email
+                        </Button>
+                      </EmailProviderDialog>
                     </div>
                   </div>
                 </div>
