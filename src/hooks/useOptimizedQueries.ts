@@ -28,7 +28,7 @@ export const useOptimizedQueries = <T extends Record<string, any>>(
     const data = {} as T;
     results.forEach((result, index) => {
       const key = queries[index].key;
-      data[key] = result.data;
+      data[key] = result.data as T[keyof T];
     });
     return data;
   }, [results, queries]);
