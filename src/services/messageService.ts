@@ -220,13 +220,18 @@ export class MessageService {
     messages.push(newMessage);
     localStorage.setItem(`messages-${conversationId}`, JSON.stringify(messages));
 
-    // Update conversation last message
+    // Update conversation last message and timestamp
     const conversations = this.getConversations();
     const conversationIndex = conversations.findIndex(c => c.id === conversationId);
     if (conversationIndex !== -1) {
       conversations[conversationIndex].lastMessage = newMessage;
       localStorage.setItem('conversations', JSON.stringify(conversations));
     }
+
+    // Trigger custom event for real-time updates
+    window.dispatchEvent(new CustomEvent('messageUpdate', { 
+      detail: { conversationId, message: newMessage } 
+    }));
 
     return newMessage;
   }
@@ -237,6 +242,11 @@ export class MessageService {
     if (conversationIndex !== -1) {
       conversations[conversationIndex].unreadCount = 0;
       localStorage.setItem('conversations', JSON.stringify(conversations));
+      
+      // Trigger custom event for real-time updates
+      window.dispatchEvent(new CustomEvent('conversationUpdate', { 
+        detail: { conversationId } 
+      }));
     }
   }
 
@@ -250,5 +260,36 @@ export class MessageService {
   static getTotalUnreadCount(): number {
     const conversations = this.getConversations();
     return conversations.reduce((total, conv) => total + conv.unreadCount, 0);
+  }
+
+  // Método para simular mensajes entrantes (para testing)
+  static simulateIncomingMessage(conversationId: string, senderId: string, text: string): void {
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      text,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      senderId,
+      conversationId,
+      isRead: false,
+      isUrgent: false
+    };
+
+    const messages = this.getMessages(conversationId);
+    messages.push(newMessage);
+    localStorage.setItem(`messages-${conversationId}`, JSON.stringify(messages));
+
+    // Update conversation
+    const conversations = this.getConversations();
+    const conversationIndex = conversations.findIndex(c => c.id === conversationId);
+    if (conversationIndex !== -1) {
+      conversations[conversationIndex].lastMessage = newMessage;
+      conversations[conversationIndex].unreadCount += 1;
+      localStorage.setItem('conversations', JSON.stringify(conversations));
+    }
+
+    // Trigger custom event
+    window.dispatchEvent(new CustomEvent('messageUpdate', { 
+      detail: { conversationId, message: newMessage } 
+    }));
   }
 }

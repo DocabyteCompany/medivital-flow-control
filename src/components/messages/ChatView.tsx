@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Personnel } from "@/data/personnel";
 import { MessageService, Message } from "@/services/messageService";
 import { cn } from "@/lib/utils";
-import { Phone, Send, Video } from "lucide-react";
+import { Send, User } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
+import { ContactProfileDialog } from "./ContactProfileDialog";
 
 interface ChatViewProps {
   doctor: Personnel | undefined;
@@ -15,6 +16,7 @@ interface ChatViewProps {
 const ChatView = ({ doctor }: ChatViewProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [showProfileDialog, setShowProfileDialog] = useState(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
@@ -91,18 +93,21 @@ const ChatView = ({ doctor }: ChatViewProps) => {
           <AvatarImage src={doctor.avatar} alt={doctor.name} />
           <AvatarFallback>{doctor.name.charAt(0)}</AvatarFallback>
         </Avatar>
-        <div className="ml-4">
+        <div className="ml-4 flex-1">
           <p className="font-semibold">{doctor.name}</p>
           <p className={cn("text-sm", doctor.online ? "text-green-500" : "text-muted-foreground")}>
             {doctor.online ? "En línea" : "Desconectado"}
           </p>
         </div>
-        <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <Phone className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <Video className="h-5 w-5" />
+        <div className="ml-auto">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="flex items-center gap-2"
+            onClick={() => setShowProfileDialog(true)}
+          >
+            <User className="h-4 w-4" />
+            Ver Perfil
           </Button>
         </div>
       </header>
@@ -154,6 +159,13 @@ const ChatView = ({ doctor }: ChatViewProps) => {
           </Button>
         </form>
       </footer>
+
+      {/* Dialog del perfil */}
+      <ContactProfileDialog 
+        open={showProfileDialog}
+        onOpenChange={setShowProfileDialog}
+        doctor={doctor}
+      />
     </div>
   );
 };

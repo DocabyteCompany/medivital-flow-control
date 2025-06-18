@@ -22,6 +22,8 @@ export const PersonnelStatsWidget = () => {
     key: `specialty-${index}`
   }));
 
+  console.log('Specialty data:', specialtyData); // Debug log
+
   const onlinePercentage = stats.total > 0 ? (stats.online / stats.total) * 100 : 0;
 
   return (
@@ -141,20 +143,30 @@ export const PersonnelStatsWidget = () => {
                 <BarChart 
                   data={specialtyData} 
                   layout="horizontal"
-                  margin={{ left: 100, right: 20, top: 20, bottom: 20 }}
+                  margin={{ left: 120, right: 20, top: 20, bottom: 20 }}
                 >
-                  <XAxis type="number" />
+                  <XAxis 
+                    type="number" 
+                    domain={[0, 'dataMax + 1']}
+                    tickCount={6}
+                  />
                   <YAxis 
                     dataKey="name" 
                     type="category" 
-                    width={100}
+                    width={120}
                     fontSize={12}
+                    interval={0}
                   />
                   <ChartTooltip 
-                    content={<ChartTooltipContent />}
-                    cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
+                    content={<ChartTooltipContent labelKey="name" valueKey="value" />}
+                    cursor={{ fill: 'rgba(16, 185, 129, 0.1)' }}
                   />
-                  <Bar dataKey="value" fill="#10B981" />
+                  <Bar 
+                    dataKey="value" 
+                    fill="#10B981" 
+                    radius={[0, 4, 4, 0]}
+                    minPointSize={5}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </ChartContainer>
