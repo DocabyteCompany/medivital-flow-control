@@ -54,6 +54,43 @@ const resources = {
         cardiacTest: "Cardiac Test",
         days: { mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat" },
         months: { september: "September" }
+      },
+      personnel: {
+        schedule: {
+          availability: "Availability Calendar",
+          availabilityDesc: "Monthly view of availability and assigned shifts",
+          weeklySchedule: "Weekly Schedule",
+          weeklyScheduleDesc: "Configuration of shifts and working hours",
+          addShift: "Add Shift",
+          shiftStats: "Shift Statistics",
+          shiftStatsDesc: "Activity summary and workload",
+          weeklyHours: "Weekly hours",
+          patientsThisWeek: "Patients this week",
+          extraShifts: "Extra shifts",
+          attendance: "Attendance",
+          available: "Available",
+          busy: "Busy",
+          unavailable: "Unavailable",
+          types: {
+            regular: "Regular",
+            overtime: "Overtime",
+            oncall: "On Call"
+          },
+          status: {
+            active: "Active",
+            break: "Break",
+            unavailable: "Unavailable"
+          },
+          days: {
+            monday: "Monday",
+            tuesday: "Tuesday",
+            wednesday: "Wednesday",
+            thursday: "Thursday",
+            friday: "Friday",
+            saturday: "Saturday",
+            sunday: "Sunday"
+          }
+        }
       }
     }
   },
@@ -107,11 +144,47 @@ const resources = {
         cardiacTest: "Prueba Cardíaca",
         days: { mon: "Lun", tue: "Mar", wed: "Mié", thu: "Jue", fri: "Vie", sat: "Sáb" },
         months: { september: "Septiembre" }
+      },
+      personnel: {
+        schedule: {
+          availability: "Calendario de Disponibilidad",
+          availabilityDesc: "Vista mensual de disponibilidad y turnos asignados",
+          weeklySchedule: "Horario Semanal",
+          weeklyScheduleDesc: "Configuración de turnos y horarios de trabajo",
+          addShift: "Agregar Turno",
+          shiftStats: "Estadísticas de Turnos",
+          shiftStatsDesc: "Resumen de actividad y carga de trabajo",
+          weeklyHours: "Horas semanales",
+          patientsThisWeek: "Pacientes esta semana",
+          extraShifts: "Turnos extra",
+          attendance: "Asistencia",
+          available: "Disponible",
+          busy: "Ocupado",
+          unavailable: "No disponible",
+          types: {
+            regular: "Regular",
+            overtime: "Horas Extra",
+            oncall: "Guardia"
+          },
+          status: {
+            active: "Activo",
+            break: "Descanso",
+            unavailable: "No disponible"
+          },
+          days: {
+            monday: "Lunes",
+            tuesday: "Martes",
+            wednesday: "Miércoles",
+            thursday: "Jueves",
+            friday: "Viernes",
+            saturday: "Sábado",
+            sunday: "Domingo"
+          }
+        }
       }
     }
   }
 };
-
 
 i18n
   .use(LanguageDetector)

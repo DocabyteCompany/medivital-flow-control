@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Personnel } from "@/data/personnel";
+import { useTranslation } from 'react-i18next';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Calendar as CalendarIcon, 
   Clock, 
@@ -30,17 +32,19 @@ interface ScheduleEntry {
 }
 
 export const PersonnelScheduleManagement = ({ person }: PersonnelScheduleManagementProps) => {
+  const { t } = useTranslation();
+  const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   
   // Mock data para ejemplo
-  const weeklySchedule: ScheduleEntry[] = [
-    { id: '1', day: 'Lunes', startTime: '08:00', endTime: '16:00', type: 'regular', patients: 12, status: 'active' },
-    { id: '2', day: 'Martes', startTime: '08:00', endTime: '16:00', type: 'regular', patients: 10, status: 'active' },
-    { id: '3', day: 'Miércoles', startTime: '10:00', endTime: '18:00', type: 'regular', patients: 8, status: 'active' },
-    { id: '4', day: 'Jueves', startTime: '08:00', endTime: '16:00', type: 'regular', patients: 11, status: 'active' },
-    { id: '5', day: 'Viernes', startTime: '08:00', endTime: '14:00', type: 'regular', patients: 9, status: 'active' },
-    { id: '6', day: 'Sábado', startTime: '09:00', endTime: '13:00', type: 'oncall', patients: 3, status: 'active' },
-  ];
+  const [weeklySchedule, setWeeklySchedule] = useState<ScheduleEntry[]>([
+    { id: '1', day: t('personnel.schedule.days.monday'), startTime: '08:00', endTime: '16:00', type: 'regular', patients: 12, status: 'active' },
+    { id: '2', day: t('personnel.schedule.days.tuesday'), startTime: '08:00', endTime: '16:00', type: 'regular', patients: 10, status: 'active' },
+    { id: '3', day: t('personnel.schedule.days.wednesday'), startTime: '10:00', endTime: '18:00', type: 'regular', patients: 8, status: 'active' },
+    { id: '4', day: t('personnel.schedule.days.thursday'), startTime: '08:00', endTime: '16:00', type: 'regular', patients: 11, status: 'active' },
+    { id: '5', day: t('personnel.schedule.days.friday'), startTime: '08:00', endTime: '14:00', type: 'regular', patients: 9, status: 'active' },
+    { id: '6', day: t('personnel.schedule.days.saturday'), startTime: '09:00', endTime: '13:00', type: 'oncall', patients: 3, status: 'active' },
+  ]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -60,6 +64,38 @@ export const PersonnelScheduleManagement = ({ person }: PersonnelScheduleManagem
     }
   };
 
+  const handleEditSchedule = (scheduleId: string) => {
+    const schedule = weeklySchedule.find(s => s.id === scheduleId);
+    console.log('Editando horario:', schedule);
+    
+    toast({
+      title: "Editar Turno",
+      description: `Función de edición para el turno de ${schedule?.day}. Esta funcionalidad se implementará próximamente.`,
+    });
+  };
+
+  const handleDeleteSchedule = (scheduleId: string) => {
+    const schedule = weeklySchedule.find(s => s.id === scheduleId);
+    
+    // Simular eliminación
+    setWeeklySchedule(prev => prev.filter(s => s.id !== scheduleId));
+    
+    toast({
+      title: "Turno Eliminado",
+      description: `Se ha eliminado el turno de ${schedule?.day}.`,
+      variant: "destructive",
+    });
+  };
+
+  const handleAddShift = () => {
+    console.log('Agregando nuevo turno');
+    
+    toast({
+      title: "Agregar Turno",
+      description: "Función para agregar nuevo turno. Esta funcionalidad se implementará próximamente.",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -68,10 +104,10 @@ export const PersonnelScheduleManagement = ({ person }: PersonnelScheduleManagem
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CalendarIcon className="w-5 h-5" />
-              Calendario de Disponibilidad
+              {t('personnel.schedule.availability')}
             </CardTitle>
             <CardDescription>
-              Vista mensual de disponibilidad y turnos asignados
+              {t('personnel.schedule.availabilityDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -84,15 +120,15 @@ export const PersonnelScheduleManagement = ({ person }: PersonnelScheduleManagem
             <div className="mt-4 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-sm">Disponible</span>
+                <span className="text-sm">{t('personnel.schedule.available')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                <span className="text-sm">Ocupado</span>
+                <span className="text-sm">{t('personnel.schedule.busy')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-sm">No disponible</span>
+                <span className="text-sm">{t('personnel.schedule.unavailable')}</span>
               </div>
             </div>
           </CardContent>
@@ -103,10 +139,10 @@ export const PersonnelScheduleManagement = ({ person }: PersonnelScheduleManagem
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="w-5 h-5" />
-              Horario Semanal
+              {t('personnel.schedule.weeklySchedule')}
             </CardTitle>
             <CardDescription>
-              Configuración de turnos y horarios de trabajo
+              {t('personnel.schedule.weeklyScheduleDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -122,16 +158,24 @@ export const PersonnelScheduleManagement = ({ person }: PersonnelScheduleManagem
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className={getTypeColor(schedule.type)}>
-                      {schedule.type}
+                      {t(`personnel.schedule.types.${schedule.type}`)}
                     </Badge>
                     <Badge variant="outline" className={getStatusColor(schedule.status)}>
-                      {schedule.status}
+                      {t(`personnel.schedule.status.${schedule.status}`)}
                     </Badge>
                     <div className="flex gap-1">
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleEditSchedule(schedule.id)}
+                      >
                         <Edit className="w-3 h-3" />
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleDeleteSchedule(schedule.id)}
+                      >
                         <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
@@ -139,9 +183,9 @@ export const PersonnelScheduleManagement = ({ person }: PersonnelScheduleManagem
                 </div>
               ))}
             </div>
-            <Button className="w-full mt-4">
+            <Button className="w-full mt-4" onClick={handleAddShift}>
               <Plus className="w-4 h-4 mr-2" />
-              Agregar Turno
+              {t('personnel.schedule.addShift')}
             </Button>
           </CardContent>
         </Card>
@@ -150,26 +194,26 @@ export const PersonnelScheduleManagement = ({ person }: PersonnelScheduleManagem
       {/* Estadísticas de turnos */}
       <Card>
         <CardHeader>
-          <CardTitle>Estadísticas de Turnos</CardTitle>
-          <CardDescription>Resumen de actividad y carga de trabajo</CardDescription>
+          <CardTitle>{t('personnel.schedule.shiftStats')}</CardTitle>
+          <CardDescription>{t('personnel.schedule.shiftStatsDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">40</div>
-              <div className="text-sm text-gray-600">Horas semanales</div>
+              <div className="text-sm text-gray-600">{t('personnel.schedule.weeklyHours')}</div>
             </div>
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">53</div>
-              <div className="text-sm text-gray-600">Pacientes esta semana</div>
+              <div className="text-sm text-gray-600">{t('personnel.schedule.patientsThisWeek')}</div>
             </div>
             <div className="text-center p-4 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">2</div>
-              <div className="text-sm text-gray-600">Turnos extra</div>
+              <div className="text-sm text-gray-600">{t('personnel.schedule.extraShifts')}</div>
             </div>
             <div className="text-center p-4 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">95%</div>
-              <div className="text-sm text-gray-600">Asistencia</div>
+              <div className="text-sm text-gray-600">{t('personnel.schedule.attendance')}</div>
             </div>
           </div>
         </CardContent>
