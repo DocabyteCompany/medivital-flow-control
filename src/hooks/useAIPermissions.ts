@@ -108,30 +108,24 @@ export const useAIPermissions = (context?: ActivityContext) => {
   const getAvailableActions = () => {
     const actions: string[] = [];
     
-    if (canPerformAction('canUseAITranscription')) {
-      actions.push('transcription');
-    }
-    if (canPerformAction('canUseAIScheduling')) {
-      actions.push('schedule');
-    }
-    if (canPerformAction('canUseAISummaries')) {
-      actions.push('summary');
-    }
-    if (canPerformAction('canUseAICalls')) {
-      actions.push('call');
-    }
-    if (canPerformAction('canUseAIReferrals')) {
-      actions.push('referral');
-    }
-    if (canPerformAction('canUseAIReminders')) {
-      actions.push('reminder');
-    }
-    if (canPerformAction('canUseAIFollowUp')) {
-      actions.push('follow-up');
-    }
-    if (canPerformAction('canUseAIPatientIntake')) {
-      actions.push('patient-intake');
-    }
+    // Usar tipo assertion para las claves booleanas específicas
+    const booleanPermissions: (keyof AIPermissions)[] = [
+      'canUseAITranscription',
+      'canUseAIScheduling', 
+      'canUseAISummaries',
+      'canUseAICalls',
+      'canUseAIReferrals',
+      'canUseAIReminders',
+      'canUseAIFollowUp',
+      'canUseAIPatientIntake'
+    ];
+
+    booleanPermissions.forEach(permission => {
+      if (canPerformAction(permission)) {
+        const actionName = permission.replace('canUseAI', '').toLowerCase();
+        actions.push(actionName);
+      }
+    });
 
     return actions;
   };
