@@ -1,5 +1,5 @@
 
-import { Phone, FileText, CalendarClock } from 'lucide-react';
+import { Phone, FileText, CalendarClock, Bell, UserCheck, Mic, FileX, ClipboardList } from 'lucide-react';
 import type { LucideProps } from 'lucide-react';
 import type { Activity } from './ActivityCard';
 
@@ -7,6 +7,11 @@ const iconMap = {
     call: Phone,
     summary: FileText,
     schedule: CalendarClock,
+    reminder: Bell,
+    'follow-up': UserCheck,
+    transcription: Mic,
+    referral: FileX,
+    'patient-intake': ClipboardList,
 };
 
 type ActivityIconProps = {

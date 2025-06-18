@@ -11,12 +11,26 @@ import { useState } from "react";
 
 export type Activity = {
   id: string;
-  type: 'call' | 'summary' | 'schedule';
+  type: 'call' | 'summary' | 'schedule' | 'reminder' | 'follow-up' | 'transcription' | 'referral' | 'patient-intake';
   title: string;
   description: string;
   timestamp: string;
   status: 'completed' | 'in-progress' | 'failed';
   details?: Record<string, any>;
+  context?: {
+    patientId?: string;
+    doctorId?: string;
+    appointmentId?: string;
+    page?: string;
+  };
+};
+
+export type ActivityContext = {
+  patientId?: string;
+  doctorId?: string;
+  appointmentId?: string;
+  currentPage?: string;
+  userRole?: 'Doctor' | 'Admin';
 };
 
 type ActivityCardProps = {
