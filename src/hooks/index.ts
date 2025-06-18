@@ -8,3 +8,4 @@ export { useOptimizedPermissions } from './useOptimizedPermissions';
 export { usePatientPermissions } from './usePatientPermissions';
 export { usePermissions } from './usePermissions';
 export { useRecordsPermissions } from './useRecordsPermissions';
+export { useUnifiedPermissions } from './useUnifiedPermissions';
