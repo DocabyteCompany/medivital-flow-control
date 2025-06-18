@@ -129,6 +129,147 @@
 
 ---
 
+## 🤖 FASE 6: Sistema de IA Contextual Administrativa (Sin APIs Externas)
+**Estado: 🚀 NUEVA IMPLEMENTACIÓN**
+
+### **FASE 6A: Infraestructura de Botones Contextuales (Semana 1)**
+**Objetivo**: Crear la base técnica para botones de IA distribuidos por toda la webapp
+
+#### Expandir tipos de Activity
+- [ ] Añadir nuevos tipos: `reminder`, `follow-up`, `transcription`, `referral`, `patient-intake`
+- [ ] Expandir el `ActivityContext` para manejar más tipos de actividades
+- [ ] Actualizar interfaces y tipos en `ActivityCard.tsx`
+
+#### Componentes Base
+- [ ] **`ContextualAIButton`** - Botón que detecta contexto automáticamente
+- [ ] **`AIActionModal`** - Modal unificado para configurar acciones IA
+- [ ] **`SmartSuggestionWidget`** - Widget proactivo de sugerencias
+
+#### Hooks y Servicios
+- [ ] **`useAIContext`** - Hook que detecta contexto actual (paciente, cita, página)
+- [ ] **`useContextualAI`** - Hook para sugerir acciones relevantes
+- [ ] **`AIActionService`** - Servicio para simular ejecución de acciones IA
+
+### **FASE 6B: Integración por Secciones (Semana 2)**
+**Objetivo**: Implementar botones contextuales en cada sección principal
+
+#### En Pacientes (`/patients`)
+- [ ] **"Confirmar cita próxima"** - Si el paciente tiene cita en <48h
+- [ ] **"Programar seguimiento"** - Después de consulta reciente
+- [ ] **"Generar resumen médico"** - Basado en historial del paciente
+- [ ] **"Llamar para recordatorio"** - Si tiene cita pendiente
+
+#### En Agenda (`/agenda`)
+- [ ] **"Confirmar citas del día"** - Simulación de llamadas masivas
+- [ ] **"Enviar recordatorios"** - Simulación de mensajes automáticos
+- [ ] **"Buscar cita urgente"** - Algoritmo de mejor disponibilidad
+- [ ] **"Reagendar no-shows"** - Automático para pacientes que no llegaron
+
+#### En Expedientes (`/records`)
+- [ ] **"Transcribir consulta"** - Simulación de audio → texto estructurado
+- [ ] **"Generar resumen de cita"** - Notas → resumen médico formal
+- [ ] **"Crear carta de referencia"** - Automática basada en diagnóstico
+- [ ] **"Extraer datos de estudios"** - OCR simulado de estudios médicos
+
+#### En Dashboard (`/dashboard`)
+- [ ] **Panel "Tareas IA Sugeridas"** - Acciones proactivas del día
+- [ ] **"Seguimientos vencidos"** - Detectar pacientes que necesitan follow-up
+- [ ] **"Citas sin confirmar"** - Lista automática para confirmar
+
+### **FASE 6C: Automatizaciones Inteligentes (Semana 3)**
+**Objetivo**: Sistema de triggers automáticos y FAB inteligente
+
+#### Sistema de Triggers Automáticos (Simulados)
+- [ ] **Post-consulta** → Sugerir seguimiento en X días
+- [ ] **Paciente nuevo** → Sugerir llamada de bienvenida
+- [ ] **Resultado de lab** → Sugerir comunicar al paciente
+- [ ] **No-show detectado** → Sugerir reagendar automáticamente
+- [ ] **Cita próxima** → Sugerir confirmación 24h antes
+
+#### FAB (Floating Action Button) Inteligente
+- [ ] **Detección automática** - Aparece cuando hay 3+ acciones disponibles
+- [ ] **Priorización inteligente** - Muestra acciones más urgentes primero
+- [ ] **Animaciones suaves** - UX optimizada para mobile y desktop
+- [ ] **Modo compacto/expandido** - Adaptable según contexto
+
+#### Centro de Control Mejorado
+- [ ] **Dashboard IA ampliado** en `/ia-activities`
+- [ ] **Métricas de eficiencia** - Tiempo ahorrado, tareas automatizadas
+- [ ] **Configuración de workflows** - Personalizar triggers por clínica
+- [ ] **Historial de acciones** - Auditoría completa de actividades IA
+
+### **Arquitectura Técnica (Interna)**
+
+#### Nuevos Componentes
+```
+src/components/ai/
+├── contextual/
+│   ├── ContextualAIButton.tsx
+│   ├── AIActionModal.tsx
+│   ├── SmartSuggestionWidget.tsx
+│   └── FloatingAIButton.tsx
+├── triggers/
+│   ├── AutoTriggerService.ts
+│   ├── TriggerEngine.ts
+│   └── WorkflowBuilder.tsx
+└── integrations/
+    ├── PatientAIActions.tsx
+    ├── AgendaAIActions.tsx
+    ├── RecordsAIActions.tsx
+    └── DashboardAIActions.tsx
+```
+
+#### Hooks Especializados
+```
+src/hooks/ai/
+├── useAIContext.ts       # Detecta contexto actual
+├── useContextualAI.ts    # Sugiere acciones relevantes
+├── useAITriggers.ts      # Maneja triggers automáticos
+└── useAIMetrics.ts       # Métricas de uso y eficiencia
+```
+
+#### Servicios de IA (Simulados)
+```
+src/services/ai/
+├── AIActionService.ts    # Simula ejecución de acciones IA
+├── ContextDetector.ts    # Detecta contexto automáticamente
+├── TriggerEngine.ts      # Motor de triggers automáticos
+└── WorkflowManager.ts    # Gestiona workflows personalizados
+```
+
+### **Funcionalidades de Simulación**
+
+#### Simulaciones Realistas
+- **Llamadas**: Tiempo de espera + resultado simulado con sentiment
+- **Transcripciones**: Texto predefinido estructurado
+- **Resúmenes**: Templates con datos del paciente
+- **Agendamiento**: Algoritmo real de búsqueda de disponibilidad
+
+#### Métricas Simuladas
+- Tiempo ahorrado por acción
+- Tasa de éxito de contactos
+- Mejora en seguimiento de pacientes
+- Satisfacción simulada del usuario
+
+### **Cronograma (3 Semanas)**
+
+#### Semana 1: Fundación
+- **Días 1-2**: Expandir tipos de Activity y componentes base
+- **Días 3-4**: Hooks de detección de contexto
+- **Días 5-7**: Testing de infraestructura
+
+#### Semana 2: Integración
+- **Días 8-10**: Botones en Pacientes y Agenda
+- **Días 11-12**: Expedientes y Dashboard
+- **Días 13-14**: Testing de integración
+
+#### Semana 3: Automatización
+- **Días 15-17**: Sistema de triggers automáticos
+- **Días 18-19**: FAB inteligente
+- **Días 20-21**: Centro de control mejorado
+
+---
+
 ## 🔧 TAREAS ADICIONALES DE MANTENIMIENTO
 
 ### Refactorización de archivos largos
@@ -159,6 +300,9 @@
 - ✅ Fase 4: Performance y Optimización (100%)
 - ✅ Fase 5: Documentación Técnica (100%)
 
+### En Progreso
+- 🚀 Fase 6: Sistema de IA Contextual Administrativa (0%)
+
 ### Pendiente
 - ⏳ Testing y Calidad de Código (0%)
 - ⏳ Optimizaciones adicionales de TypeScript (0%)
@@ -188,24 +332,25 @@
 
 ---
 
-## 🚀 PROYECTO LISTO PARA PRODUCCIÓN
+## 🚀 PROYECTO EN EVOLUCIÓN
 
-El sistema de clínica ha completado su refactorización completa con:
+El sistema de clínica ha completado su refactorización base y está listo para la siguiente fase de automatización inteligente con IA contextual.
 
+### Estado Actual
 1. ✅ **Arquitectura escalable** y bien documentada
 2. ✅ **Performance optimizada** para grandes volúmenes de datos
 3. ✅ **Código mantenible** con patrones consistentes
 4. ✅ **Documentación técnica** completa y actualizada
 5. ✅ **Gestión de estado** optimizada y coordinada
 
-### Próximos Pasos Opcionales
-- Testing automatizado (Fase 6)
-- PWA features y offline support
-- Micro-frontends para escalabilidad
-- AI/ML integration para predicciones
+### Próxima Implementación (Fase 6)
+- 🚀 **Sistema de IA Contextual** para automatización administrativa
+- 🚀 **Botones inteligentes** distribuidos por toda la webapp
+- 🚀 **Triggers automáticos** para workflows eficientes
+- 🚀 **FAB inteligente** para acceso rápido a acciones IA
 
 ---
 
-**Estado del Proyecto:** ✅ **REFACTORIZACIÓN COMPLETADA**  
+**Estado del Proyecto:** ✅ **BASE SÓLIDA** + 🚀 **LISTO PARA FASE 6**  
 **Última actualización:** 18 de junio, 2025  
 **Responsable:** Equipo de desarrollo
