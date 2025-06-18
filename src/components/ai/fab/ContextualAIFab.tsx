@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Bot, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { Bot, X, CheckCircle, AlertCircle, Brain, Sparkles, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAIContext } from '@/hooks/useAIContext';
 import { useAIPermissions } from '@/hooks/useAIPermissions';
@@ -12,9 +12,12 @@ import { useToast } from '@/components/ui/use-toast';
 
 type FABState = 'collapsed' | 'expanded' | 'loading' | 'success' | 'error';
 
+const AI_ICONS = [Bot, Brain, Sparkles, Zap];
+
 export const ContextualAIFab = () => {
   const [state, setState] = useState<FABState>('collapsed');
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
+  const [currentIconIndex, setCurrentIconIndex] = useState(0);
   
   const context = useAIContext();
   const { canPerformAction, role } = useAIPermissions(context);
@@ -26,7 +29,14 @@ export const ContextualAIFab = () => {
 
   const toggleFAB = () => {
     if (state === 'loading') return;
-    setState(state === 'collapsed' ? 'expanded' : 'collapsed');
+    
+    if (state === 'collapsed') {
+      setState('expanded');
+      // Cambiar ícono al expandir
+      setCurrentIconIndex((prev) => (prev + 1) % AI_ICONS.length);
+    } else {
+      setState('collapsed');
+    }
   };
 
   const handleActionClick = async (action: FABAction) => {
@@ -35,7 +45,7 @@ export const ContextualAIFab = () => {
 
     try {
       // Ejecutar la acción a través del servicio
-      const result = await FABActionService.executeAction(action, context, role);
+      const result = await FABActionService.executeAction(action, context, role, {});
 
       if (result.success) {
         // Agregar actividad al contexto global
@@ -104,6 +114,9 @@ export const ContextualAIFab = () => {
     return 'summary'; // default
   };
 
+  // Obtener el ícono actual
+  const CurrentIcon = AI_ICONS[currentIconIndex];
+
   if (!hasActions) {
     return null;
   }
@@ -171,7 +184,7 @@ export const ContextualAIFab = () => {
           ) : state === 'error' ? (
             <AlertCircle className="w-6 h-6 text-white" />
           ) : (
-            <Bot className={cn(
+            <CurrentIcon className={cn(
               "w-6 h-6 text-white transition-transform duration-300",
               state === 'loading' && "animate-spin"
             )} />

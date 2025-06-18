@@ -7,7 +7,7 @@ export class FABActionService {
   static async executeAction(
     action: FABAction, 
     context: ActivityContext, 
-    role: string,
+    role: 'Admin' | 'Doctor',
     additionalData?: Record<string, any>
   ): Promise<{ success: boolean; message: string; data?: any }> {
     console.log(`Executing AI action: ${action.id} (${action.label}) in context:`, context);

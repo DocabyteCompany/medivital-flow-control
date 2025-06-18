@@ -107,7 +107,7 @@ export const useAIPermissions = (context?: ActivityContext) => {
   const getAvailableActions = (): string[] => {
     const actions: string[] = [];
     
-    const booleanPermissions: (keyof AIPermissions)[] = [
+    const booleanPermissions: BooleanPermissionKeys[] = [
       'canUseAITranscription',
       'canUseAIScheduling', 
       'canUseAISummaries',
@@ -124,8 +124,8 @@ export const useAIPermissions = (context?: ActivityContext) => {
     ];
 
     booleanPermissions.forEach(permission => {
-      if (typeof contextualPermissions[permission] === 'boolean' && contextualPermissions[permission]) {
-        const actionName = String(permission).replace(/^canUseAI|^can/, '').toLowerCase();
+      if (contextualPermissions[permission]) {
+        const actionName = permission.replace(/^canUseAI|^can/, '').toLowerCase();
         actions.push(actionName);
       }
     });
