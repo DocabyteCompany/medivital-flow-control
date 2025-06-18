@@ -5,14 +5,32 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Personnel } from "@/data/personnel";
 import { Mail, MessageSquare, Phone } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const PersonnelCard = ({ person }: { person: Personnel }) => {
+    const navigate = useNavigate();
+
     const getInitials = (name: string) => {
         return name.split(' ').map(n => n[0]).join('');
     }
 
+    const handleMessage = () => {
+        // Navegar a mensajes con el ID del personal para iniciar conversación
+        navigate(`/mensajes?contact=${person.id}`);
+    };
+
+    const handleCall = () => {
+        // Simular llamada telefónica
+        window.location.href = `tel:${person.phone}`;
+    };
+
+    const handleEmail = () => {
+        // Abrir cliente de email
+        window.location.href = `mailto:${person.email}`;
+    };
+
     return (
-        <Card className="shadow-soft border-0 rounded-2xl">
+        <Card className="shadow-soft border-0 rounded-2xl hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-col items-center text-center p-6">
                 <div className="relative">
                     <Avatar className="w-24 h-24">
@@ -27,17 +45,47 @@ export const PersonnelCard = ({ person }: { person: Personnel }) => {
                 <p className="text-sm text-gray-500">{person.role}</p>
                 {person.specialty && <Badge variant="secondary" className="mt-2">{person.specialty}</Badge>}
             </CardHeader>
-            <CardContent className="p-6 pt-0 flex flex-col items-center">
-                <div className="flex space-x-2">
-                    <Button variant="outline" size="icon">
-                        <Phone className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon">
-                        <MessageSquare className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon">
-                        <Mail className="h-4 w-4" />
-                    </Button>
+            <CardContent className="p-6 pt-0">
+                <div className="space-y-3">
+                    {/* Información de contacto */}
+                    <div className="text-xs text-gray-500 space-y-1">
+                        <div className="flex items-center gap-2">
+                            <Phone className="w-3 h-3" />
+                            <span>{person.phone}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Mail className="w-3 h-3" />
+                            <span>{person.email}</span>
+                        </div>
+                    </div>
+                    
+                    {/* Botones de acción */}
+                    <div className="flex space-x-2">
+                        <Button 
+                            variant="outline" 
+                            size="icon" 
+                            onClick={handleCall}
+                            title={`Llamar a ${person.name}`}
+                        >
+                            <Phone className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                            variant="outline" 
+                            size="icon" 
+                            onClick={handleMessage}
+                            title={`Enviar mensaje a ${person.name}`}
+                        >
+                            <MessageSquare className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                            variant="outline" 
+                            size="icon" 
+                            onClick={handleEmail}
+                            title={`Enviar email a ${person.name}`}
+                        >
+                            <Mail className="h-4 w-4" />
+                        </Button>
+                    </div>
                 </div>
             </CardContent>
         </Card>

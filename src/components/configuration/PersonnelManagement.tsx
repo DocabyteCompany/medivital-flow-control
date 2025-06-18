@@ -1,19 +1,22 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, UserPlus, Edit, Trash2, Shield } from 'lucide-react';
+import { Users, UserPlus, Edit, Trash2, Shield, Eye } from 'lucide-react';
 import { personnel as initialPersonnel, Personnel } from '@/data/personnel';
 import { AddUserDialog } from './AddUserDialog';
 import { EditUserDialog } from './EditUserDialog';
 import { DeleteUserDialog } from './DeleteUserDialog';
+import { PersonnelDetailView } from '../personnel/PersonnelDetailView';
+import { useNavigate } from 'react-router-dom';
 
 export const PersonnelManagement = () => {
+  const navigate = useNavigate();
   const [personnelList, setPersonnelList] = useState(initialPersonnel);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDetailView, setShowDetailView] = useState(false);
   const [selectedUser, setSelectedUser] = useState<Personnel | null>(null);
 
   const handleAddUser = (userData: {
@@ -57,6 +60,11 @@ export const PersonnelManagement = () => {
     setShowDeleteDialog(true);
   };
 
+  const handleViewClick = (user: Personnel) => {
+    setSelectedUser(user);
+    setShowDetailView(true);
+  };
+
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case 'Doctor': return 'bg-blue-100 text-blue-800';
@@ -75,10 +83,20 @@ export const PersonnelManagement = () => {
           <h3 className="text-lg font-semibold text-brand-dark mb-2">Gestión de Personal</h3>
           <p className="text-gray-600">Administra usuarios, roles y permisos del personal médico.</p>
         </div>
-        <Button onClick={() => setShowAddDialog(true)} className="bg-brand-blue hover:bg-brand-blue/90">
-          <UserPlus className="w-4 h-4 mr-2" />
-          Agregar Usuario
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/personal')}
+            className="bg-brand-light hover:bg-brand-light/80"
+          >
+            <Users className="w-4 h-4 mr-2" />
+            Ver Personal Completo
+          </Button>
+          <Button onClick={() => setShowAddDialog(true)} className="bg-brand-blue hover:bg-brand-blue/90">
+            <UserPlus className="w-4 h-4 mr-2" />
+            Agregar Usuario
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-4">
@@ -120,6 +138,13 @@ export const PersonnelManagement = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleViewClick(person)}
+                    >
+                      <Eye className="w-3 h-3" />
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
@@ -202,6 +227,13 @@ export const PersonnelManagement = () => {
         user={selectedUser}
         onDeleteUser={handleDeleteUser}
       />
+
+      {showDetailView && selectedUser && (
+        <PersonnelDetailView
+          person={selectedUser}
+          onClose={() => setShowDetailView(false)}
+        />
+      )}
     </div>
   );
 };
