@@ -12,13 +12,16 @@ import {
   Phone, 
   Calendar, 
   Clock, 
-  MapPin, 
   User, 
   Briefcase,
   Activity,
-  Settings
+  TrendingUp,
+  CalendarDays
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { PersonnelScheduleManagement } from "./PersonnelScheduleManagement";
+import { PersonnelProductivityStats } from "./PersonnelProductivityStats";
+import { PersonnelActivityHistory } from "./PersonnelActivityHistory";
 
 interface PersonnelDetailViewProps {
   person: Personnel;
@@ -44,24 +47,9 @@ export const PersonnelDetailView = ({ person, onClose }: PersonnelDetailViewProp
     window.location.href = `mailto:${person.email}`;
   };
 
-  // Mock data para ejemplo
-  const schedule = [
-    { day: 'Lunes', hours: '08:00 - 16:00', patients: 12 },
-    { day: 'Martes', hours: '08:00 - 16:00', patients: 10 },
-    { day: 'Miércoles', hours: '10:00 - 18:00', patients: 8 },
-    { day: 'Jueves', hours: '08:00 - 16:00', patients: 11 },
-    { day: 'Viernes', hours: '08:00 - 14:00', patients: 9 },
-  ];
-
-  const recentActivity = [
-    { type: 'patient', description: 'Consulta con María González', time: '2 horas' },
-    { type: 'message', description: 'Respondió mensaje de Dr. Sánchez', time: '4 horas' },
-    { type: 'appointment', description: 'Cita programada para mañana', time: '1 día' },
-  ];
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b p-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -91,18 +79,26 @@ export const PersonnelDetailView = ({ person, onClose }: PersonnelDetailViewProp
 
         <div className="p-6">
           <Tabs defaultValue="info" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="info" className="flex items-center gap-2">
                 <User className="w-4 h-4" />
                 Información
               </TabsTrigger>
               <TabsTrigger value="schedule" className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                Horario
+                <CalendarDays className="w-4 h-4" />
+                Horarios
               </TabsTrigger>
               <TabsTrigger value="activity" className="flex items-center gap-2">
                 <Activity className="w-4 h-4" />
                 Actividad
+              </TabsTrigger>
+              <TabsTrigger value="productivity" className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" />
+                Productividad
+              </TabsTrigger>
+              <TabsTrigger value="agenda" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Agenda
               </TabsTrigger>
               <TabsTrigger value="contact" className="flex items-center gap-2">
                 <MessageSquare className="w-4 h-4" />
@@ -162,51 +158,34 @@ export const PersonnelDetailView = ({ person, onClose }: PersonnelDetailViewProp
             </TabsContent>
 
             <TabsContent value="schedule" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Horario Semanal</CardTitle>
-                  <CardDescription>Horarios y carga de pacientes</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {schedule.map((day, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="w-20 font-medium">{day.day}</div>
-                          <div className="flex items-center gap-2 text-gray-600">
-                            <Clock className="w-4 h-4" />
-                            {day.hours}
-                          </div>
-                        </div>
-                        <Badge variant="outline">{day.patients} pacientes</Badge>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <PersonnelScheduleManagement person={person} />
             </TabsContent>
 
             <TabsContent value="activity" className="mt-6">
+              <PersonnelActivityHistory person={person} />
+            </TabsContent>
+
+            <TabsContent value="productivity" className="mt-6">
+              <PersonnelProductivityStats person={person} />
+            </TabsContent>
+
+            <TabsContent value="agenda" className="mt-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Actividad Reciente</CardTitle>
-                  <CardDescription>Últimas actividades del personal</CardDescription>
+                  <CardTitle>Vinculación con Agenda</CardTitle>
+                  <CardDescription>Ver agenda completa y gestionar citas del personal</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {recentActivity.map((activity, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
-                        <div className="p-2 bg-brand-light rounded-lg">
-                          {activity.type === 'patient' && <User className="w-4 h-4 text-brand-blue" />}
-                          {activity.type === 'message' && <MessageSquare className="w-4 h-4 text-brand-blue" />}
-                          {activity.type === 'appointment' && <Calendar className="w-4 h-4 text-brand-blue" />}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium">{activity.description}</p>
-                          <p className="text-sm text-gray-500">Hace {activity.time}</p>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="text-center py-8">
+                    <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Vista de Agenda Integrada</h3>
+                    <p className="text-gray-500 mb-4">
+                      Accede a la agenda completa del personal con todas sus citas programadas
+                    </p>
+                    <Button onClick={() => navigate(`/agenda?personnel=${person.id}`)}>
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Abrir Agenda Completa
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
