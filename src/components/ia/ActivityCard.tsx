@@ -1,13 +1,12 @@
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "../ui/button";
 import { ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
+import { ActivityIcon } from './ActivityIcon';
 
 export type Activity = {
   id: string;
@@ -35,12 +34,11 @@ export type ActivityContext = {
 
 type ActivityCardProps = {
   activity: Activity;
-  icon: LucideIcon;
   onUpdateStatus: (id: string, status: Activity['status']) => void;
   isTarget?: boolean;
 };
 
-export const ActivityCard = ({ activity, icon: Icon, onUpdateStatus, isTarget = false }: ActivityCardProps) => {
+export const ActivityCard = ({ activity, onUpdateStatus, isTarget = false }: ActivityCardProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(isTarget);
 
@@ -77,7 +75,7 @@ export const ActivityCard = ({ activity, icon: Icon, onUpdateStatus, isTarget = 
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className="bg-brand-light p-3 rounded-lg flex-shrink-0">
-              <Icon className="w-6 h-6 text-brand-blue" />
+              <ActivityIcon type={activity.type} className="w-6 h-6 text-brand-blue" />
             </div>
             <div className="flex-grow">
               <CardTitle className="text-base font-semibold text-brand-dark">{activity.title}</CardTitle>

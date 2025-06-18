@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ActivityCard, type Activity } from '@/components/ia/ActivityCard';
@@ -153,7 +152,6 @@ const IaActivities = () => {
               <div key={activity.id} ref={el => activityRefs.current[activity.id] = el}>
                 <ActivityCard 
                   activity={activity} 
-                  icon={(props) => <ActivityIcon type={activity.type} {...props} />}
                   onUpdateStatus={handleUpdateActivityStatus}
                   isTarget={isTarget}
                 />

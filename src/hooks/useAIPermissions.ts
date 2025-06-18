@@ -64,9 +64,9 @@ const AI_PERMISSIONS_BY_ROLE = {
 } as const;
 
 // Define el tipo de las claves booleanas para typescript
-export type BooleanPermissionKeys = {
-  [K in keyof AIPermissions]: AIPermissions[K] extends boolean ? K : never;
-}[keyof AIPermissions];
+export type BooleanPermissionKeys = keyof {
+  [K in keyof AIPermissions as AIPermissions[K] extends boolean ? K : never]: AIPermissions[K];
+};
 
 export const useAIPermissions = (context?: ActivityContext) => {
   const { selectedRole } = useRole();
@@ -91,7 +91,7 @@ export const useAIPermissions = (context?: ActivityContext) => {
     return permissions;
   }, [basePermissions, context, selectedRole]);
 
-  const canPerformAction = (action: BooleanPermissionKeys, actionType?: string) => {
+  const canPerformAction = (action: BooleanPermissionKeys, actionType?: string): boolean => {
     const permission = contextualPermissions[action];
     
     // Verificar si es un booleano (permisos principales)
@@ -110,7 +110,7 @@ export const useAIPermissions = (context?: ActivityContext) => {
     return false;
   };
 
-  const getAvailableActions = () => {
+  const getAvailableActions = (): string[] => {
     const actions: string[] = [];
     
     // Lista explícita de permisos booleanos
@@ -132,7 +132,7 @@ export const useAIPermissions = (context?: ActivityContext) => {
 
     booleanPermissions.forEach(permission => {
       if (canPerformAction(permission)) {
-        const actionName = permission.replace('canUseAI', '').replace('can', '').toLowerCase();
+        const actionName = permission.replace(/^canUseAI|^can/, '').toLowerCase();
         actions.push(actionName);
       }
     });
