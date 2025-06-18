@@ -1,6 +1,7 @@
 
 export interface Patient {
   id: string;
+  patientId: string; // Nuevo campo ID aleatorio para búsqueda
   name: string;
   firstName?: string;
   lastName?: string;
@@ -21,9 +22,27 @@ export interface Patient {
   createdBy: string;
 }
 
+// Función para generar ID aleatorio
+const generatePatientId = (): string => {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const numbers = '0123456789';
+  let result = '';
+  
+  // 2 letras + 4 números
+  for (let i = 0; i < 2; i++) {
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+  }
+  for (let i = 0; i < 4; i++) {
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+  }
+  
+  return result;
+};
+
 export const patients: Patient[] = [
   { 
-    id: '1', 
+    id: '1',
+    patientId: 'JV4582',
     name: 'Jorge Villareal', 
     dob: '1967-05-12', 
     gender: 'Masculino', 
@@ -33,15 +52,16 @@ export const patients: Patient[] = [
     weight: 80, 
     occupation: 'Arquitecto', 
     status: 'Saludable',
-    phone: '+34 612 345 678',
+    phone: '+52 55 1234 5678',
     email: 'jorge.villareal@email.com',
-    address: 'Calle Mayor 15, Madrid',
+    address: 'Calle Insurgentes 15, Ciudad de México',
     insuranceType: 'private',
     createdAt: '2024-01-15T09:00:00',
     createdBy: 'admin'
   },
   { 
-    id: '2', 
+    id: '2',
+    patientId: 'SR9821',
     name: 'Sofía Ramirez', 
     dob: '2018-11-22', 
     gender: 'Femenino', 
@@ -51,15 +71,16 @@ export const patients: Patient[] = [
     weight: 15, 
     occupation: 'Estudiante', 
     status: 'En tratamiento',
-    phone: '+34 687 123 456',
+    phone: '+52 33 8765 4321',
     email: 'sofia.ramirez@email.com',
-    address: 'Avenida Libertad 22, Barcelona',
+    address: 'Avenida Libertad 22, Guadalajara',
     insuranceType: 'public',
     createdAt: '2024-02-20T14:30:00',
     createdBy: 'admin'
   },
   { 
-    id: '3', 
+    id: '3',
+    patientId: 'CL3456',
     name: 'Carlos López', 
     dob: '1980-01-30', 
     gender: 'Masculino', 
@@ -69,15 +90,16 @@ export const patients: Patient[] = [
     weight: 85, 
     occupation: 'Ingeniero', 
     status: 'Saludable',
-    phone: '+34 654 987 321',
+    phone: '+52 81 9876 5432',
     email: 'carlos.lopez@email.com',
-    address: 'Plaza España 8, Valencia',
+    address: 'Plaza Zaragoza 8, Monterrey',
     insuranceType: 'mixed',
     createdAt: '2024-03-10T11:15:00',
     createdBy: 'admin'
   },
   { 
-    id: '4', 
+    id: '4',
+    patientId: 'LM7890',
     name: 'Laura Martínez', 
     dob: '1992-09-05', 
     gender: 'Femenino', 
@@ -87,15 +109,16 @@ export const patients: Patient[] = [
     weight: 60, 
     occupation: 'Diseñadora', 
     status: 'Saludable',
-    phone: '+34 698 456 789',
+    phone: '+52 55 4567 8901',
     email: 'laura.martinez@email.com',
-    address: 'Calle Paz 12, Sevilla',
+    address: 'Calle Reforma 12, Ciudad de México',
     insuranceType: 'private',
     createdAt: '2024-04-05T16:45:00',
     createdBy: 'admin'
   },
   { 
-    id: '5', 
+    id: '5',
+    patientId: 'LM1234',
     name: 'Luis Martinez', 
     dob: '1955-03-18', 
     gender: 'Masculino', 
@@ -105,15 +128,16 @@ export const patients: Patient[] = [
     weight: 78, 
     occupation: 'Jubilado', 
     status: 'Crítico',
-    phone: '+34 676 234 567',
+    phone: '+52 55 2345 6789',
     email: 'luis.martinez@email.com',
-    address: 'Calle Sol 5, Bilbao',
+    address: 'Calle Juárez 5, Ciudad de México',
     insuranceType: 'public',
     createdAt: '2024-01-20T10:00:00',
     createdBy: 'admin'
   },
   { 
-    id: '6', 
+    id: '6',
+    patientId: 'SR5678',
     name: 'Sofia Rodriguez', 
     dob: '1988-07-21', 
     gender: 'Femenino', 
@@ -123,15 +147,16 @@ export const patients: Patient[] = [
     weight: 55, 
     occupation: 'Doctora', 
     status: 'Saludable',
-    phone: '+34 645 678 912',
+    phone: '+52 33 6789 0123',
     email: 'sofia.rodriguez@email.com',
-    address: 'Avenida Constitución 30, Granada',
+    address: 'Avenida Revolución 30, Guadalajara',
     insuranceType: 'none',
     createdAt: '2024-02-28T08:30:00',
     createdBy: 'admin'
   },
   { 
-    id: '7', 
+    id: '7',
+    patientId: 'JR9012',
     name: 'Jorge Ramos', 
     dob: '1976-02-14', 
     gender: 'Masculino', 
@@ -141,9 +166,9 @@ export const patients: Patient[] = [
     weight: 90, 
     occupation: 'Abogado', 
     status: 'En tratamiento',
-    phone: '+34 623 789 456',
+    phone: '+52 55 7890 1234',
     email: 'jorge.ramos@email.com',
-    address: 'Paseo Gracia 18, Barcelona',
+    address: 'Paseo de la Reforma 18, Ciudad de México',
     insuranceType: 'private',
     createdAt: '2024-03-15T13:20:00',
     createdBy: 'admin'
@@ -151,10 +176,11 @@ export const patients: Patient[] = [
 ];
 
 // Function to add a new patient to the array
-export const addPatient = (patientData: Omit<Patient, 'id' | 'createdAt' | 'createdBy' | 'lastVisit' | 'status'>): Patient => {
+export const addPatient = (patientData: Omit<Patient, 'id' | 'patientId' | 'createdAt' | 'createdBy' | 'lastVisit' | 'status'>): Patient => {
   const newPatient: Patient = {
     ...patientData,
     id: `patient_${Date.now()}`,
+    patientId: generatePatientId(),
     createdAt: new Date().toISOString(),
     createdBy: 'current_user', // This would come from auth context in real app
     lastVisit: new Date().toISOString().split('T')[0],
@@ -168,4 +194,15 @@ export const addPatient = (patientData: Omit<Patient, 'id' | 'createdAt' | 'crea
 // Function to get patient by ID
 export const getPatientById = (id: string): Patient | undefined => {
   return patients.find(patient => patient.id === id);
+};
+
+// Function to search patients by name or patientId
+export const searchPatients = (query: string): Patient[] => {
+  if (!query.trim()) return patients;
+  
+  const searchTerm = query.toLowerCase().trim();
+  return patients.filter(patient => 
+    patient.name.toLowerCase().includes(searchTerm) ||
+    patient.patientId.toLowerCase().includes(searchTerm)
+  );
 };

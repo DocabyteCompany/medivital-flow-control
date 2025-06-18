@@ -1,14 +1,16 @@
 
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { patients } from '@/data/patients';
+import { patients, searchPatients } from '@/data/patients';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Users } from 'lucide-react';
 import { NewPatientDialog } from './NewPatientDialog';
 import { EditBasicContactDialog } from './EditBasicContactDialog';
 import { EditVitalsDialog } from './EditVitalsDialog';
 import { EditPatientDialog } from './EditPatientDialog';
+import { PatientSearchBar } from './PatientSearchBar';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { usePatientPermissions } from '@/hooks/usePatientPermissions';
@@ -41,6 +43,8 @@ interface PatientsListProps {
 
 export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
     const { t } = useTranslation();
+    const [filteredPatients, setFilteredPatients] = useState(patients);
+    const [searchQuery, setSearchQuery] = useState('');
     const { 
         canEditPatientDemographics, 
         canEditBasicContact, 
@@ -48,6 +52,12 @@ export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
         isAdmin, 
         isDoctor 
     } = usePatientPermissions();
+
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+        const results = searchPatients(query);
+        setFilteredPatients(results);
+    };
 
     return (
         <div className="space-y-6 mt-4">
@@ -61,11 +71,25 @@ export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
                 <NewPatientDialog />
             </div>
 
+            {/* Barra de búsqueda */}
+            <div className="bg-card p-4 rounded-2xl shadow-soft border-0">
+                <PatientSearchBar onSearch={handleSearch} />
+                {searchQuery && (
+                    <div className="mt-2 text-sm text-gray-500">
+                        Mostrando {filteredPatients.length} de {patients.length} pacientes
+                        {filteredPatients.length === 0 && (
+                            <span className="text-red-500 ml-2">No se encontraron resultados</span>
+                        )}
+                    </div>
+                )}
+            </div>
+
             <div className="bg-card p-6 rounded-2xl shadow-soft border-0">
                 <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead>{t('patients.list.name', 'Nombre')}</TableHead>
+                            <TableHead className="hidden sm:table-cell">ID</TableHead>
                             <TableHead className="hidden md:table-cell">{t('patients.list.age', 'Edad')}</TableHead>
                             <TableHead className="hidden lg:table-cell">{t('patients.list.gender', 'Género')}</TableHead>
                             <TableHead className="hidden sm:table-cell">{t('patients.list.status', 'Estado')}</TableHead>
@@ -73,7 +97,7 @@ export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {patients.map((patient) => (
+                        {filteredPatients.map((patient) => (
                             <TableRow key={patient.id} className="hover:bg-brand-light/50 cursor-pointer" onClick={() => onSelectPatient(patient.id)}>
                                 <TableCell>
                                     <div className="flex items-center gap-3">
@@ -86,6 +110,11 @@ export const PatientsList = ({ onSelectPatient }: PatientsListProps) => {
                                             <div className="text-sm text-gray-500">{t('patients.list.lastVisit', 'Última visita')}: {new Date(patient.lastVisit).toLocaleDateString()}</div>
                                         </div>
                                     </div>
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell">
+                                    <Badge variant="outline" className="font-mono text-xs">
+                                        {patient.patientId}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell className="hidden md:table-cell">{getAge(patient.dob)}</TableCell>
                                 <TableCell className="hidden lg:table-cell">{patient.gender}</TableCell>

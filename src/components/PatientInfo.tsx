@@ -7,6 +7,7 @@ import { Patient } from '@/data/patients';
 import { cn } from '@/lib/utils';
 import { EditBasicContactDialog } from './patients/EditBasicContactDialog';
 import { EditVitalsDialog } from './patients/EditVitalsDialog';
+import { PatientHistoryDialog } from './patients/PatientHistoryDialog';
 import { usePatientPermissions } from '@/hooks/usePatientPermissions';
 
 const responsibleDoctors = [
@@ -73,6 +74,7 @@ export const PatientInfo = ({ patient, onBack }: PatientInfoProps) => {
             <AvatarFallback>{patient.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
           </Avatar>
           <h2 className="text-xl font-bold text-brand-dark">{patient.name}</h2>
+          <p className="text-sm text-gray-400">ID: {patient.patientId}</p>
           <p className="text-sm text-gray-400">{t('patientInfo.yearsOldOccupation', '{{age}} años, {{occupation}}', { age, occupation: patient.occupation })}</p>
           <div className={cn("flex items-center text-xs font-medium px-3 py-1 rounded-full mt-2", statusInfo.className)}>
             <CheckCircle className="w-3 h-3 mr-1" />
@@ -121,13 +123,15 @@ export const PatientInfo = ({ patient, onBack }: PatientInfoProps) => {
         
         <div className="mt-6">
           <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">{t('patientInfo.patientHistory', 'Historial del Paciente')}</h3>
-          <button className="flex items-center w-full text-left p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
-            <FileText className="w-5 h-5 mr-3 text-pink-400"/>
-            <div>
-              <p className="text-sm font-semibold text-brand-dark">{patient.name}</p>
-              <p className="text-xs text-gray-400">{t('patientInfo.historyFile', 'Archivo de historial')}</p>
-            </div>
-          </button>
+          <PatientHistoryDialog patient={patient}>
+            <button className="flex items-center w-full text-left p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <FileText className="w-5 h-5 mr-3 text-pink-400"/>
+              <div>
+                <p className="text-sm font-semibold text-brand-dark">{patient.name}</p>
+                <p className="text-xs text-gray-400">{t('patientInfo.historyFile', 'Ver historial médico')}</p>
+              </div>
+            </button>
+          </PatientHistoryDialog>
         </div>
   
       </CardContent>

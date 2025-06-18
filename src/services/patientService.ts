@@ -47,6 +47,7 @@ export const createPatientWithRecord = (data: NewPatientData): Patient => {
     timestamp: new Date().toISOString(),
     details: {
       type: 'patient_creation',
+      patientId: newPatient.patientId,
       insuranceType: data.insuranceType,
       initialStatus: 'Saludable'
     }
