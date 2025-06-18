@@ -147,8 +147,8 @@ export const PersonnelStatsWidget = () => {
                 >
                   <XAxis 
                     type="number" 
-                    domain={[0, 'dataMax + 1']}
-                    tickCount={6}
+                    domain={[0, Math.max(...specialtyData.map(d => d.value)) + 1]}
+                    tickCount={Math.min(6, Math.max(...specialtyData.map(d => d.value)) + 1)}
                   />
                   <YAxis 
                     dataKey="name" 
@@ -157,10 +157,7 @@ export const PersonnelStatsWidget = () => {
                     fontSize={12}
                     interval={0}
                   />
-                  <ChartTooltip 
-                    content={<ChartTooltipContent labelKey="name" valueKey="value" />}
-                    cursor={{ fill: 'rgba(16, 185, 129, 0.1)' }}
-                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
                   <Bar 
                     dataKey="value" 
                     fill="#10B981" 
