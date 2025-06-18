@@ -100,8 +100,8 @@ export const useAIPermissions = (context?: ActivityContext) => {
     return true;
   };
 
-  const getAvailableActions = (currentContext?: ActivityContext) => {
-    const actions = [];
+  const getAvailableActions = () => {
+    const actions: string[] = [];
     
     if (canPerformAction('canUseAITranscription')) {
       actions.push('transcription');
