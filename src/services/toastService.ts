@@ -1,12 +1,13 @@
 
 import { toast } from 'sonner';
 import { CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+import { createElement } from 'react';
 
 export class ToastService {
   static success(message: string, description?: string) {
     toast.success(message, {
       description,
-      icon: CheckCircle,
+      icon: createElement(CheckCircle, { size: 20 }),
       duration: 4000,
       style: {
         background: '#F0FDF4',
@@ -19,7 +20,7 @@ export class ToastService {
   static error(message: string, description?: string) {
     toast.error(message, {
       description,
-      icon: AlertCircle,
+      icon: createElement(AlertCircle, { size: 20 }),
       duration: 6000,
       style: {
         background: '#FEF2F2',
@@ -32,7 +33,7 @@ export class ToastService {
   static warning(message: string, description?: string) {
     toast.warning(message, {
       description,
-      icon: AlertTriangle,
+      icon: createElement(AlertTriangle, { size: 20 }),
       duration: 5000,
       style: {
         background: '#FFFBEB',
@@ -45,7 +46,7 @@ export class ToastService {
   static info(message: string, description?: string) {
     toast.info(message, {
       description,
-      icon: Info,
+      icon: createElement(Info, { size: 20 }),
       duration: 4000,
       style: {
         background: '#EFF6FF',
