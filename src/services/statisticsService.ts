@@ -71,7 +71,12 @@ export const getPatientStatistics = (): PatientStats => {
 };
 
 export const getPersonnelStatistics = (): PersonnelStats => {
-  const bySpecialty = personnel.reduce((acc, p) => {
+  // Filtrar solo el personal médico para especialidades (Doctores y Radiólogos)
+  const medicalPersonnel = personnel.filter(p => 
+    (p.role === 'Doctor' || p.role === 'Radiólogo') && p.specialty
+  );
+
+  const bySpecialty = medicalPersonnel.reduce((acc, p) => {
     if (p.specialty) {
       acc[p.specialty] = (acc[p.specialty] || 0) + 1;
     }

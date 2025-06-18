@@ -9,16 +9,17 @@ export const PersonnelStatsWidget = () => {
   const stats = getPersonnelStatistics();
 
   const roleData = [
-    { name: 'Doctores', value: stats.doctors },
-    { name: 'Enfermeras', value: stats.nurses },
-    { name: 'Técnicos', value: stats.technicians },
-    { name: 'Administrativos', value: stats.administrative },
-    { name: 'Radiólogos', value: stats.radiologists }
+    { name: 'Doctores', value: stats.doctors, key: 'doctors' },
+    { name: 'Enfermeras', value: stats.nurses, key: 'nurses' },
+    { name: 'Técnicos', value: stats.technicians, key: 'technicians' },
+    { name: 'Administrativos', value: stats.administrative, key: 'administrative' },
+    { name: 'Radiólogos', value: stats.radiologists, key: 'radiologists' }
   ];
 
-  const specialtyData = Object.entries(stats.bySpecialty).map(([specialty, count]) => ({
+  const specialtyData = Object.entries(stats.bySpecialty).map(([specialty, count], index) => ({
     name: specialty,
-    value: count
+    value: count,
+    key: `specialty-${index}`
   }));
 
   const onlinePercentage = stats.total > 0 ? (stats.online / stats.total) * 100 : 0;
@@ -75,8 +76,15 @@ export const PersonnelStatsWidget = () => {
             }}
           >
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={roleData}>
-                <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+              <BarChart data={roleData} margin={{ bottom: 80, left: 20, right: 20, top: 20 }}>
+                <XAxis 
+                  dataKey="name" 
+                  angle={-45} 
+                  textAnchor="end" 
+                  height={80}
+                  interval={0}
+                  fontSize={12}
+                />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Bar dataKey="value" fill="#3B82F6" />
@@ -118,7 +126,7 @@ export const PersonnelStatsWidget = () => {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Especialidades Médicas</CardTitle>
-            <CardDescription>Distribución del personal médico por especialidad</CardDescription>
+            <CardDescription>Distribución del personal médico por especialidad ({specialtyData.length} especialidades)</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer
@@ -129,11 +137,23 @@ export const PersonnelStatsWidget = () => {
                 },
               }}
             >
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={specialtyData} layout="horizontal">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart 
+                  data={specialtyData} 
+                  layout="horizontal"
+                  margin={{ left: 100, right: 20, top: 20, bottom: 20 }}
+                >
                   <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={120} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <YAxis 
+                    dataKey="name" 
+                    type="category" 
+                    width={100}
+                    fontSize={12}
+                  />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent />}
+                    cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
+                  />
                   <Bar dataKey="value" fill="#10B981" />
                 </BarChart>
               </ResponsiveContainer>
