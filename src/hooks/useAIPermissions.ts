@@ -74,7 +74,6 @@ export const useAIPermissions = (context?: ActivityContext) => {
     if (!context) return basePermissions;
 
     // Aquí podemos añadir lógica contextual específica
-    // Por ejemplo, restringir ciertas acciones según la página actual
     const permissions = { ...basePermissions };
 
     // Si estamos en una página de pacientes y el usuario es Admin,
@@ -88,16 +87,22 @@ export const useAIPermissions = (context?: ActivityContext) => {
   }, [basePermissions, context, selectedRole]);
 
   const canPerformAction = (action: keyof AIPermissions, actionType?: string) => {
-    const hasPermission = contextualPermissions[action] as boolean;
+    const permission = contextualPermissions[action];
     
-    if (!hasPermission) return false;
-    
-    // Verificar si la acción requiere aprobación
-    if (actionType && contextualPermissions.requiresApprovalFor.includes(actionType)) {
-      return contextualPermissions.canBypassApprovals;
+    // Verificar si es un booleano (permisos principales)
+    if (typeof permission === 'boolean') {
+      if (!permission) return false;
+      
+      // Verificar si la acción requiere aprobación
+      if (actionType && contextualPermissions.requiresApprovalFor.includes(actionType)) {
+        return contextualPermissions.canBypassApprovals;
+      }
+      
+      return true;
     }
-
-    return true;
+    
+    // Para propiedades que no son booleanas, simplemente retornar false
+    return false;
   };
 
   const getAvailableActions = () => {
