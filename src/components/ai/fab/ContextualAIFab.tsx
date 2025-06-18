@@ -5,25 +5,26 @@ import { Bot, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAIContext } from '@/hooks/useAIContext';
 import { useAIPermissions } from '@/hooks/useAIPermissions';
+import { getContextualActions, FABAction } from './FABActionDefinitions';
 
 type FABState = 'collapsed' | 'expanded' | 'loading' | 'disabled';
 
 export const ContextualAIFab = () => {
   const [state, setState] = useState<FABState>('collapsed');
   const context = useAIContext();
-  const { permissions, getAvailableActions } = useAIPermissions(context);
+  const { canPerformAction } = useAIPermissions(context);
 
-  const availableActions = getAvailableActions();
-  const hasActions = availableActions.length > 0;
+  const contextualActions = getContextualActions(context, canPerformAction);
+  const hasActions = contextualActions.length > 0;
 
   const toggleFAB = () => {
     if (state === 'disabled' || state === 'loading') return;
     setState(state === 'collapsed' ? 'expanded' : 'collapsed');
   };
 
-  const handleActionClick = (action: string) => {
+  const handleActionClick = (action: FABAction) => {
     setState('loading');
-    console.log(`Executing AI action: ${action} in context:`, context);
+    console.log(`Executing AI action: ${action.id} (${action.label}) in context:`, context);
     
     // Simular acción
     setTimeout(() => {
@@ -49,20 +50,20 @@ export const ContextualAIFab = () => {
         {/* Menu de acciones - solo visible cuando está expandido */}
         {state === 'expanded' && (
           <div className="flex flex-col gap-2 animate-fade-in">
-            {availableActions.slice(0, 4).map((action, index) => (
+            {contextualActions.map((action, index) => (
               <Button
-                key={action}
+                key={action.id}
                 variant="outline"
                 size="sm"
                 className={cn(
                   "bg-white shadow-lg border-brand-blue/20 text-brand-blue hover:bg-brand-light",
                   "transform transition-all duration-200",
-                  "animate-scale-in"
+                  "animate-scale-in min-w-[160px] justify-start"
                 )}
                 style={{ animationDelay: `${index * 50}ms` }}
                 onClick={() => handleActionClick(action)}
               >
-                {action.charAt(0).toUpperCase() + action.slice(1)}
+                {action.label}
               </Button>
             ))}
           </div>
