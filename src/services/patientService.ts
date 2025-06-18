@@ -35,6 +35,8 @@ export const createPatientWithRecord = (data: NewPatientData): Patient => {
     occupation: data.occupation,
     address: data.address,
     insuranceType: data.insuranceType,
+    healthStatus: 'Saludable',
+    insurance: { type: data.insuranceType || 'none' },
   });
 
   // Generate initial medical record entry

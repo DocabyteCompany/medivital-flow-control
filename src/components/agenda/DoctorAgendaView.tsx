@@ -22,12 +22,12 @@ interface DoctorAgendaViewProps {
   doctorId?: string; // En un caso real vendría del contexto de usuario
 }
 
-type StatusFilter = 'Completed' | 'Scheduled' | 'Cancelled' | 'Rescheduled';
+type StatusFilter = 'Completada' | 'Programada' | 'Cancelada' | 'Reprogramada';
 
 export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaViewProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const [statusFilters, setStatusFilters] = useState<StatusFilter[]>(['Completed', 'Scheduled', 'Cancelled', 'Rescheduled']);
+  const [statusFilters, setStatusFilters] = useState<StatusFilter[]>(['Completada', 'Programada', 'Cancelada', 'Reprogramada']);
 
   const dateString = selectedDate ? selectedDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
   
@@ -61,20 +61,20 @@ export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaV
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Completed': return 'bg-green-100 text-green-800';
-      case 'Scheduled': return 'bg-blue-100 text-blue-800';
-      case 'Cancelled': return 'bg-red-100 text-red-800';
-      case 'Rescheduled': return 'bg-yellow-100 text-yellow-800';
+      case 'Completada': return 'bg-green-100 text-green-800';
+      case 'Programada': return 'bg-blue-100 text-blue-800';
+      case 'Cancelada': return 'bg-red-100 text-red-800';
+      case 'Reprogramada': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'Completed': return 'Completada';
-      case 'Scheduled': return 'Programada';
-      case 'Cancelled': return 'Cancelada';
-      case 'Rescheduled': return 'Reprogramada';
+      case 'Completada': return 'Completada';
+      case 'Programada': return 'Programada';
+      case 'Cancelada': return 'Cancelada';
+      case 'Reprogramada': return 'Reprogramada';
       default: return status;
     }
   };
@@ -85,7 +85,7 @@ export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaV
       .filter(app => app.personnelId === doctorId && statusFilters.includes(app.status as StatusFilter))
       .find(app => {
         const appDateTime = new Date(`${app.date}T${app.time}`);
-        return appDateTime > now && app.status === 'Scheduled';
+        return appDateTime > now && app.status === 'Programada';
       });
   };
 
@@ -151,26 +151,26 @@ export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaV
             <DropdownMenuLabel>Filtrar por Estado</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
-              checked={statusFilters.includes('Scheduled')}
-              onCheckedChange={() => toggleStatusFilter('Scheduled')}
+              checked={statusFilters.includes('Programada')}
+              onCheckedChange={() => toggleStatusFilter('Programada')}
             >
               Programadas
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
-              checked={statusFilters.includes('Completed')}
-              onCheckedChange={() => toggleStatusFilter('Completed')}
+              checked={statusFilters.includes('Completada')}
+              onCheckedChange={() => toggleStatusFilter('Completada')}
             >
               Completadas
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
-              checked={statusFilters.includes('Cancelled')}
-              onCheckedChange={() => toggleStatusFilter('Cancelled')}
+              checked={statusFilters.includes('Cancelada')}
+              onCheckedChange={() => toggleStatusFilter('Cancelada')}
             >
               Canceladas
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
-              checked={statusFilters.includes('Rescheduled')}
-              onCheckedChange={() => toggleStatusFilter('Rescheduled')}
+              checked={statusFilters.includes('Reprogramada')}
+              onCheckedChange={() => toggleStatusFilter('Reprogramada')}
             >
               Reprogramadas
             </DropdownMenuCheckboxItem>
@@ -222,7 +222,7 @@ export const DoctorAgendaView = ({ selectedDate, doctorId = '1' }: DoctorAgendaV
                       </div>
                     </div>
 
-                    {appointment.status === 'Scheduled' && (
+                    {appointment.status === 'Programada' && (
                       <div className="flex gap-2">
                         <Button 
                           variant="outline" 
