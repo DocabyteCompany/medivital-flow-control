@@ -132,141 +132,325 @@
 ## 🤖 FASE 6: Sistema de IA Contextual Administrativa (Sin APIs Externas)
 **Estado: 🚀 NUEVA IMPLEMENTACIÓN**
 
-### **FASE 6A: Infraestructura de Botones Contextuales (Semana 1)**
-**Objetivo**: Crear la base técnica para botones de IA distribuidos por toda la webapp
+### **FASE 6A: Infraestructura de Botones Contextuales y Sistema de Permisos (Semana 1)**
+**Objetivo**: Crear la base técnica para botones de IA distribuidos por toda la webapp con sistema de permisos robusto
 
-#### Expandir tipos de Activity
+#### Expandir tipos de Activity y Permisos
 - [ ] Añadir nuevos tipos: `reminder`, `follow-up`, `transcription`, `referral`, `patient-intake`
 - [ ] Expandir el `ActivityContext` para manejar más tipos de actividades
 - [ ] Actualizar interfaces y tipos en `ActivityCard.tsx`
 
-#### Componentes Base
+#### Sistema de Permisos de IA
+- [ ] **Expandir `useUnifiedPermissions`** - Agregar permisos específicos para herramientas IA
+  - [ ] `canUseAITranscription` - Transcripción de consultas
+  - [ ] `canUseAIScheduling` - Agendamiento automático
+  - [ ] `canUseAISummaries` - Generación de resúmenes
+  - [ ] `canUseAICalls` - Simulación de llamadas
+  - [ ] `canUseAIReferrals` - Creación automática de referidos
+  - [ ] `canConfigureAIWorkflows` - Configurar triggers automáticos
+  - [ ] `canViewAIMetrics` - Ver métricas de eficiencia IA
+  - [ ] `canApproveAIActions` - Aprobar acciones IA críticas
+- [ ] **Crear `useAIPermissions`** - Hook especializado para permisos contextuales de IA
+  - [ ] Detección automática de contexto (paciente, página, rol)
+  - [ ] Filtrado de acciones disponibles según permisos
+  - [ ] Cache optimizado para performance
+- [ ] **Implementar `AIPermissionGuard`** - Componente que protege botones/acciones IA
+  - [ ] Wrapper para botones contextuales
+  - [ ] Validación en tiempo real
+  - [ ] Fallbacks elegantes para permisos denegados
+
+#### Componentes Base con Permisos
 - [ ] **`ContextualAIButton`** - Botón que detecta contexto automáticamente
+  - [ ] Integración con `AIPermissionGuard`
+  - [ ] Estados: habilitado, deshabilitado, cargando
+  - [ ] Tooltips explicativos para permisos denegados
 - [ ] **`AIActionModal`** - Modal unificado para configurar acciones IA
+  - [ ] Validación de permisos antes de mostrar opciones
+  - [ ] Formularios dinámicos según tipo de acción
+  - [ ] Vista previa de acciones antes de ejecutar
 - [ ] **`SmartSuggestionWidget`** - Widget proactivo de sugerencias
+  - [ ] Filtrado automático por permisos de usuario
+  - [ ] Priorización inteligente de sugerencias
+  - [ ] Integración con triggers automáticos
 
-#### Hooks y Servicios
+#### Hooks y Servicios con Seguridad
 - [ ] **`useAIContext`** - Hook que detecta contexto actual (paciente, cita, página)
+  - [ ] Integración con sistema de permisos
+  - [ ] Cache de contexto para performance
+  - [ ] Validación de datos sensibles
 - [ ] **`useContextualAI`** - Hook para sugerir acciones relevantes
+  - [ ] Filtrado por permisos de usuario
+  - [ ] Priorización basada en rol
+  - [ ] Histórico de acciones del usuario
 - [ ] **`AIActionService`** - Servicio para simular ejecución de acciones IA
+  - [ ] Validación de permisos en cada acción
+  - [ ] Logging de actividades por usuario
+  - [ ] Simulaciones realistas con delays
 
-### **FASE 6B: Integración por Secciones (Semana 2)**
-**Objetivo**: Implementar botones contextuales en cada sección principal
+#### Sistema de Auditoría y Logging
+- [ ] **Crear `AIAuditService`** - Sistema de logging para actividades IA
+  - [ ] Registro de todas las acciones IA por usuario
+  - [ ] Timestamps y metadatos de contexto
+  - [ ] Exportación de reportes de uso
+- [ ] **Implementar tracking de eficiencia**
+  - [ ] Tiempo ahorrado por acción
+  - [ ] Frecuencia de uso por herramienta
+  - [ ] Satisfacción simulada del usuario
 
-#### En Pacientes (`/patients`)
+### **FASE 6B: Integración por Secciones con Control de Permisos (Semana 2)**
+**Objetivo**: Implementar botones contextuales en cada sección principal con control granular de permisos
+
+#### En Pacientes (`/patients`) - Permisos Diferenciados
+**Doctores pueden:**
 - [ ] **"Confirmar cita próxima"** - Si el paciente tiene cita en <48h
 - [ ] **"Programar seguimiento"** - Después de consulta reciente
-- [ ] **"Generar resumen médico"** - Basado en historial del paciente
-- [ ] **"Llamar para recordatorio"** - Si tiene cita pendiente
+- [ ] **"Generar resumen médico"** - Basado en historial del paciente (requiere `canUseAISummaries`)
 
-#### En Agenda (`/agenda`)
-- [ ] **"Confirmar citas del día"** - Simulación de llamadas masivas
+**Solo Admins pueden:**
+- [ ] **"Llamar para recordatorio"** - Si tiene cita pendiente (requiere `canUseAICalls`)
+- [ ] **"Actualizar datos de contacto"** - IA sugiere correcciones de datos
+
+#### En Agenda (`/agenda`) - Según Rol
+**Doctores (vista personal):**
+- [ ] **"Preparar consulta"** - Resumen de historial del paciente
+- [ ] **"Generar notas previas"** - Template basado en cita anterior
+
+**Admins (vista global):**
+- [ ] **"Confirmar citas del día"** - Simulación de llamadas masivas (requiere `canUseAICalls`)
 - [ ] **"Enviar recordatorios"** - Simulación de mensajes automáticos
-- [ ] **"Buscar cita urgente"** - Algoritmo de mejor disponibilidad
+- [ ] **"Buscar cita urgente"** - Algoritmo de mejor disponibilidad (requiere `canUseAIScheduling`)
 - [ ] **"Reagendar no-shows"** - Automático para pacientes que no llegaron
 
-#### En Expedientes (`/records`)
-- [ ] **"Transcribir consulta"** - Simulación de audio → texto estructurado
-- [ ] **"Generar resumen de cita"** - Notas → resumen médico formal
-- [ ] **"Crear carta de referencia"** - Automática basada en diagnóstico
+#### En Expedientes (`/records`) - Permisos Clínicos
+**Solo Doctores:**
+- [ ] **"Transcribir consulta"** - Simulación de audio → texto estructurado (requiere `canUseAITranscription`)
+- [ ] **"Generar resumen de cita"** - Notas → resumen médico formal (requiere `canUseAISummaries`)
+- [ ] **"Crear carta de referencia"** - Automática basada en diagnóstico (requiere `canUseAIReferrals`)
 - [ ] **"Extraer datos de estudios"** - OCR simulado de estudios médicos
 
-#### En Dashboard (`/dashboard`)
-- [ ] **Panel "Tareas IA Sugeridas"** - Acciones proactivas del día
+**Admins pueden ver pero no ejecutar:**
+- [ ] Histórico de acciones IA realizadas por doctores
+- [ ] Métricas de uso de herramientas por doctor
+
+#### En Dashboard (`/dashboard`) - Personalizado por Rol
+**Dashboard Doctor:**
+- [ ] **Panel "Mis Tareas IA"** - Acciones pendientes específicas del doctor
+- [ ] **"Pacientes para seguimiento"** - Basado en últimas consultas
+- [ ] **"Resúmenes pendientes"** - Consultas sin documentar
+
+**Dashboard Admin:**
+- [ ] **Panel "Tareas IA Sugeridas"** - Acciones proactivas del día para toda la clínica
 - [ ] **"Seguimientos vencidos"** - Detectar pacientes que necesitan follow-up
 - [ ] **"Citas sin confirmar"** - Lista automática para confirmar
+- [ ] **Métricas de eficiencia IA** - Dashboard de uso por personal
 
-### **FASE 6C: Automatizaciones Inteligentes (Semana 3)**
-**Objetivo**: Sistema de triggers automáticos y FAB inteligente
+### **FASE 6C: Automatizaciones Inteligentes con Governance (Semana 3)**
+**Objetivo**: Sistema de triggers automáticos y FAB inteligente con control de permisos y governance
 
-#### Sistema de Triggers Automáticos (Simulados)
-- [ ] **Post-consulta** → Sugerir seguimiento en X días
-- [ ] **Paciente nuevo** → Sugerir llamada de bienvenida
-- [ ] **Resultado de lab** → Sugerir comunicar al paciente
-- [ ] **No-show detectado** → Sugerir reagendar automáticamente
-- [ ] **Cita próxima** → Sugerir confirmación 24h antes
+#### Sistema de Triggers Automáticos (Simulados) con Permisos
+- [ ] **Post-consulta** → Sugerir seguimiento en X días (solo para Doctores)
+- [ ] **Paciente nuevo** → Sugerir llamada de bienvenida (requiere aprobación Admin)
+- [ ] **Resultado de lab** → Sugerir comunicar al paciente (solo Doctores)
+- [ ] **No-show detectado** → Sugerir reagendar automáticamente (Admins pueden ejecutar)
+- [ ] **Cita próxima** → Sugerir confirmación 24h antes (Admins pueden configurar)
 
-#### FAB (Floating Action Button) Inteligente
-- [ ] **Detección automática** - Aparece cuando hay 3+ acciones disponibles
-- [ ] **Priorización inteligente** - Muestra acciones más urgentes primero
+#### FAB (Floating Action Button) Inteligente con Seguridad
+- [ ] **Detección automática con permisos** - Aparece cuando hay 3+ acciones disponibles para el usuario
+- [ ] **Priorización inteligente por rol** - Muestra acciones más urgentes primero según permisos
 - [ ] **Animaciones suaves** - UX optimizada para mobile y desktop
-- [ ] **Modo compacto/expandido** - Adaptable según contexto
+- [ ] **Modo compacto/expandido** - Adaptable según contexto y rol
+- [ ] **Badge de permisos** - Indicador visual de nivel de acceso
 
-#### Centro de Control Mejorado
+#### Centro de Control Mejorado con Governance
 - [ ] **Dashboard IA ampliado** en `/ia-activities`
-- [ ] **Métricas de eficiencia** - Tiempo ahorrado, tareas automatizadas
-- [ ] **Configuración de workflows** - Personalizar triggers por clínica
-- [ ] **Historial de acciones** - Auditoría completa de actividades IA
+  - [ ] Vista diferenciada por rol (Doctor vs Admin)
+  - [ ] Métricas personalizadas según permisos
+  - [ ] Histórico de acciones con auditoría
+- [ ] **Métricas de eficiencia con seguridad** 
+  - [ ] Tiempo ahorrado por usuario
+  - [ ] Tareas automatizadas por rol
+  - [ ] Comparativas de eficiencia entre roles
+- [ ] **Configuración de workflows** 
+  - [ ] Personalizar triggers por clínica (solo Admins)
+  - [ ] Configurar límites de uso por rol
+  - [ ] Establecer flujos de aprobación
+- [ ] **Sistema de aprobaciones**
+  - [ ] Acciones que requieren aprobación de Admin
+  - [ ] Cola de aprobaciones pendientes
+  - [ ] Notificaciones de solicitudes
 
-### **Arquitectura Técnica (Interna)**
+#### Configuración Avanzada de Permisos
+- [ ] **Panel de configuración IA** (solo Admins)
+  - [ ] Habilitar/deshabilitar herramientas por rol
+  - [ ] Configurar límites de uso diario/semanal
+  - [ ] Establecer flujos de aprobación personalizados
+- [ ] **Perfiles de uso predefinidos**
+  - [ ] "Doctor Básico" - Acceso limitado a herramientas básicas
+  - [ ] "Doctor Avanzado" - Acceso completo a herramientas clínicas
+  - [ ] "Admin Operativo" - Enfoque en eficiencia administrativa
+  - [ ] "Admin Completo" - Acceso total y configuración
 
-#### Nuevos Componentes
+### **Arquitectura Técnica con Seguridad (Interna)**
+
+#### Nuevos Componentes con Permisos
 ```
 src/components/ai/
 ├── contextual/
-│   ├── ContextualAIButton.tsx
-│   ├── AIActionModal.tsx
-│   ├── SmartSuggestionWidget.tsx
-│   └── FloatingAIButton.tsx
+│   ├── ContextualAIButton.tsx        # Con AIPermissionGuard integrado
+│   ├── AIActionModal.tsx             # Validación de permisos
+│   ├── SmartSuggestionWidget.tsx     # Filtrado por rol
+│   └── FloatingAIButton.tsx          # FAB con permisos
+├── permissions/
+│   ├── AIPermissionGuard.tsx         # Componente de protección
+│   ├── PermissionBadge.tsx           # Indicador visual de permisos
+│   └── PermissionTooltip.tsx         # Explicación de restricciones
 ├── triggers/
-│   ├── AutoTriggerService.ts
-│   ├── TriggerEngine.ts
-│   └── WorkflowBuilder.tsx
+│   ├── AutoTriggerService.ts         # Con validación de permisos
+│   ├── TriggerEngine.ts              # Motor seguro de triggers
+│   ├── ApprovalWorkflow.tsx          # Sistema de aprobaciones
+│   └── WorkflowBuilder.tsx           # Constructor con permisos
+├── audit/
+│   ├── AIAuditLogger.tsx             # Logging de actividades
+│   ├── UsageMetrics.tsx              # Métricas por usuario
+│   └── AuditReport.tsx               # Reportes de uso
 └── integrations/
-    ├── PatientAIActions.tsx
-    ├── AgendaAIActions.tsx
-    ├── RecordsAIActions.tsx
-    └── DashboardAIActions.tsx
+    ├── PatientAIActions.tsx          # Acciones con permisos de pacientes
+    ├── AgendaAIActions.tsx           # Acciones con permisos de agenda
+    ├── RecordsAIActions.tsx          # Acciones con permisos de expedientes
+    └── DashboardAIActions.tsx        # Acciones con permisos de dashboard
 ```
 
-#### Hooks Especializados
+#### Hooks Especializados con Seguridad
 ```
 src/hooks/ai/
-├── useAIContext.ts       # Detecta contexto actual
-├── useContextualAI.ts    # Sugiere acciones relevantes
-├── useAITriggers.ts      # Maneja triggers automáticos
-└── useAIMetrics.ts       # Métricas de uso y eficiencia
+├── useAIPermissions.ts               # Permisos específicos de IA
+├── useAIContext.ts                   # Detecta contexto con validación
+├── useContextualAI.ts                # Sugiere acciones filtradas por permisos
+├── useAITriggers.ts                  # Maneja triggers con autorización
+├── useAIMetrics.ts                   # Métricas de uso y eficiencia por rol
+├── useAIApprovals.ts                 # Gestión de aprobaciones
+└── useAIAudit.ts                     # Hook de auditoría y logging
 ```
 
-#### Servicios de IA (Simulados)
+#### Servicios de IA (Simulados) con Governance
 ```
 src/services/ai/
-├── AIActionService.ts    # Simula ejecución de acciones IA
-├── ContextDetector.ts    # Detecta contexto automáticamente
-├── TriggerEngine.ts      # Motor de triggers automáticos
-└── WorkflowManager.ts    # Gestiona workflows personalizados
+├── AIActionService.ts                # Simula ejecución con validación de permisos
+├── ContextDetector.ts                # Detecta contexto con seguridad
+├── TriggerEngine.ts                  # Motor de triggers con autorización
+├── WorkflowManager.ts                # Gestiona workflows con permisos
+├── AIAuditService.ts                 # Servicio de auditoría y compliance
+├── PermissionValidator.ts            # Validador centralizado de permisos IA
+└── ApprovalEngine.ts                 # Motor de aprobaciones y escalamiento
 ```
 
-### **Funcionalidades de Simulación**
+#### Sistema de Permisos IA Detallado
+```typescript
+// Nuevos permisos específicos para IA
+interface AIPermissions {
+  // Herramientas básicas
+  canUseAITranscription: boolean;       // Solo Doctores
+  canUseAIScheduling: boolean;          // Solo Admins
+  canUseAISummaries: boolean;           // Solo Doctores
+  canUseAICalls: boolean;               // Solo Admins
+  canUseAIReferrals: boolean;           // Solo Doctores
+  
+  // Configuración y administración
+  canConfigureAIWorkflows: boolean;     // Solo Admins
+  canViewAIMetrics: boolean;            // Ambos roles, vistas diferentes
+  canApproveAIActions: boolean;         // Solo Admins
+  canAuditAIUsage: boolean;             // Solo Admins
+  
+  // Limits y restricciones
+  dailyAIActionsLimit: number;          // Límite diario por usuario
+  requiresApprovalFor: string[];        // Acciones que requieren aprobación
+  canBypassApprovals: boolean;          // Solo Admins senior
+}
 
-#### Simulaciones Realistas
-- **Llamadas**: Tiempo de espera + resultado simulado con sentiment
-- **Transcripciones**: Texto predefinido estructurado
-- **Resúmenes**: Templates con datos del paciente
-- **Agendamiento**: Algoritmo real de búsqueda de disponibilidad
+// Configuración por rol
+const AI_PERMISSIONS_BY_ROLE = {
+  Doctor: {
+    canUseAITranscription: true,
+    canUseAIScheduling: false,
+    canUseAISummaries: true,
+    canUseAICalls: false,
+    canUseAIReferrals: true,
+    canConfigureAIWorkflows: false,
+    canViewAIMetrics: true,              // Vista limitada
+    canApproveAIActions: false,
+    canAuditAIUsage: false,
+    dailyAIActionsLimit: 50,
+    requiresApprovalFor: ['bulk-actions', 'sensitive-data'],
+    canBypassApprovals: false
+  },
+  Admin: {
+    canUseAITranscription: false,        // No acceso a datos clínicos
+    canUseAIScheduling: true,
+    canUseAISummaries: false,            // No acceso a datos clínicos
+    canUseAICalls: true,
+    canUseAIReferrals: false,            // No acceso a datos clínicos
+    canConfigureAIWorkflows: true,
+    canViewAIMetrics: true,              // Vista completa
+    canApproveAIActions: true,
+    canAuditAIUsage: true,
+    dailyAIActionsLimit: 200,
+    requiresApprovalFor: [],             // Sin restricciones
+    canBypassApprovals: true
+  }
+};
+```
 
-#### Métricas Simuladas
-- Tiempo ahorrado por acción
-- Tasa de éxito de contactos
-- Mejora en seguimiento de pacientes
-- Satisfacción simulada del usuario
+### **Funcionalidades de Simulación con Governance**
 
-### **Cronograma (3 Semanas)**
+#### Simulaciones Realistas con Auditoría
+- **Llamadas**: Tiempo de espera + resultado simulado con sentiment + logging completo
+- **Transcripciones**: Texto predefinido estructurado + validación de permisos clínicos
+- **Resúmenes**: Templates con datos del paciente + audit trail
+- **Agendamiento**: Algoritmo real de búsqueda de disponibilidad + log de decisiones
 
-#### Semana 1: Fundación
-- **Días 1-2**: Expandir tipos de Activity y componentes base
-- **Días 3-4**: Hooks de detección de contexto
-- **Días 5-7**: Testing de infraestructura
+#### Métricas Simuladas con Seguridad
+- Tiempo ahorrado por acción (por usuario y rol)
+- Tasa de éxito de contactos (con datos anonimizados)
+- Mejora en seguimiento de pacientes (agregado por clínica)
+- Satisfacción simulada del usuario (con feedback opcional)
+- Cumplimiento de políticas de uso de IA
 
-#### Semana 2: Integración
-- **Días 8-10**: Botones en Pacientes y Agenda
-- **Días 11-12**: Expedientes y Dashboard
-- **Días 13-14**: Testing de integración
+#### Sistema de Aprobaciones Simulado
+- Cola de acciones pendientes de aprobación
+- Notificaciones automáticas a Admins
+- Escalamiento automático por tiempo de espera
+- Histórico de decisiones de aprobación
 
-#### Semana 3: Automatización
-- **Días 15-17**: Sistema de triggers automáticos
-- **Días 18-19**: FAB inteligente
-- **Días 20-21**: Centro de control mejorado
+### **Cronograma Actualizado (3 Semanas)**
+
+#### Semana 1: Fundación con Seguridad
+- **Días 1-2**: Expandir tipos de Activity y sistema de permisos IA
+- **Días 3-4**: Hooks de detección de contexto con validación
+- **Días 5-7**: Componentes base con AIPermissionGuard y testing
+
+#### Semana 2: Integración Segura
+- **Días 8-10**: Botones contextuales en Pacientes y Agenda con permisos
+- **Días 11-12**: Expedientes y Dashboard con control de acceso
+- **Días 13-14**: Testing de integración y validación de permisos
+
+#### Semana 3: Automatización Gobernada
+- **Días 15-17**: Sistema de triggers automáticos con aprobaciones
+- **Días 18-19**: FAB inteligente con permisos y sistema de auditoría
+- **Días 20-21**: Centro de control mejorado y configuración avanzada
+
+### **Consideraciones de Seguridad y Compliance**
+
+#### Principios de Seguridad
+- **Principio de menor privilegio**: Usuarios solo acceden a funciones necesarias para su rol
+- **Separación de responsabilidades**: Doctores manejan datos clínicos, Admins manejan operaciones
+- **Auditoría completa**: Todas las acciones IA son logged y trazables
+- **Aprobaciones explícitas**: Acciones críticas requieren autorización
+
+#### Protección de Datos
+- **Datos clínicos**: Solo accesibles por Doctores con permisos específicos
+- **Datos administrativos**: Separados de datos clínicos
+- **Logging anonimizado**: Métricas agregadas sin información personal
+- **Retención controlada**: Políticas claras de retención de logs de auditoría
 
 ---
 
@@ -301,7 +485,7 @@ src/services/ai/
 - ✅ Fase 5: Documentación Técnica (100%)
 
 ### En Progreso
-- 🚀 Fase 6: Sistema de IA Contextual Administrativa (0%)
+- 🚀 Fase 6: Sistema de IA Contextual Administrativa con Permisos (0%)
 
 ### Pendiente
 - ⏳ Testing y Calidad de Código (0%)
@@ -329,12 +513,13 @@ src/services/ai/
 - **Composición de componentes**: Flexibilidad y reutilización
 - **Error handling**: Boundaries y recovery strategies
 - **TypeScript strict**: Tipos seguros y consistentes
+- **Sistema de permisos**: Control granular por rol y funcionalidad
 
 ---
 
 ## 🚀 PROYECTO EN EVOLUCIÓN
 
-El sistema de clínica ha completado su refactorización base y está listo para la siguiente fase de automatización inteligente con IA contextual.
+El sistema de clínica ha completado su refactorización base y está listo para la siguiente fase de automatización inteligente con IA contextual y sistema de permisos robusto.
 
 ### Estado Actual
 1. ✅ **Arquitectura escalable** y bien documentada
@@ -342,15 +527,18 @@ El sistema de clínica ha completado su refactorización base y está listo para
 3. ✅ **Código mantenible** con patrones consistentes
 4. ✅ **Documentación técnica** completa y actualizada
 5. ✅ **Gestión de estado** optimizada y coordinada
+6. ✅ **Sistema de permisos** granular por rol
 
 ### Próxima Implementación (Fase 6)
-- 🚀 **Sistema de IA Contextual** para automatización administrativa
-- 🚀 **Botones inteligentes** distribuidos por toda la webapp
-- 🚀 **Triggers automáticos** para workflows eficientes
-- 🚀 **FAB inteligente** para acceso rápido a acciones IA
+- 🚀 **Sistema de IA Contextual** con control de permisos granular
+- 🚀 **Botones inteligentes** distribuidos con validación de roles
+- 🚀 **Triggers automáticos** con sistema de aprobaciones
+- 🚀 **FAB inteligente** con governance y auditoría
+- 🚀 **Centro de control** con métricas por rol y compliance
 
 ---
 
-**Estado del Proyecto:** ✅ **BASE SÓLIDA** + 🚀 **LISTO PARA FASE 6**  
+**Estado del Proyecto:** ✅ **BASE SÓLIDA** + 🚀 **LISTO PARA FASE 6 CON PERMISOS**  
 **Última actualización:** 18 de junio, 2025  
 **Responsable:** Equipo de desarrollo
+
