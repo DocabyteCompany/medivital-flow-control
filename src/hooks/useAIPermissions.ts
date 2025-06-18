@@ -114,7 +114,7 @@ export const useAIPermissions = (context?: ActivityContext) => {
     const actions: string[] = [];
     
     // Lista explícita de permisos booleanos
-    const booleanPermissions: BooleanPermissionKeys[] = [
+    const booleanPermissions: (keyof Pick<AIPermissions, BooleanPermissionKeys>)[] = [
       'canUseAITranscription',
       'canUseAIScheduling', 
       'canUseAISummaries',
@@ -131,7 +131,7 @@ export const useAIPermissions = (context?: ActivityContext) => {
     ];
 
     booleanPermissions.forEach(permission => {
-      if (canPerformAction(permission)) {
+      if (canPerformAction(permission as BooleanPermissionKeys)) {
         const actionName = permission.replace(/^canUseAI|^can/, '').toLowerCase();
         actions.push(actionName);
       }
