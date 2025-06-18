@@ -1,7 +1,8 @@
 
 import { PersonnelCard } from '@/components/personnel/PersonnelCard';
 import { PersonnelFilters } from '@/components/personnel/PersonnelFilters';
-import { personnel, PersonnelRole } from '@/data/personnel';
+import { PersonnelDetailView } from '@/components/personnel/PersonnelDetailView';
+import { personnel, PersonnelRole, Personnel as PersonnelType } from '@/data/personnel';
 import { Stethoscope, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useState, useMemo } from 'react';
@@ -12,6 +13,8 @@ const Personnel = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState<PersonnelRole | 'all'>('all');
     const [onlineOnly, setOnlineOnly] = useState(false);
+    const [selectedPerson, setSelectedPerson] = useState<PersonnelType | null>(null);
+    const [showDetailView, setShowDetailView] = useState(false);
 
     const filteredPersonnel = useMemo(() => {
         return personnel.filter(person => {
@@ -38,6 +41,16 @@ const Personnel = () => {
         setSearchTerm('');
         setSelectedRole('all');
         setOnlineOnly(false);
+    };
+
+    const handleViewDetails = (person: PersonnelType) => {
+        setSelectedPerson(person);
+        setShowDetailView(true);
+    };
+
+    const handleCloseDetailView = () => {
+        setShowDetailView(false);
+        setSelectedPerson(null);
     };
 
     const onlineCount = personnel.filter(p => p.online).length;
@@ -91,7 +104,11 @@ const Personnel = () => {
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {filteredPersonnel.map((person) => (
-                        <PersonnelCard key={person.id} person={person} />
+                        <PersonnelCard 
+                            key={person.id} 
+                            person={person} 
+                            onViewDetails={handleViewDetails}
+                        />
                     ))}
                 </div>
                 
@@ -105,6 +122,14 @@ const Personnel = () => {
                     </div>
                 )}
             </div>
+
+            {/* Modal de vista detallada */}
+            {showDetailView && selectedPerson && (
+                <PersonnelDetailView
+                    person={selectedPerson}
+                    onClose={handleCloseDetailView}
+                />
+            )}
         </div>
     );
 };

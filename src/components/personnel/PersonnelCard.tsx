@@ -4,33 +4,47 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Personnel } from "@/data/personnel";
-import { Mail, MessageSquare, Phone } from "lucide-react";
+import { Mail, MessageSquare, Phone, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export const PersonnelCard = ({ person }: { person: Personnel }) => {
+interface PersonnelCardProps {
+    person: Personnel;
+    onViewDetails?: (person: Personnel) => void;
+}
+
+export const PersonnelCard = ({ person, onViewDetails }: PersonnelCardProps) => {
     const navigate = useNavigate();
 
     const getInitials = (name: string) => {
         return name.split(' ').map(n => n[0]).join('');
     }
 
-    const handleMessage = () => {
-        // Navegar a mensajes con el ID del personal para iniciar conversación
+    const handleMessage = (e: React.MouseEvent) => {
+        e.stopPropagation();
         navigate(`/mensajes?contact=${person.id}`);
     };
 
-    const handleCall = () => {
-        // Simular llamada telefónica
+    const handleCall = (e: React.MouseEvent) => {
+        e.stopPropagation();
         window.location.href = `tel:${person.phone}`;
     };
 
-    const handleEmail = () => {
-        // Abrir cliente de email
+    const handleEmail = (e: React.MouseEvent) => {
+        e.stopPropagation();
         window.location.href = `mailto:${person.email}`;
     };
 
+    const handleCardClick = () => {
+        if (onViewDetails) {
+            onViewDetails(person);
+        }
+    };
+
     return (
-        <Card className="shadow-soft border-0 rounded-2xl hover:shadow-lg transition-shadow">
+        <Card 
+            className="shadow-soft border-0 rounded-2xl hover:shadow-lg transition-all cursor-pointer hover:scale-105"
+            onClick={handleCardClick}
+        >
             <CardHeader className="flex flex-col items-center text-center p-6">
                 <div className="relative">
                     <Avatar className="w-24 h-24">
@@ -44,6 +58,12 @@ export const PersonnelCard = ({ person }: { person: Personnel }) => {
                 <CardTitle className="mt-4 text-lg font-bold text-brand-dark">{person.name}</CardTitle>
                 <p className="text-sm text-gray-500">{person.role}</p>
                 {person.specialty && <Badge variant="secondary" className="mt-2">{person.specialty}</Badge>}
+                
+                {/* Indicador de más información */}
+                <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
+                    <Eye className="w-3 h-3" />
+                    <span>Ver detalles</span>
+                </div>
             </CardHeader>
             <CardContent className="p-6 pt-0">
                 <div className="space-y-3">
