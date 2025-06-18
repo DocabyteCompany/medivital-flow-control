@@ -1,6 +1,6 @@
 
 // Barrel export for all custom hooks
-export { useStatistics, usePatientStatistics, usePersonnelStatistics, useAppointmentStatistics, useFinancialStatistics, useStatisticsOverview } from './useStatistics';
+export { usePatientStatistics, usePersonnelStatistics, useAppointmentStatistics, useFinancialStatistics, useStatisticsOverview } from './useStatistics';
 export { useOptimizedStatistics } from './useOptimizedStatistics';
 export { useValidation, ValidationRules } from './useValidation';
 export { useStatisticsLoading } from './useStatisticsLoading';
