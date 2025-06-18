@@ -31,19 +31,19 @@ export const FinancialStatsWidget = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">
-                €{totalRevenue.toLocaleString()}
+                ${totalRevenue.toLocaleString()} MXN
               </div>
               <div className="text-sm text-gray-600">Ingresos Totales</div>
             </div>
             <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">
-                €{averageMonthly.toLocaleString()}
+                ${averageMonthly.toLocaleString()} MXN
               </div>
               <div className="text-sm text-gray-600">Promedio Mensual</div>
             </div>
             <div className="text-center p-4 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">
-                €{lastMonth.amount.toLocaleString()}
+                ${lastMonth.amount.toLocaleString()} MXN
               </div>
               <div className="text-sm text-gray-600">Último Mes</div>
             </div>
@@ -71,7 +71,7 @@ export const FinancialStatsWidget = () => {
           <ChartContainer
             config={{
               amount: {
-                label: "Ingresos (€)",
+                label: "Ingresos (MXN)",
                 color: "hsl(var(--chart-1))",
               },
             }}
@@ -80,11 +80,11 @@ export const FinancialStatsWidget = () => {
               <LineChart data={stats.revenue}>
                 <XAxis dataKey="month" />
                 <YAxis 
-                  tickFormatter={(value) => `€${(value / 1000).toFixed(0)}k`}
+                  tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
                 />
                 <ChartTooltip 
                   content={<ChartTooltipContent 
-                    formatter={(value) => [`€${Number(value).toLocaleString()}`, 'Ingresos']}
+                    formatter={(value) => [`$${Number(value).toLocaleString()} MXN`, 'Ingresos']}
                   />} 
                 />
                 <Line 

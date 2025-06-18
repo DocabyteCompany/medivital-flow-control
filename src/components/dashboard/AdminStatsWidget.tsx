@@ -1,4 +1,3 @@
-
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,10 +10,10 @@ export const AdminStatsWidget = () => {
   const config = SystemConfigService.getConfig();
   const financialConfig = SystemConfigService.getFinancialSectionConfig();
 
-  // Mock data - se conectará con datos reales más adelante
+  // Mock data - se conectará con datos reales más adelante (actualizado a pesos mexicanos)
   const clinicStats = {
     totalPatients: 1247,
-    monthlyRevenue: 85420,
+    monthlyRevenue: 1710840,
     appointmentsToday: 28,
     doctorsActive: 12,
     growthRate: '+12.5%'
@@ -30,7 +29,7 @@ export const AdminStatsWidget = () => {
     },
     {
       title: financialConfig.show ? 'Ingresos del Mes' : 'Eficiencia Operativa',
-      value: financialConfig.show ? `$${clinicStats.monthlyRevenue.toLocaleString()}` : '87.5%',
+      value: financialConfig.show ? `$${clinicStats.monthlyRevenue.toLocaleString()} MXN` : '87.5%',
       icon: DollarSign,
       color: 'green',
       enabled: financialConfig.show || config.enabledSections.operational

@@ -59,7 +59,7 @@ export const createPatientWithRecord = (data: NewPatientData): Patient => {
 export const getInsuranceLabel = (type?: string): string => {
   switch (type) {
     case 'none': return 'Sin seguro';
-    case 'public': return 'Seguro Público';
+    case 'public': return 'IMSS/ISSSTE';
     case 'private': return 'Seguro Privado';
     case 'mixed': return 'Seguro Mixto';
     case 'international': return 'Seguro Internacional';

@@ -1,4 +1,3 @@
-
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
@@ -10,7 +9,7 @@ interface PatientStatisticsProps {
   patient: Patient;
 }
 
-// Mock data específico por paciente - en una app real vendría de la base de datos
+// Mock data específico por paciente - actualizado a pesos mexicanos
 const getPatientStats = (patientId: string) => {
   const statsData = {
     '1': { // Jorge Villareal
@@ -27,7 +26,7 @@ const getPatientStats = (patientId: string) => {
         { date: '08/06', presion: 118, peso: 79 },
         { date: '15/06', presion: 115, peso: 80 },
       ],
-      totalSpent: 850,
+      totalSpent: 17000,
       totalVisits: 10,
       lastPayment: '2025-06-15'
     },
@@ -45,7 +44,7 @@ const getPatientStats = (patientId: string) => {
         { date: '07/06', temperatura: 36.8, peso: 15 },
         { date: '14/06', temperatura: 36.6, peso: 15 },
       ],
-      totalSpent: 420,
+      totalSpent: 8400,
       totalVisits: 12,
       lastPayment: '2025-06-14'
     }
@@ -69,7 +68,7 @@ export const PatientStatistics = ({ patient }: PatientStatisticsProps) => {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">€{stats.totalSpent}</div>
+              <div className="text-2xl font-bold">${stats.totalSpent.toLocaleString()} MXN</div>
               <p className="text-xs text-muted-foreground">Último pago: {stats.lastPayment}</p>
             </CardContent>
           </Card>

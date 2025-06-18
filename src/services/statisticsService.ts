@@ -122,21 +122,21 @@ export const getFinancialStatistics = (): FinancialStats => {
 
   const byInsurance = Object.entries(patientStats.byInsurance).map(([type, count]) => ({
     type: type === 'none' ? 'Sin seguro' : 
-          type === 'public' ? 'Público' :
-          type === 'private' ? 'Privado' :
-          type === 'mixed' ? 'Mixto' : 'Internacional',
+          type === 'public' ? 'IMSS/ISSSTE' :
+          type === 'private' ? 'Seguro Privado' :
+          type === 'mixed' ? 'Seguro Mixto' : 'Seguro Internacional',
     patients: count,
     percentage: (count / total) * 100
   }));
 
-  // Datos simulados de ingresos
+  // Datos actualizados a pesos mexicanos
   const revenue = [
-    { month: 'Ene', amount: 125000 },
-    { month: 'Feb', amount: 132000 },
-    { month: 'Mar', amount: 128000 },
-    { month: 'Abr', amount: 145000 },
-    { month: 'May', amount: 138000 },
-    { month: 'Jun', amount: 151000 },
+    { month: 'Ene', amount: 2500000 },
+    { month: 'Feb', amount: 2640000 },
+    { month: 'Mar', amount: 2560000 },
+    { month: 'Abr', amount: 2900000 },
+    { month: 'May', amount: 2760000 },
+    { month: 'Jun', amount: 3020000 },
   ];
 
   return {

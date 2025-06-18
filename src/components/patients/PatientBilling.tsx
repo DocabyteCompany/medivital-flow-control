@@ -11,56 +11,56 @@ interface PatientBillingProps {
   patient: Patient;
 }
 
-// Mock data específico por paciente
+// Mock data específico por paciente - actualizado a pesos mexicanos
 const getPatientBilling = (patientId: string) => {
   const billingData = {
     '1': [ // Jorge Villareal
       {
         id: 1,
         service: 'Consulta Cardiología',
-        amount: 120,
+        amount: 2400,
         date: '2025-06-15',
         status: 'paid',
-        insurance: 'Sanitas',
-        invoice: 'INV-2025-001'
+        insurance: 'IMSS',
+        invoice: 'FAC-2025-001'
       },
       {
         id: 2,
         service: 'Análisis Completo',
-        amount: 95,
+        amount: 1900,
         date: '2025-05-20',
         status: 'paid',
-        insurance: 'Sanitas',
-        invoice: 'INV-2025-005'
+        insurance: 'IMSS',
+        invoice: 'FAC-2025-005'
       },
       {
         id: 3,
         service: 'Electrocardiograma',
-        amount: 65,
+        amount: 1300,
         date: '2025-04-15',
         status: 'paid',
-        insurance: 'Sanitas',
-        invoice: 'INV-2025-012'
+        insurance: 'IMSS',
+        invoice: 'FAC-2025-012'
       }
     ],
     '2': [ // Sofía Ramirez
       {
         id: 1,
         service: 'Consulta Pediatría',
-        amount: 85,
+        amount: 1700,
         date: '2025-06-14',
         status: 'pending',
-        insurance: 'Adeslas',
-        invoice: 'INV-2025-002'
+        insurance: 'ISSSTE',
+        invoice: 'FAC-2025-002'
       },
       {
         id: 2,
         service: 'Vacunación',
-        amount: 45,
+        amount: 900,
         date: '2025-05-28',
         status: 'paid',
-        insurance: 'Adeslas',
-        invoice: 'INV-2025-008'
+        insurance: 'ISSSTE',
+        invoice: 'FAC-2025-008'
       }
     ]
   };
@@ -132,7 +132,7 @@ export const PatientBilling = ({ patient }: PatientBillingProps) => {
             <CheckCircle className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">€{totalPagado}</div>
+            <div className="text-2xl font-bold text-green-600">${totalPagado.toLocaleString()} MXN</div>
             <p className="text-xs text-muted-foreground">Historial completo</p>
           </CardContent>
         </Card>
@@ -143,7 +143,7 @@ export const PatientBilling = ({ patient }: PatientBillingProps) => {
             <CreditCard className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">€{totalPendiente}</div>
+            <div className="text-2xl font-bold text-yellow-600">${totalPendiente.toLocaleString()} MXN</div>
             <p className="text-xs text-muted-foreground">Por cobrar</p>
           </CardContent>
         </Card>
@@ -181,7 +181,7 @@ export const PatientBilling = ({ patient }: PatientBillingProps) => {
                   
                   <div className="flex items-center space-x-4">
                     <div className="text-right">
-                      <p className="text-sm font-medium">€{item.amount}</p>
+                      <p className="text-sm font-medium">${item.amount.toLocaleString()} MXN</p>
                       <p className="text-xs text-gray-500">{new Date(item.date).toLocaleDateString()}</p>
                       <p className="text-xs text-gray-400">{item.invoice}</p>
                     </div>
@@ -206,4 +206,33 @@ export const PatientBilling = ({ patient }: PatientBillingProps) => {
       </Card>
     </div>
   );
+};
+
+const getStatusInfo = (status: string) => {
+  switch (status) {
+    case 'paid':
+      return { 
+        text: 'Pagado', 
+        className: 'bg-green-100 text-green-800',
+        icon: CheckCircle
+      };
+    case 'pending':
+      return { 
+        text: 'Pendiente', 
+        className: 'bg-yellow-100 text-yellow-800',
+        icon: CreditCard
+      };
+    case 'overdue':
+      return { 
+        text: 'Vencido', 
+        className: 'bg-red-100 text-red-800',
+        icon: AlertCircle
+      };
+    default:
+      return { 
+        text: '', 
+        className: '',
+        icon: CreditCard
+      };
+  }
 };
