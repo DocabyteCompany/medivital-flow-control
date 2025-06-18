@@ -9,7 +9,7 @@ export const NotificationBadge = ({
 }: NotificationBadgeProps) => {
   if (count === 0) return null;
   const displayCount = count > maxCount ? `${maxCount}+` : count.toString();
-  return <Badge variant="destructive" className="absolute -top- -right-1.5 -right-8 h-5 flex items-center justify-center text-xs font-medium px-[8px]">
+  return <Badge variant="destructive" className="absolute -top-0 -right-1/2 -right-8 h-5 flex items-center justify-center text-xs font-medium px-[8px]">
       {displayCount}
     </Badge>;
 };
