@@ -1,9 +1,11 @@
+
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, Calendar, DollarSign, Users, Settings } from 'lucide-react';
+import { TrendingUp, Settings } from 'lucide-react';
 import { SystemConfigService } from '@/services/systemConfigService';
 import { useNavigate } from 'react-router-dom';
+import { MetricsGrid } from '@/components/common';
 
 export const AdminStatsWidget = () => {
   const navigate = useNavigate();
@@ -19,46 +21,36 @@ export const AdminStatsWidget = () => {
     growthRate: '+12.5%'
   };
 
-  const statsItems = [
+  const metricsData = [
     {
       title: 'Pacientes Totales',
       value: clinicStats.totalPatients.toLocaleString(),
-      icon: Users,
-      color: 'blue',
-      enabled: config.enabledSections.patients
+      color: 'blue'
     },
     {
       title: financialConfig.show ? 'Ingresos del Mes' : 'Eficiencia Operativa',
       value: financialConfig.show ? `$${clinicStats.monthlyRevenue.toLocaleString()} MXN` : '87.5%',
-      icon: DollarSign,
-      color: 'green',
-      enabled: financialConfig.show || config.enabledSections.operational
+      color: 'green'
     },
     {
       title: 'Citas Hoy',
       value: clinicStats.appointmentsToday.toString(),
-      icon: Calendar,
-      color: 'orange',
-      enabled: config.enabledSections.appointments
+      color: 'orange'
     },
     {
       title: 'Doctores Activos',
       value: clinicStats.doctorsActive.toString(),
-      icon: TrendingUp,
-      color: 'purple',
-      enabled: config.enabledSections.personnel
+      color: 'purple'
     }
-  ].filter(item => item.enabled);
-
-  const getColorClasses = (color: string) => {
-    switch (color) {
-      case 'blue': return 'bg-blue-100 text-blue-700';
-      case 'green': return 'bg-green-100 text-green-700';
-      case 'orange': return 'bg-orange-100 text-orange-700';
-      case 'purple': return 'bg-purple-100 text-purple-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
-  };
+  ].filter((_, index) => {
+    const enabledSections = [
+      config.enabledSections.patients,
+      financialConfig.show || config.enabledSections.operational,
+      config.enabledSections.appointments,
+      config.enabledSections.personnel
+    ];
+    return enabledSections[index];
+  });
 
   return (
     <Card className="shadow-soft border-0 rounded-2xl">
@@ -84,19 +76,7 @@ export const AdminStatsWidget = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4">
-          {statsItems.map((item, index) => (
-            <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <div className={`p-2 rounded-lg ${getColorClasses(item.color)}`}>
-                <item.icon className="w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-lg font-bold text-brand-dark">{item.value}</p>
-                <p className="text-xs text-gray-500">{item.title}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <MetricsGrid metrics={metricsData} columns={2} />
         
         {/* Información adicional según tipo de institución */}
         {config.institutionType === 'large_hospital' && (
