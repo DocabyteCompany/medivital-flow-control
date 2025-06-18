@@ -9,3 +9,5 @@ export { usePatientPermissions } from './usePatientPermissions';
 export { usePermissions } from './usePermissions';
 export { useRecordsPermissions } from './useRecordsPermissions';
 export { useUnifiedPermissions } from './useUnifiedPermissions';
+export { usePatients, usePatientMutations, useLocalFilters } from './useDataFetching';
+export { useOptimizedQueries, useSmartCache } from './useOptimizedQueries';

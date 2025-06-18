@@ -36,7 +36,7 @@ export const ConfigurationProvider = ({ children }: ConfigurationProviderProps) 
   
   const hasPermission = (userRole: string, permission: string) => {
     const roleConfig = SYSTEM_CONFIG.roles[userRole as keyof typeof SYSTEM_CONFIG.roles];
-    return roleConfig?.permissions.includes(permission) || false;
+    return roleConfig?.permissions.includes(permission as any) || false;
   };
 
   const value: ConfigurationContextType = {
