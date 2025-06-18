@@ -63,20 +63,9 @@ const AI_PERMISSIONS_BY_ROLE = {
   }
 } as const;
 
-export type BooleanPermissionKeys = 
-  | 'canUseAITranscription'
-  | 'canUseAIScheduling'
-  | 'canUseAISummaries'
-  | 'canUseAICalls'
-  | 'canUseAIReferrals'
-  | 'canUseAIReminders'
-  | 'canUseAIFollowUp'
-  | 'canUseAIPatientIntake'
-  | 'canConfigureAIWorkflows'
-  | 'canViewAIMetrics'
-  | 'canApproveAIActions'
-  | 'canAuditAIUsage'
-  | 'canBypassApprovals';
+export type BooleanPermissionKeys = keyof Pick<AIPermissions, {
+  [K in keyof AIPermissions]: AIPermissions[K] extends boolean ? K : never;
+}[keyof AIPermissions]>;
 
 export const useAIPermissions = (context?: ActivityContext) => {
   const { selectedRole } = useRole();
@@ -105,19 +94,14 @@ export const useAIPermissions = (context?: ActivityContext) => {
     const permission = contextualPermissions[action];
     
     // Verificar si es un booleano (permisos principales)
-    if (typeof permission === 'boolean') {
-      if (!permission) return false;
-      
-      // Verificar si la acción requiere aprobación
-      if (actionType && contextualPermissions.requiresApprovalFor.includes(actionType)) {
-        return contextualPermissions.canBypassApprovals;
-      }
-      
-      return true;
+    if (!permission) return false;
+    
+    // Verificar si la acción requiere aprobación
+    if (actionType && contextualPermissions.requiresApprovalFor.includes(actionType)) {
+      return contextualPermissions.canBypassApprovals;
     }
     
-    // Para propiedades que no son booleanas, simplemente retornar false
-    return false;
+    return true;
   };
 
   const getAvailableActions = (): string[] => {
