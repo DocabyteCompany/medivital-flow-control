@@ -1,3 +1,4 @@
+import { StorageService } from './storage/StorageService';
 
 export interface SystemConfig {
   showFinancialSection: boolean;
@@ -36,9 +37,9 @@ export class SystemConfigService {
 
   static getConfig(): SystemConfig {
     try {
-      const stored = localStorage.getItem(this.CONFIG_KEY);
+      const stored = StorageService.getSystemConfig<SystemConfig>();
       if (stored) {
-        return { ...DEFAULT_CONFIG, ...JSON.parse(stored) };
+        return { ...DEFAULT_CONFIG, ...stored };
       }
     } catch (error) {
       console.error('Error loading system config:', error);
@@ -50,7 +51,7 @@ export class SystemConfigService {
     try {
       const current = this.getConfig();
       const updated = { ...current, ...updates };
-      localStorage.setItem(this.CONFIG_KEY, JSON.stringify(updated));
+      StorageService.setSystemConfig(updated);
     } catch (error) {
       console.error('Error saving system config:', error);
     }

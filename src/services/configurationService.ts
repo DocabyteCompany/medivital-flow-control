@@ -1,3 +1,4 @@
+import { StorageService } from './storage/StorageService';
 
 export interface NotificationSettings {
   appointmentReminders: boolean;
@@ -56,13 +57,9 @@ export const defaultUserConfiguration: UserConfiguration = {
 
 // Funciones para gestionar configuración (localStorage por ahora)
 export const getUserConfiguration = (): UserConfiguration => {
-  const stored = localStorage.getItem('userConfiguration');
+  const stored = StorageService.getUserConfig<UserConfiguration>();
   if (stored) {
-    try {
-      return { ...defaultUserConfiguration, ...JSON.parse(stored) };
-    } catch (error) {
-      console.error('Error parsing user configuration:', error);
-    }
+    return { ...defaultUserConfiguration, ...stored };
   }
   return defaultUserConfiguration;
 };
@@ -70,11 +67,11 @@ export const getUserConfiguration = (): UserConfiguration => {
 export const saveUserConfiguration = (config: Partial<UserConfiguration>): void => {
   const current = getUserConfiguration();
   const updated = { ...current, ...config };
-  localStorage.setItem('userConfiguration', JSON.stringify(updated));
+  StorageService.setUserConfig(updated);
   console.log('User configuration saved:', updated);
 };
 
 export const resetUserConfiguration = (): void => {
-  localStorage.removeItem('userConfiguration');
+  StorageService.remove('userConfiguration');
   console.log('User configuration reset to defaults');
 };
