@@ -32,16 +32,18 @@ export const usePatients = (filters?: {
 
   return useQuery({
     queryKey: ['patients', filters],
-    queryFn: () => {
+    queryFn: async () => {
       setLoading(true);
-      return getPatients();
+      try {
+        const result = await getPatients();
+        return result;
+      } finally {
+        setLoading(false);
+      }
     },
     staleTime: 5 * 60 * 1000, // 5 minutos
     gcTime: 10 * 60 * 1000, // 10 minutos
-    retry: 3,
-    onSettled: () => {
-      setLoading(false);
-    }
+    retry: 3
   });
 };
 
