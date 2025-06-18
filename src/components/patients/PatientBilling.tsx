@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { usePatientPermissions } from '@/hooks/usePatientPermissions';
-import { DollarSign, CreditCard, AlertCircle, CheckCircle, Download } from 'lucide-react';
+import { DollarSign, CreditCard, AlertCircle, CheckCircle, Download, Mail } from 'lucide-react';
 import { Patient } from '@/data/patients';
 
 interface PatientBillingProps {
@@ -97,6 +97,19 @@ const getStatusInfo = (status: string) => {
   }
 };
 
+const handleEmailShare = (patient: Patient, invoice?: string) => {
+  const subject = invoice 
+    ? `Factura ${invoice} - ${patient.name}`
+    : `Historial de Facturación - ${patient.name}`;
+  
+  const body = invoice 
+    ? `Estimado/a ${patient.name},\n\nAdjunto encontrará la factura ${invoice} correspondiente a los servicios médicos prestados.\n\nSaludos cordiales,\nEquipo Médico`
+    : `Estimado/a ${patient.name},\n\nAdjunto encontrará el historial completo de facturación de sus servicios médicos.\n\nSaludos cordiales,\nEquipo Médico`;
+
+  const mailtoUrl = `mailto:${patient.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailtoUrl, '_blank');
+};
+
 export const PatientBilling = ({ patient }: PatientBillingProps) => {
   const { t } = useTranslation();
   const { isAdmin } = usePatientPermissions();
@@ -161,8 +174,16 @@ export const PatientBilling = ({ patient }: PatientBillingProps) => {
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Historial de Facturación - {patient.name}</CardTitle>
+          <Button 
+            variant="outline" 
+            onClick={() => handleEmailShare(patient)}
+            className="flex items-center gap-2"
+          >
+            <Mail className="w-4 h-4" />
+            Enviar Historial por Email
+          </Button>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -196,6 +217,15 @@ export const PatientBilling = ({ patient }: PatientBillingProps) => {
                         <Download className="w-4 h-4 mr-1" />
                         PDF
                       </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleEmailShare(patient, item.invoice)}
+                      >
+                        <Mail className="w-4 h-4 mr-1" />
+                        Email
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -206,33 +236,4 @@ export const PatientBilling = ({ patient }: PatientBillingProps) => {
       </Card>
     </div>
   );
-};
-
-const getStatusInfo = (status: string) => {
-  switch (status) {
-    case 'paid':
-      return { 
-        text: 'Pagado', 
-        className: 'bg-green-100 text-green-800',
-        icon: CheckCircle
-      };
-    case 'pending':
-      return { 
-        text: 'Pendiente', 
-        className: 'bg-yellow-100 text-yellow-800',
-        icon: CreditCard
-      };
-    case 'overdue':
-      return { 
-        text: 'Vencido', 
-        className: 'bg-red-100 text-red-800',
-        icon: AlertCircle
-      };
-    default:
-      return { 
-        text: '', 
-        className: '',
-        icon: CreditCard
-      };
-  }
 };
