@@ -1,9 +1,10 @@
 
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { ResponsiveContainer } from 'recharts';
+import { ReactElement, JSXElementConstructor } from 'react';
 
 interface ChartWrapperProps {
-  children: React.ReactNode;
+  children: ReactElement<any, string | JSXElementConstructor<any>>;
   config: Record<string, { label: string; color: string }>;
   height?: number;
   className?: string;

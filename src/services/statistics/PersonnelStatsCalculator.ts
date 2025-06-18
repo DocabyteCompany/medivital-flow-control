@@ -1,38 +1,37 @@
 
+import { PersonnelStats } from '@/types';
 import { personnel } from '@/data/personnel';
-
-export interface PersonnelStats {
-  total: number;
-  doctors: number;
-  nurses: number;
-  technicians: number;
-  administrative: number;
-  radiologists: number;
-  online: number;
-  bySpecialty: { [key: string]: number };
-}
 
 export class PersonnelStatsCalculator {
   static calculate(): PersonnelStats {
-    const medicalPersonnel = personnel.filter(p => 
-      (p.role === 'Doctor' || p.role === 'Radiólogo') && p.specialty
-    );
+    const total = personnel.length;
+    
+    // Role distribution
+    const doctors = personnel.filter(p => p.role === 'Doctor').length;
+    const nurses = personnel.filter(p => p.role === 'Nurse').length;
+    const technicians = personnel.filter(p => p.role === 'Technician').length;
+    const administrative = personnel.filter(p => p.role === 'Administrative').length;
+    const radiologists = personnel.filter(p => p.specialty === 'Radiología').length;
 
-    const bySpecialty = medicalPersonnel.reduce((acc, p) => {
-      if (p.specialty) {
-        acc[p.specialty] = (acc[p.specialty] || 0) + 1;
+    // Online status (simulated)
+    const online = Math.floor(total * 0.85);
+
+    // Specialty distribution
+    const bySpecialty = personnel.reduce((acc, person) => {
+      if (person.specialty) {
+        acc[person.specialty] = (acc[person.specialty] || 0) + 1;
       }
       return acc;
-    }, {} as { [key: string]: number });
+    }, {} as Record<string, number>);
 
     return {
-      total: personnel.length,
-      doctors: personnel.filter(p => p.role === 'Doctor').length,
-      nurses: personnel.filter(p => p.role === 'Enfermera').length,
-      technicians: personnel.filter(p => p.role === 'Técnico').length,
-      administrative: personnel.filter(p => p.role === 'Administrativo').length,
-      radiologists: personnel.filter(p => p.role === 'Radiólogo').length,
-      online: personnel.filter(p => p.online).length,
+      total,
+      doctors,
+      nurses,
+      technicians,
+      administrative,
+      radiologists,
+      online,
       bySpecialty
     };
   }

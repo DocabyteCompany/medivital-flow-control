@@ -1,37 +1,36 @@
 
+import { AppointmentStats } from '@/types';
 import { appointments } from '@/data/appointments';
-
-export interface AppointmentStats {
-  total: number;
-  completed: number;
-  scheduled: number;
-  cancelled: number;
-  rescheduled: number;
-  completionRate: number;
-  monthlyTrend: { month: string; count: number }[];
-}
 
 export class AppointmentStatsCalculator {
   static calculate(): AppointmentStats {
-    const completed = appointments.filter(a => a.status === 'Completed').length;
     const total = appointments.length;
+    
+    // Status distribution
+    const completed = appointments.filter(a => a.status === 'Completada').length;
+    const scheduled = appointments.filter(a => a.status === 'Programada').length;
+    const cancelled = appointments.filter(a => a.status === 'Cancelada').length;
+    const rescheduled = appointments.filter(a => a.status === 'Reprogramada').length;
+
+    // Completion rate
     const completionRate = total > 0 ? (completed / total) * 100 : 0;
 
+    // Monthly trend (mock data)
     const monthlyTrend = [
-      { month: 'Ene', count: 45 },
-      { month: 'Feb', count: 52 },
-      { month: 'Mar', count: 48 },
-      { month: 'Abr', count: 61 },
-      { month: 'May', count: 58 },
-      { month: 'Jun', count: appointments.length },
+      { month: 'Ene', count: 245 },
+      { month: 'Feb', count: 289 },
+      { month: 'Mar', count: 312 },
+      { month: 'Abr', count: 298 },
+      { month: 'May', count: 334 },
+      { month: 'Jun', count: 367 }
     ];
 
     return {
       total,
       completed,
-      scheduled: appointments.filter(a => a.status === 'Scheduled').length,
-      cancelled: appointments.filter(a => a.status === 'Cancelled').length,
-      rescheduled: appointments.filter(a => a.status === 'Rescheduled').length,
+      scheduled,
+      cancelled,
+      rescheduled,
       completionRate,
       monthlyTrend
     };

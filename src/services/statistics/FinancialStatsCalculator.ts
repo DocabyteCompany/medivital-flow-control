@@ -1,37 +1,39 @@
 
-import { PatientStatsCalculator } from './PatientStatsCalculator';
-
-export interface FinancialStats {
-  byInsurance: { type: string; patients: number; percentage: number }[];
-  revenue: { month: string; amount: number }[];
-}
+import { FinancialStats } from '@/types';
+import { patients } from '@/data/patients';
 
 export class FinancialStatsCalculator {
   static calculate(): FinancialStats {
-    const patientStats = PatientStatsCalculator.calculate();
-    const total = patientStats.total;
+    // Mock revenue data
+    const revenue = [
+      { month: 'Ene', amount: 1850000 },
+      { month: 'Feb', amount: 1920000 },
+      { month: 'Mar', amount: 2100000 },
+      { month: 'Abr', amount: 1980000 },
+      { month: 'May', amount: 2250000 },
+      { month: 'Jun', amount: 2340000 }
+    ];
 
-    const byInsurance = Object.entries(patientStats.byInsurance).map(([type, count]) => ({
-      type: type === 'none' ? 'Sin seguro' : 
-            type === 'public' ? 'IMSS/ISSSTE' :
-            type === 'private' ? 'Seguro Privado' :
-            type === 'mixed' ? 'Seguro Mixto' : 'Seguro Internacional',
+    // Calculate insurance distribution
+    const insuranceCounts = patients.reduce((acc, patient) => {
+      const type = patient.insurance?.type || 'none';
+      acc[type] = (acc[type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const total = patients.length;
+    const byInsurance = Object.entries(insuranceCounts).map(([type, count]) => ({
+      type: type === 'none' ? 'Sin seguro' :
+            type === 'public' ? 'Público' :
+            type === 'private' ? 'Privado' :
+            type === 'mixed' ? 'Mixto' : 'Internacional',
       patients: count,
       percentage: (count / total) * 100
     }));
 
-    const revenue = [
-      { month: 'Ene', amount: 2500000 },
-      { month: 'Feb', amount: 2640000 },
-      { month: 'Mar', amount: 2560000 },
-      { month: 'Abr', amount: 2900000 },
-      { month: 'May', amount: 2760000 },
-      { month: 'Jun', amount: 3020000 },
-    ];
-
     return {
-      byInsurance,
-      revenue
+      revenue,
+      byInsurance
     };
   }
 }
