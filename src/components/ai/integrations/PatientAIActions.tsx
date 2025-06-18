@@ -7,6 +7,9 @@ import { Phone, UserCheck, FileText, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAIPermissions } from '@/hooks/useAIPermissions';
 import { aiAuditService } from '@/services/ai/AIAuditService';
+import { FABActionService } from '@/services/ai/FABActionService';
+import { useToast } from '@/components/ui/use-toast';
+import { useState } from 'react';
 
 interface PatientAIActionsProps {
   patientId: string;
@@ -25,117 +28,85 @@ export const PatientAIActions = ({
   const { addActivity } = useActivities();
   const context = useAIContext(patientId);
   const { role } = useAIPermissions(context);
+  const { toast } = useToast();
+  const [loadingActions, setLoadingActions] = useState<Set<string>>(new Set());
 
-  const handleConfirmAppointment = async () => {
-    await aiAuditService.logAction(
-      'confirm-appointment', 
-      'canUseAICalls',
-      role,
-      context,
-      true,
-      { patientId, patientName }
-    );
-
-    addActivity({
-      type: 'call',
-      title: `Confirmar cita - ${patientName}`,
-      description: `IA llamando para confirmar cita próxima del paciente ${patientName}`,
-      details: { 
-        paciente: patientName,
-        tipo_accion: 'confirmacion_cita',
-        solicitado_desde: 'Perfil_Paciente'
+  const setActionLoading = (actionId: string, loading: boolean) => {
+    setLoadingActions(prev => {
+      const newSet = new Set(prev);
+      if (loading) {
+        newSet.add(actionId);
+      } else {
+        newSet.delete(actionId);
       }
+      return newSet;
     });
   };
 
-  const handleScheduleFollowUp = async () => {
-    await aiAuditService.logAction(
-      'schedule-followup', 
-      'canUseAIFollowUp',
-      role,
-      context,
-      true,
-      { patientId, patientName }
-    );
+  const executePatientAction = async (actionId: string, actionLabel: string, permission: any) => {
+    setActionLoading(actionId, true);
 
-    addActivity({
-      type: 'follow-up',
-      title: `Programar seguimiento - ${patientName}`,
-      description: `IA programando seguimiento post-consulta para ${patientName}`,
-      details: { 
-        paciente: patientName,
-        tipo_accion: 'programar_seguimiento',
-        motivo: 'post_consulta',
-        solicitado_desde: 'Perfil_Paciente'
+    try {
+      const result = await FABActionService.executeAction(
+        { id: actionId, label: actionLabel, permission, priority: 1 },
+        context,
+        role,
+        { patientId, patientName }
+      );
+
+      if (result.success) {
+        addActivity({
+          type: getActivityType(actionId),
+          title: `${actionLabel} - ${patientName}`,
+          description: result.message,
+          details: { 
+            paciente: patientName,
+            tipo_accion: actionId,
+            solicitado_desde: 'Perfil_Paciente',
+            resultado: result.data
+          }
+        });
+
+        toast({
+          title: "Acción Completada",
+          description: result.message,
+          duration: 4000
+        });
       }
-    });
+    } catch (error) {
+      toast({
+        title: "Error en Acción IA",
+        description: error instanceof Error ? error.message : 'Error desconocido',
+        variant: "destructive",
+        duration: 5000
+      });
+    } finally {
+      setActionLoading(actionId, false);
+    }
   };
 
-  const handleGenerateSummary = async () => {
-    await aiAuditService.logAction(
-      'generate-summary', 
-      'canUseAISummaries',
-      role,
-      context,
-      true,
-      { patientId, patientName }
-    );
-
-    addActivity({
-      type: 'summary',
-      title: `Resumen médico - ${patientName}`,
-      description: `IA generando resumen médico basado en historial de ${patientName}`,
-      details: { 
-        paciente: patientName,
-        tipo_resumen: 'historial_completo',
-        solicitado_desde: 'Perfil_Paciente'
-      }
-    });
+  const getActivityType = (actionId: string): 'call' | 'summary' | 'schedule' | 'reminder' | 'follow-up' | 'transcription' | 'referral' | 'patient-intake' => {
+    if (actionId.includes('call') || actionId.includes('confirm')) return 'call';
+    if (actionId.includes('summary')) return 'summary';
+    if (actionId.includes('schedule') || actionId.includes('followup')) return 'follow-up';
+    if (actionId.includes('update')) return 'schedule';
+    return 'summary';
   };
 
-  const handleCallReminder = async () => {
-    await aiAuditService.logAction(
-      'call-reminder', 
-      'canUseAICalls',
-      role,
-      context,
-      true,
-      { patientId, patientName }
-    );
+  const handleConfirmAppointment = () => 
+    executePatientAction('confirm-appointment', 'Confirmar cita próxima', 'canUseAIScheduling');
 
-    addActivity({
-      type: 'call',
-      title: `Llamar recordatorio - ${patientName}`,
-      description: `IA realizando llamada de recordatorio para ${patientName}`,
-      details: { 
-        paciente: patientName,
-        tipo_accion: 'llamada_recordatorio',
-        solicitado_desde: 'Perfil_Paciente'
-      }
-    });
-  };
+  const handleScheduleFollowUp = () => 
+    executePatientAction('schedule-followup', 'Programar seguimiento', 'canUseAIFollowUp');
 
-  const handleUpdateContact = async () => {
-    await aiAuditService.logAction(
-      'update-contact', 
-      'canUseAIScheduling',
-      role,
-      context,
-      true,
-      { patientId, patientName }
-    );
+  const handleGenerateSummary = () => 
+    executePatientAction('generate-summary', 'Generar resumen médico', 'canUseAISummaries');
 
-    addActivity({
-      type: 'schedule',
-      title: `Actualizar contacto - ${patientName}`,
-      description: `IA sugiriendo correcciones en datos de contacto de ${patientName}`,
-      details: { 
-        paciente: patientName,
-        tipo_accion: 'actualizacion_datos',
-        solicitado_desde: 'Perfil_Paciente'
-      }
-    });
-  };
+  const handleCallReminder = () => 
+    executePatientAction('call-reminder', 'Llamar recordatorio', 'canUseAICalls');
+
+  const handleUpdateContact = () => 
+    executePatientAction('update-contact', 'Actualizar datos contacto', 'canUseAIScheduling');
 
   return (
     <Card className="shadow-soft border-0 rounded-2xl">
@@ -155,8 +126,9 @@ export const PatientAIActions = ({
               onClick={handleConfirmAppointment}
               variant="outline"
               size="sm"
+              disabled={loadingActions.has('confirm-appointment')}
             >
-              Confirmar cita próxima
+              {loadingActions.has('confirm-appointment') ? 'Confirmando...' : 'Confirmar cita próxima'}
             </ContextualAIButton>
           )}
 
@@ -168,8 +140,9 @@ export const PatientAIActions = ({
               onClick={handleScheduleFollowUp}
               variant="outline"
               size="sm"
+              disabled={loadingActions.has('schedule-followup')}
             >
-              Programar seguimiento
+              {loadingActions.has('schedule-followup') ? 'Programando...' : 'Programar seguimiento'}
             </ContextualAIButton>
           )}
 
@@ -180,8 +153,9 @@ export const PatientAIActions = ({
             onClick={handleGenerateSummary}
             variant="outline"
             size="sm"
+            disabled={loadingActions.has('generate-summary')}
           >
-            Generar resumen médico
+            {loadingActions.has('generate-summary') ? 'Generando...' : 'Generar resumen médico'}
           </ContextualAIButton>
 
           {/* Acciones para Admins */}
@@ -193,8 +167,9 @@ export const PatientAIActions = ({
               onClick={handleCallReminder}
               variant="outline"
               size="sm"
+              disabled={loadingActions.has('call-reminder')}
             >
-              Llamar recordatorio
+              {loadingActions.has('call-reminder') ? 'Llamando...' : 'Llamar recordatorio'}
             </ContextualAIButton>
           )}
 
@@ -205,8 +180,9 @@ export const PatientAIActions = ({
             onClick={handleUpdateContact}
             variant="outline"
             size="sm"
+            disabled={loadingActions.has('update-contact')}
           >
-            Actualizar datos contacto
+            {loadingActions.has('update-contact') ? 'Actualizando...' : 'Actualizar datos contacto'}
           </ContextualAIButton>
         </div>
       </CardContent>
