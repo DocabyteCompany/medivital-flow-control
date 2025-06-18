@@ -3,7 +3,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ActivityCard, type Activity } from '@/components/ia/ActivityCard';
 import { useActivities } from '@/contexts/ActivityContext';
-import { Phone, FileText, Calendar as CalendarIcon, Bot, Search } from 'lucide-react';
+import { ActivityIcon } from '@/components/ia/ActivityIcon';
+import { Bot, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,12 +16,6 @@ import { useSearchParams } from 'react-router-dom';
 type FilterType = 'all' | Activity['type'];
 type StatusFilterType = 'all' | Activity['status'];
 type SentimentFilterType = 'all' | 'Positivo' | 'Neutral' | 'Negativo';
-
-const ICONS = {
-  call: Phone,
-  summary: FileText,
-  schedule: CalendarIcon
-};
 
 const IaActivities = () => {
   const { t } = useTranslation();
@@ -158,7 +153,7 @@ const IaActivities = () => {
               <div key={activity.id} ref={el => activityRefs.current[activity.id] = el}>
                 <ActivityCard 
                   activity={activity} 
-                  icon={ICONS[activity.type]}
+                  icon={(props) => <ActivityIcon type={activity.type} {...props} />}
                   onUpdateStatus={handleUpdateActivityStatus}
                   isTarget={isTarget}
                 />
