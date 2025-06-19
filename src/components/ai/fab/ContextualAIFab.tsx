@@ -167,7 +167,7 @@ export const ContextualAIFab = () => {
         <Button
           size="lg"
           className={cn(
-            "w-14 h-14 rounded-full shadow-lg transition-all duration-300",
+            "w-16 h-16 rounded-full shadow-lg transition-all duration-300",
             "bg-brand-blue hover:bg-brand-blue/90",
             state === 'expanded' && "rotate-45",
             state === 'loading' && "animate-pulse",
@@ -178,14 +178,14 @@ export const ContextualAIFab = () => {
           disabled={state === 'loading'}
         >
           {state === 'expanded' ? (
-            <X className="w-6 h-6 text-white" />
+            <X className="w-7 h-7 text-white" />
           ) : state === 'success' ? (
-            <CheckCircle className="w-6 h-6 text-white" />
+            <CheckCircle className="w-7 h-7 text-white" />
           ) : state === 'error' ? (
-            <AlertCircle className="w-6 h-6 text-white" />
+            <AlertCircle className="w-7 h-7 text-white" />
           ) : (
             <CurrentIcon className={cn(
-              "w-6 h-6 text-white transition-transform duration-300",
+              "w-7 h-7 text-white transition-transform duration-300",
               state === 'loading' && "animate-spin"
             )} />
           )}
