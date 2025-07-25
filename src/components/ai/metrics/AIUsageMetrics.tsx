@@ -10,7 +10,7 @@ import { useAIPermissions } from '@/hooks/useAIPermissions';
 
 export const AIUsageMetrics = () => {
   const { t } = useTranslation();
-  const { permissions } = useAIPermissions();
+  const aiPermissions = useAIPermissions();
   const [metrics, setMetrics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +49,7 @@ export const AIUsageMetrics = () => {
     );
   }
 
-  const dailyUsagePercentage = (metrics.todayActions / permissions.dailyAIActionsLimit) * 100;
+  const dailyUsagePercentage = (metrics.todayActions / 100) * 100; // Using default limit of 100
 
   return (
     <div className="space-y-4">
@@ -63,7 +63,7 @@ export const AIUsageMetrics = () => {
         <CardContent className="space-y-4">
           <div className="flex justify-between items-center">
             <span className="text-sm text-muted-foreground">
-              Acciones hoy: {metrics.todayActions} / {permissions.dailyAIActionsLimit}
+              Acciones hoy: {metrics.todayActions} / 100
             </span>
             <Badge variant={dailyUsagePercentage > 80 ? "destructive" : "default"}>
               {dailyUsagePercentage.toFixed(0)}%

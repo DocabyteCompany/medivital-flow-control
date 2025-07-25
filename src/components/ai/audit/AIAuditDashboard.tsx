@@ -13,7 +13,7 @@ import { AIPermissionGuard } from '@/components/ai/permissions/AIPermissionGuard
 
 export const AIAuditDashboard = () => {
   const { t } = useTranslation();
-  const { permissions } = useAIPermissions();
+  const aiPermissions = useAIPermissions();
   const [logs, setLogs] = useState<AIAuditLog[]>([]);
   const [metrics, setMetrics] = useState<any>(null);
   const [timeFilter, setTimeFilter] = useState<string>('today');
@@ -65,7 +65,7 @@ export const AIAuditDashboard = () => {
   };
 
   return (
-    <AIPermissionGuard permission="canAuditAIUsage">
+    <AIPermissionGuard permission="canConfigureSystem">
       <div className="space-y-6">
         <div className="flex items-center gap-3">
           <div className="bg-brand-light p-3 rounded-lg">

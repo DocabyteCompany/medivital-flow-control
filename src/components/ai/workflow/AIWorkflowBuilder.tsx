@@ -18,7 +18,7 @@ interface AIWorkflowBuilderProps {
 }
 
 export const AIWorkflowBuilder = ({ workflow, onSave, onTest }: AIWorkflowBuilderProps) => {
-  const { permissions } = useAIPermissions();
+  const aiPermissions = useAIPermissions();
   
   const [workflowData, setWorkflowData] = useState<AIWorkflow>(
     workflow || {
@@ -104,7 +104,7 @@ export const AIWorkflowBuilder = ({ workflow, onSave, onTest }: AIWorkflowBuilde
   };
 
   return (
-    <AIPermissionGuard permission="canConfigureAIWorkflows">
+    <AIPermissionGuard permission="canConfigureSystem">
       <div className="space-y-6">
         {/* Configuración del Workflow */}
         <Card>

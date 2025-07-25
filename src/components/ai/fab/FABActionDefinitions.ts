@@ -1,4 +1,3 @@
-
 import { ActivityContext } from '@/components/ia/ActivityCard';
 import { BooleanPermissionKeys } from '@/hooks/useAIPermissions';
 
@@ -11,34 +10,34 @@ export interface FABAction {
   icon?: string; // nombre del icono lucide
 }
 
-// Definiciones de acciones por página
+// Definiciones de acciones por página (solo usando permisos existentes)
 export const FAB_ACTIONS_BY_PAGE: Record<string, FABAction[]> = {
   dashboard: [
     {
       id: 'summarize-interactions',
       label: 'Resumir Interacciones',
-      permission: 'canUseAISummaries',
+      permission: 'canUseAIActions',
       priority: 1,
       icon: 'FileText'
     },
     {
       id: 'schedule-call',
       label: 'Agendar Llamada',
-      permission: 'canUseAICalls',
+      permission: 'canModifySchedules',
       priority: 2,
       icon: 'Phone'
     },
     {
       id: 'review-agenda',
       label: 'Revisar Agenda',
-      permission: 'canUseAIScheduling',
+      permission: 'canAccessRecords',
       priority: 3,
       icon: 'CalendarClock'
     },
     {
       id: 'view-metrics',
       label: 'Ver Métricas IA',
-      permission: 'canViewAIMetrics',
+      permission: 'canGenerateReports',
       priority: 4,
       icon: 'BarChart3'
     }
@@ -48,28 +47,28 @@ export const FAB_ACTIONS_BY_PAGE: Record<string, FABAction[]> = {
     {
       id: 'generate-medical-summary',
       label: 'Resumen Médico',
-      permission: 'canUseAISummaries',
+      permission: 'canUseAIActions',
       priority: 1,
       icon: 'FileText'
     },
     {
       id: 'confirm-appointment',
       label: 'Confirmar Cita',
-      permission: 'canUseAIReminders',
+      permission: 'canModifySchedules',
       priority: 2,
       icon: 'CalendarCheck'
     },
     {
       id: 'schedule-followup',
       label: 'Programar Seguimiento',
-      permission: 'canUseAIFollowUp',
+      permission: 'canUseAIActions',
       priority: 3,
       icon: 'Clock'
     },
     {
       id: 'transcribe-notes',
       label: 'Transcribir Notas',
-      permission: 'canUseAITranscription',
+      permission: 'canUseAIActions',
       priority: 4,
       icon: 'Mic'
     }
@@ -79,28 +78,28 @@ export const FAB_ACTIONS_BY_PAGE: Record<string, FABAction[]> = {
     {
       id: 'prepare-consultations',
       label: 'Preparar Consultas',
-      permission: 'canUseAISummaries',
+      permission: 'canUseAIActions',
       priority: 1,
       icon: 'Stethoscope'
     },
     {
       id: 'confirm-daily-appointments',
       label: 'Confirmar Citas del Día',
-      permission: 'canUseAIReminders',
+      permission: 'canModifySchedules',
       priority: 2,
       icon: 'CalendarCheck'
     },
     {
       id: 'send-reminders',
       label: 'Enviar Recordatorios',
-      permission: 'canUseAIReminders',
+      permission: 'canUseAIActions',
       priority: 3,
       icon: 'Bell'
     },
     {
       id: 'optimize-schedule',
       label: 'Optimizar Horarios',
-      permission: 'canUseAIScheduling',
+      permission: 'canModifySchedules',
       priority: 4,
       icon: 'Calendar'
     }
@@ -110,28 +109,28 @@ export const FAB_ACTIONS_BY_PAGE: Record<string, FABAction[]> = {
     {
       id: 'transcribe-consultation',
       label: 'Transcribir Consulta',
-      permission: 'canUseAITranscription',
+      permission: 'canUseAIActions',
       priority: 1,
       icon: 'Mic'
     },
     {
       id: 'generate-medical-summary',
       label: 'Generar Resumen',
-      permission: 'canUseAISummaries',
+      permission: 'canUseAIActions',
       priority: 2,
       icon: 'FileText'
     },
     {
       id: 'create-referral',
       label: 'Crear Referencia',
-      permission: 'canUseAIReferrals',
+      permission: 'canAccessRecords',
       priority: 3,
       icon: 'ArrowRight'
     },
     {
       id: 'schedule-followup',
       label: 'Agendar Seguimiento',
-      permission: 'canUseAIFollowUp',
+      permission: 'canModifySchedules',
       priority: 4,
       icon: 'Clock'
     }
@@ -149,21 +148,21 @@ export const FAB_ACTIONS_BY_PAGE: Record<string, FABAction[]> = {
     {
       id: 'export-report',
       label: 'Exportar Reporte',
-      permission: 'canViewAIMetrics',
+      permission: 'canGenerateReports',
       priority: 2,
       icon: 'Download'
     },
     {
       id: 'analyze-patterns',
       label: 'Analizar Patrones',
-      permission: 'canViewAIMetrics',
+      permission: 'canGenerateReports',
       priority: 3,
       icon: 'TrendingUp'
     },
     {
       id: 'configure-workflow',
       label: 'Configurar Flujo',
-      permission: 'canConfigureAIWorkflows',
+      permission: 'canConfigureSystem',
       priority: 4,
       icon: 'Settings'
     }
@@ -173,28 +172,28 @@ export const FAB_ACTIONS_BY_PAGE: Record<string, FABAction[]> = {
     {
       id: 'generate-insights',
       label: 'Generar Insights',
-      permission: 'canViewAIMetrics',
+      permission: 'canGenerateReports',
       priority: 1,
       icon: 'Lightbulb'
     },
     {
       id: 'predict-trends',
       label: 'Predecir Tendencias',
-      permission: 'canViewAIMetrics',
+      permission: 'canGenerateReports',
       priority: 2,
       icon: 'TrendingUp'
     },
     {
       id: 'export-data',
       label: 'Exportar Datos',
-      permission: 'canViewAIMetrics',
+      permission: 'canGenerateReports',
       priority: 3,
       icon: 'Download'
     },
     {
       id: 'schedule-report',
       label: 'Programar Reporte',
-      permission: 'canConfigureAIWorkflows',
+      permission: 'canConfigureSystem',
       priority: 4,
       icon: 'Calendar'
     }
@@ -204,28 +203,28 @@ export const FAB_ACTIONS_BY_PAGE: Record<string, FABAction[]> = {
     {
       id: 'smart-reply',
       label: 'Respuesta Inteligente',
-      permission: 'canUseAISummaries',
+      permission: 'canUseAIActions',
       priority: 1,
       icon: 'MessageSquare'
     },
     {
       id: 'translate-message',
       label: 'Traducir Mensaje',
-      permission: 'canUseAISummaries',
+      permission: 'canUseAIActions',
       priority: 2,
       icon: 'Languages'
     },
     {
       id: 'summarize-conversation',
       label: 'Resumir Conversación',
-      permission: 'canUseAISummaries',
+      permission: 'canUseAIActions',
       priority: 3,
       icon: 'FileText'
     },
     {
       id: 'schedule-from-message',
       label: 'Agendar desde Mensaje',
-      permission: 'canUseAIScheduling',
+      permission: 'canModifySchedules',
       priority: 4,
       icon: 'Calendar'
     }
@@ -235,28 +234,28 @@ export const FAB_ACTIONS_BY_PAGE: Record<string, FABAction[]> = {
     {
       id: 'analyze-performance',
       label: 'Analizar Rendimiento',
-      permission: 'canViewAIMetrics',
+      permission: 'canGenerateReports',
       priority: 1,
       icon: 'BarChart3'
     },
     {
       id: 'optimize-schedules',
       label: 'Optimizar Horarios',
-      permission: 'canConfigureAIWorkflows',
+      permission: 'canManagePersonnel',
       priority: 2,
       icon: 'Calendar'
     },
     {
       id: 'predict-workload',
       label: 'Predecir Carga',
-      permission: 'canViewAIMetrics',
+      permission: 'canGenerateReports',
       priority: 3,
       icon: 'TrendingUp'
     },
     {
       id: 'generate-report',
       label: 'Generar Reporte',
-      permission: 'canViewAIMetrics',
+      permission: 'canGenerateReports',
       priority: 4,
       icon: 'FileText'
     }
@@ -266,28 +265,28 @@ export const FAB_ACTIONS_BY_PAGE: Record<string, FABAction[]> = {
     {
       id: 'configure-ai-workflows',
       label: 'Configurar IA',
-      permission: 'canConfigureAIWorkflows',
+      permission: 'canConfigureSystem',
       priority: 1,
       icon: 'Bot'
     },
     {
       id: 'audit-ai-usage',
       label: 'Auditar Uso IA',
-      permission: 'canAuditAIUsage',
+      permission: 'canConfigureSystem',
       priority: 2,
       icon: 'Shield'
     },
     {
       id: 'backup-settings',
       label: 'Respaldar Config',
-      permission: 'canConfigureAIWorkflows',
+      permission: 'canConfigureSystem',
       priority: 3,
       icon: 'Download'
     },
     {
       id: 'optimize-system',
       label: 'Optimizar Sistema',
-      permission: 'canConfigureAIWorkflows',
+      permission: 'canConfigureSystem',
       priority: 4,
       icon: 'Zap'
     }

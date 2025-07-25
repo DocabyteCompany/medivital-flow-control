@@ -122,7 +122,7 @@ export const QuickActions = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <ContextualAIButton
-        permission="canUseAISummaries"
+        permission="canUseAIActions"
         context={context}
         icon={FileText}
         onClick={handleSummarize}
@@ -140,7 +140,7 @@ export const QuickActions = () => {
       </ContextualAIButton>
 
       <ContextualAIButton
-        permission="canUseAICalls"
+        permission="canUseAIActions"
         context={context}
         icon={Phone}
         onClick={handleScheduleCall}
@@ -158,7 +158,7 @@ export const QuickActions = () => {
       </ContextualAIButton>
 
       <ContextualAIButton
-        permission="canUseAIScheduling"
+        permission="canModifySchedules"
         context={context}
         icon={CalendarClock}
         onClick={handleReviewAgenda}

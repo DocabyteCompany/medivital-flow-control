@@ -97,16 +97,16 @@ export const PatientAIActions = ({
     executePatientAction('confirm-appointment', 'Confirmar cita próxima', 'canUseAIScheduling');
 
   const handleScheduleFollowUp = () => 
-    executePatientAction('schedule-followup', 'Programar seguimiento', 'canUseAIFollowUp');
+    executePatientAction('schedule-followup', 'Programar seguimiento', 'canUseAIActions');
 
   const handleGenerateSummary = () => 
-    executePatientAction('generate-summary', 'Generar resumen médico', 'canUseAISummaries');
+    executePatientAction('generate-summary', 'Generar resumen médico', 'canUseAIActions');
 
   const handleCallReminder = () => 
-    executePatientAction('call-reminder', 'Llamar recordatorio', 'canUseAICalls');
+    executePatientAction('call-reminder', 'Llamar recordatorio', 'canUseAIActions');
 
   const handleUpdateContact = () => 
-    executePatientAction('update-contact', 'Actualizar datos contacto', 'canUseAIScheduling');
+    executePatientAction('update-contact', 'Actualizar datos contacto', 'canModifySchedules');
 
   return (
     <Card className="shadow-soft border-0 rounded-2xl">
@@ -120,7 +120,7 @@ export const PatientAIActions = ({
           {/* Acciones para Doctores */}
           {hasUpcomingAppointment && (
             <ContextualAIButton
-              permission="canUseAIScheduling"
+            permission="canModifySchedules"
               context={context}
               icon={Calendar}
               onClick={handleConfirmAppointment}
@@ -134,47 +134,47 @@ export const PatientAIActions = ({
 
           {hasRecentConsultation && (
             <ContextualAIButton
-              permission="canUseAIFollowUp"
-              context={context}
-              icon={UserCheck}
-              onClick={handleScheduleFollowUp}
-              variant="outline"
-              size="sm"
-              disabled={loadingActions.has('schedule-followup')}
-            >
-              {loadingActions.has('schedule-followup') ? 'Programando...' : 'Programar seguimiento'}
-            </ContextualAIButton>
-          )}
+              permission="canUseAIActions"
+                context={context}
+                icon={UserCheck}
+                onClick={handleScheduleFollowUp}
+                variant="outline"
+                size="sm"
+                disabled={loadingActions.has('schedule-followup')}
+              >
+                {loadingActions.has('schedule-followup') ? 'Programando...' : 'Programar seguimiento'}
+              </ContextualAIButton>
+            )}
 
-          <ContextualAIButton
-            permission="canUseAISummaries"
-            context={context}
-            icon={FileText}
-            onClick={handleGenerateSummary}
-            variant="outline"
-            size="sm"
-            disabled={loadingActions.has('generate-summary')}
-          >
-            {loadingActions.has('generate-summary') ? 'Generando...' : 'Generar resumen médico'}
-          </ContextualAIButton>
-
-          {/* Acciones para Admins */}
-          {hasUpcomingAppointment && (
             <ContextualAIButton
-              permission="canUseAICalls"
+              permission="canUseAIActions"
               context={context}
-              icon={Phone}
-              onClick={handleCallReminder}
+              icon={FileText}
+              onClick={handleGenerateSummary}
               variant="outline"
               size="sm"
-              disabled={loadingActions.has('call-reminder')}
+              disabled={loadingActions.has('generate-summary')}
             >
-              {loadingActions.has('call-reminder') ? 'Llamando...' : 'Llamar recordatorio'}
+              {loadingActions.has('generate-summary') ? 'Generando...' : 'Generar resumen médico'}
             </ContextualAIButton>
-          )}
 
-          <ContextualAIButton
-            permission="canUseAIScheduling"
+            {/* Acciones para Admins */}
+            {hasUpcomingAppointment && (
+              <ContextualAIButton
+                permission="canUseAIActions"
+                context={context}
+                icon={Phone}
+                onClick={handleCallReminder}
+                variant="outline"
+                size="sm"
+                disabled={loadingActions.has('call-reminder')}
+              >
+                {loadingActions.has('call-reminder') ? 'Llamando...' : 'Llamar recordatorio'}
+              </ContextualAIButton>
+            )}
+
+            <ContextualAIButton
+              permission="canModifySchedules"
             context={context}
             icon={UserCheck}
             onClick={handleUpdateContact}

@@ -168,10 +168,10 @@ export const AgendaAIActions = ({
       <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {/* Acciones para Doctores (vista personal) */}
-          {role === 'Doctor' && (
+          {role === 'doctor' && (
             <>
               <ContextualAIButton
-                permission="canUseAISummaries"
+            permission="canUseAIActions"
                 context={context}
                 icon={FileText}
                 onClick={handlePrepareConsultation}
@@ -182,7 +182,7 @@ export const AgendaAIActions = ({
               </ContextualAIButton>
 
               <ContextualAIButton
-                permission="canUseAISummaries"
+                permission="canUseAIActions"
                 context={context}
                 icon={FileText}
                 onClick={handleGenerateNotes}
@@ -195,11 +195,11 @@ export const AgendaAIActions = ({
           )}
 
           {/* Acciones para Admins (vista global) */}
-          {role === 'Admin' && (
+          {role === 'admin' && (
             <>
               {hasAppointments && (
                 <ContextualAIButton
-                  permission="canUseAICalls"
+                  permission="canUseAIActions"
                   context={context}
                   icon={Phone}
                   onClick={handleConfirmAppointments}
@@ -211,7 +211,7 @@ export const AgendaAIActions = ({
               )}
 
               <ContextualAIButton
-                permission="canUseAIReminders"
+                permission="canUseAIActions"
                 context={context}
                 icon={Bell}
                 onClick={handleSendReminders}
@@ -222,7 +222,7 @@ export const AgendaAIActions = ({
               </ContextualAIButton>
 
               <ContextualAIButton
-                permission="canUseAIScheduling"
+                permission="canModifySchedules"
                 context={context}
                 icon={Search}
                 onClick={handleFindUrgentSlot}
@@ -234,7 +234,7 @@ export const AgendaAIActions = ({
 
               {hasNoShows && (
                 <ContextualAIButton
-                  permission="canUseAIScheduling"
+                  permission="canModifySchedules"
                   context={context}
                   icon={Calendar}
                   onClick={handleRescheduleNoShows}

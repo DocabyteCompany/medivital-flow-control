@@ -1,11 +1,10 @@
 
-import { useContext } from 'react';
-import { RoleContext } from '@/contexts/RoleContext';
-import { AIContext } from '@/hooks/useAIContext';
+import { useRole, UserRole } from '@/contexts/RoleContext';
+import { ActivityContext } from '@/components/ia/ActivityCard';
 
 export type AIRole = 'admin' | 'doctor' | 'nurse' | 'receptionist';
 
-interface AIPermissions {
+export interface AIPermissions {
   canCreatePatients: boolean;
   canModifySchedules: boolean;
   canAccessRecords: boolean;
@@ -16,9 +15,15 @@ interface AIPermissions {
   canApproveAIActions: boolean;
 }
 
-export const useAIPermissions = (context: AIContext) => {
-  const { role } = useContext(RoleContext);
-  const currentRole = role as AIRole;
+export type BooleanPermissionKeys = {
+  [K in keyof AIPermissions]: AIPermissions[K] extends boolean ? K : never;
+}[keyof AIPermissions];
+
+export const useAIPermissions = (context?: ActivityContext) => {
+  const { selectedRole } = useRole();
+  
+  // Convert UserRole to AIRole
+  const currentRole: AIRole = selectedRole === 'Admin' ? 'admin' : 'doctor';
 
   const getPermissions = (userRole: AIRole): AIPermissions => {
     const basePermissions = {
@@ -75,8 +80,13 @@ export const useAIPermissions = (context: AIContext) => {
 
   const permissions = getPermissions(currentRole);
 
-  const canPerformAction = (actionType: string): boolean => {
-    // Mapear tipos de acciones a permisos específicos
+  const canPerformAction = (permissionKey: BooleanPermissionKeys | string, actionType?: string): boolean => {
+    // Si se pasa un permissionKey directo, usarlo
+    if (permissionKey in permissions) {
+      return permissions[permissionKey as BooleanPermissionKeys];
+    }
+    
+    // Mapear tipos de acciones a permisos específicos (fallback)
     const actionPermissionMap: Record<string, keyof AIPermissions> = {
       'create_patient': 'canCreatePatients',
       'modify_schedule': 'canModifySchedules',
@@ -88,8 +98,8 @@ export const useAIPermissions = (context: AIContext) => {
       'approve_ai': 'canApproveAIActions',
     };
 
-    const permissionKey = actionPermissionMap[actionType];
-    return permissionKey ? permissions[permissionKey] : false;
+    const mappedPermissionKey = actionPermissionMap[permissionKey];
+    return mappedPermissionKey ? permissions[mappedPermissionKey] : false;
   };
 
   return {
